@@ -49,7 +49,6 @@ Die Software soll die Planung und Verwaltung von Lerhveranstaltungen automatiser
 # 4. Architektur
 ![Architektur](image.png)
 # 5. Geschäftsprozesse
-– Beschreibung des Laufzeitverhaltens Ihres Systems
 ## 5.1. Geschäftsprozess „Krankmeldung einer Lehrperson“
 ![image](https://github.com/mekay007/SWE-Praktikum/assets/154843898/58598d06-a2d1-4ab8-add6-3e5bc8510346)
 # 6. Datenmodell
