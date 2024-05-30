@@ -51,8 +51,7 @@ Die Software soll die Planung und Verwaltung von Lerhveranstaltungen automatiser
 # 5. Geschäftsprozesse
 – Beschreibung des Laufzeitverhaltens Ihres Systems
 ## 5.1. Geschäftsprozess „Krankmeldung einer Lehrperson“
-• Verhaltensdiagramm (z.B. Sequenzdiagramm) + Beschreibung
-## 5.2. …
+![image](https://github.com/mekay007/SWE-Praktikum/assets/154843898/58598d06-a2d1-4ab8-add6-3e5bc8510346)
 # 6. Datenmodell
 ![Untitled (4)](https://github.com/mekay007/SWE-Praktikum/assets/156111196/80a42331-fc13-4aed-872c-7d0d87a61c08)
 <?xml version="1.0" encoding="UTF-8"?>
