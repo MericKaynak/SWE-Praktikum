@@ -64,7 +64,3 @@ Wir haben uns fuer PostgreSQL entschieden, da das Prokjekt-Team mit diesem SQL D
 Zum Verwalten der Datenbank benutzten wir Adminer. Wir haben uns fuer dieses Tool entschieden, aufgrund der einfachen Installation und Konfiguration sowie der starken Performance.
 
 # 7. GUI-Design  
-# 8. Klassendiagramm
-– Detailliertes Design (statische Sicht: Welche (wichtigen) Klassen und Methoden
-gibt es
-)
