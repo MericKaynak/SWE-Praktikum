@@ -8,6 +8,7 @@ Die Software soll die Planung und Verwaltung von Lerhveranstaltungen automatiser
 **Auftraggeber**: Hochschule „Wissen für Alle – die Wissensakademie“   
 **Programmiersprachen**: Java, Python, JavaScript, PostgreSQL  
 **Tools**: Python-React, JetBrain IDE's
+**Schnittstellen**: Integration mit bestehenden Verwaltungssystemen der Hochschule.
 ****
 # 2. Anforderungen
 ## Funktionale Anforderung
