@@ -5,8 +5,10 @@ Das Projekt umfast die Entwicklung einer Software fuer die Hochschule „Wissen 
 Die Software soll die Planung und Verwaltung von Lerhveranstaltungen automatiseren, um die Mitarbeiter zu entlassten.
 ## 1.2. Rahmenbedingungen
 **Projektteam**: Tim Hoenings, Erik Geinrich Dubrov, Alexander Theodor Foerster, Raphael Pascal Bieneck, Meric Malik Kaynak   
-**Auftraggeber**: Hochschule „Wissen für Alle – die Wissensakademie“  
-**Zeitplan**:
+**Auftraggeber**: Hochschule „Wissen für Alle – die Wissensakademie“   
+**Programmiersprachen**: Java, Python, JavaScript, PostgreSQL
+**Tools**: Python-React, JetBrain IDE's
+****
 # 2. Anforderungen
 ## Funktionale Anforderung
 ##### Priorität Keywords:
