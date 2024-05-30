@@ -41,8 +41,20 @@ Die Software soll die Planung und Verwaltung von Lerhveranstaltungen automatiser
 # 3. Use Case (Anwendungsfälle)
 – Welche Akteure & welche Anwendungsfälle gibt es?
 # 3.1. Use Case Diagramm
-### 3.1.1. Textuelle Erläuterung (Details) zu Use Case 1 (z.B. „neuen MA anlegen“)
-### 3.1.2. … Textuelle Erläuterung (Details) zu Use Case 2 … (u.s.w.)
+### 3.1.1. Student
+Ein Student hat 2 Use Cases:
+- Ein Student kann relevante Informationen vom Terminplan einsehen: Veranstaltung, Titel, Zeitraum, Ort, Betreuende Person
+- Ein Student kann Benachrichtigungen erhalten: Bei einem Ausfall einer Veranstaltung oder bei einer Änderung im Terminplan 
+### 3.1.2. Mitarbeiter
+Ein Mitarbeiter hat 3 Use Cases:
+- Ein Mitarbeiter kann persönliche Termine vom Terminplan einsehen: Veranstaltung, Titel, Zeitraum
+- Ein Mitarbeiter kann einen Ausfall melden: Eine Krankmeldung oder einen Urlaub
+- Ein Mitarbeiter kann Benachrichtigungen zum Einspringen als Vertretung erhalten
+### 3.1.3. Verwaltung
+Die Verwaltung hat 3 Use Cases:
+- Die Verwaltung kann neue Veranstaltungen anlegen: Titel, Ort
+- Die Verwaltung kann Mitarbeiter hinzufügen
+- Die Verwaltung kann den Terminplan erstellen
 ## 3.2. Optional weitere Use Case Diagramme
 ![image](https://github.com/mekay007/SWE-Praktikum/assets/154843898/aa17feea-2c83-48d2-aa0f-8edbcb231a18)
 
