@@ -7,7 +7,7 @@ Die Software soll die Planung und Verwaltung von Lerhveranstaltungen automatiser
 **Projektteam**: Tim Hoenings, Erik Geinrich Dubrov, Alexander Theodor Foerster, Raphael Pascal Bieneck, Meric Malik Kaynak   
 **Auftraggeber**: Hochschule „Wissen für Alle – die Wissensakademie“   
 **Programmiersprachen**: Java, Python, JavaScript, PostgreSQL  
-**Tools**: Python-React, JetBrain IDE's
+**Tools**: Python-React, JetBrain IDE's  
 **Schnittstellen**: Integration mit bestehenden Verwaltungssystemen der Hochschule.
 ****
 # 2. Anforderungen
