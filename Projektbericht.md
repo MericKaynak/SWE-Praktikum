@@ -39,7 +39,6 @@ Die Software soll die Planung und Verwaltung von Lerhveranstaltungen automatiser
 |NFA_4.0| **Skalierbarkeit**|Die Software soll auch bei weiterem Wachstum der Hochschule problemlos funktionieren.|
 |NFA_5.0| **Datensicherheit**|Die Software muss sicherstellen, dass alle Daten geschützt sind und nur autorisierte Benutzer Zugriff haben.|
 # 3. Use Case (Anwendungsfälle)
-– Welche Akteure & welche Anwendungsfälle gibt es?
 # 3.1. Use Case Diagramm
 ### 3.1.1. Student
 Ein Student hat 2 Use Cases:
