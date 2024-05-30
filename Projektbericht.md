@@ -44,6 +44,8 @@ Die Software soll die Planung und Verwaltung von Lerhveranstaltungen automatiser
 ### 3.1.1. Textuelle Erläuterung (Details) zu Use Case 1 (z.B. „neuen MA anlegen“)
 ### 3.1.2. … Textuelle Erläuterung (Details) zu Use Case 2 … (u.s.w.)
 ## 3.2. Optional weitere Use Case Diagramme
+![image](https://github.com/mekay007/SWE-Praktikum/assets/154843898/aa17feea-2c83-48d2-aa0f-8edbcb231a18)
+
 # 4. Architektur
 ![Architektur](image.png)
 # 5. Geschäftsprozesse
