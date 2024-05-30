@@ -1,8 +1,12 @@
-Projektbericht
+
 # 1. Einleitung
-– Worum geht es im Projekt? Was ist das Ziel?
 ## 1.1. Einleitung
+Das Projekt umfast die Entwicklung einer Software fuer die Hochschule „Wissen für Alle – die Wissensakademie“.
+Die Software soll die Planung und Verwaltung von Lerhveranstaltungen automatiseren, um die Mitarbeiter zu entlassten.
 ## 1.2. Rahmenbedingungen
+**Projektteam**: Tim Hoenings, Erik Geinrich Dubrov, Alexander Theodor Foerster, Raphael Pascal Bieneck, Meric Malik Kaynak   
+**Auftraggeber**: Hochschule „Wissen für Alle – die Wissensakademie“  
+**Zeitplan**:
 # 2. Anforderungen
 – Anforderungen detailliert aufschreiben (z.B. „Es sollen neue Mitarbeiter
 hinzugefügt werden können“)
