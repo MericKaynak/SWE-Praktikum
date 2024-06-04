@@ -60,7 +60,7 @@ Die Verwaltung hat 3 Use Cases:
 # 4. Architektur
 Es wird ein Model-View-Controller entwickelt, d.h. eine Kombination aus Datenbank Server, Geschäftslogikprogramm und User-Interface Webseite. Der Datenbank Server (Model) enthält die Daten zu Lehrpersonen, Studenten, Lehrveranstaltungen, Räume und den Terminplan. Das Geschäftslogikprogramm implementiert die Funktionen zur Erstellung des Terminplans und dessen Verwaltung, genauso wie die Kommunikation zwischen Model und View. Die Webseite agiert als User-Interface für Mitarbeiter und Studenten. Es bietet die Möglichkeit den Terminplan einzusehen und Benachritigungen zu Änderungen zu erhalten oder zu erstellen.
 ## 4.1 Komponenten- & Konnektoransicht
-![Architektur](Architektur-KomponentenKonnektor.png)
+![Architektur](Architektur-KomponentKonnektor.png)
 ## 4.2 Modulansicht
 ![Architektur-Modulansicht](Architektur-Modulansicht.png)
 ### 4.3 Model View Controler (MVC) - Details der Implementierung
