@@ -1,14 +1,19 @@
 
+# Software für Arbeitereinsatzplanung 
+
 # 1. Einleitung
 ## 1.1. Einleitung
 Das Projekt umfast die Entwicklung einer Software fuer die Hochschule „Wissen für Alle – die Wissensakademie“.
 Die Software soll die Planung und Verwaltung von Lerhveranstaltungen automatiseren, um die Mitarbeiter zu entlassten.
+Das Ziel ist die Entwicklung einer Software zur Einsatzplanung für den Kunden.
+// Übersetzt die Anfrage des Kunden in eine Aufgabenstellung
 ## 1.2. Rahmenbedingungen
 **Projektteam**: Tim Hoenings, Erik Geinrich Dubrov, Alexander Theodor Foerster, Raphael Pascal Bieneck, Meric Malik Kaynak   
 **Auftraggeber**: Hochschule „Wissen für Alle – die Wissensakademie“   
 **Programmiersprachen**: Java, Python, JavaScript, PostgreSQL  
 **Tools**: Python-React, JetBrain IDE's  
 **Schnittstellen**: Integration mit bestehenden Verwaltungssystemen der Hochschule.
+// Hier gehören die reinen Fakten des Projekts hin: Die Hochschule hat 2 Standorte, Mitarbeiter arbeiten 16 Stunden
 ****
 # 2. Anforderungen
 ## Funktionale Anforderung
@@ -17,9 +22,11 @@ Die Software soll die Planung und Verwaltung von Lerhveranstaltungen automatiser
 - **SOLL** - Soll Anforderung: Anforderungen bezüglich der Mindesterfüllung.
 - **KANN** - Kann Anforderung: Wunschanforderungen, die unter Umständen ausgelassen werden können.
 
+// Vorsicht bei schwammigen Anforderungen, hier ist es wichtig abzugrengen was unsere Aufgabe ist und was nicht
+
 | ID | Anforderung | Beschreibung | Prio. |
 | -- | ----------- | ------------ | ----- |
-| FA_1.0 |**Terminplanung**| Die Software soll in der Lage sein, einen Einsatzplan für die Mitarbeiter zu erstellen, der zeigt, welche Lehrveranstaltungen sie betreuen sollen. | MUSS |
+| FA_1.0 |**Terminplanung**| Die Software muss es ermöglichen, einen Einsatzplan für die Mitarbeiter zu erstellen, der zeigt, welche Lehrveranstaltungen sie betreuen sollen. | MUSS |
 | FA_1.1 | **Änderungsmanagement** | Die Software muss Änderungen im Plan berücksichtigen können, z.B. durch Krankmeldungen, Fortbildungen oder Tagungen der Mitarbeiter. | MUSS |
 | FA_1.2 | **Benachrichtigungen**| Mitarbeiter und Studierende sollen über Änderungen im Plan informiert werden. | SOLL |
 | FA_1.3 | **Benutzerzugriff**| Mitarbeiter und Studierende sollen auf ihre individuellen Pläne zugreifen können. | SOLL |
@@ -56,6 +63,10 @@ Die Verwaltung hat 3 Use Cases:
 - Die Verwaltung kann den Terminplan erstellen
 ## 3.2. Optional weitere Use Case Diagramme
 ![image](https://github.com/mekay007/SWE-Praktikum/assets/154843898/aa17feea-2c83-48d2-aa0f-8edbcb231a18)
+
+// Vorsicht auf Benennung der Akteure im System: Wenn es im Diagramm Mitarbeiter heißt soll es auch einheitlich so weitergeführt werden.
+// Jeder use-case erfordert eine Tabelle, die den Use-case beschreibt
+// Use case 1: Terminplan erstellen, er macht xyz, voraussetzung ist zyx
 
 # 4. Architektur
 Es wird ein Model-View-Controller entwickelt, d.h. eine Kombination aus Datenbank Server, Geschäftslogikprogramm und User-Interface Webseite. Der Datenbank Server (Model) enthält die Daten zu Lehrpersonen, Studenten, Lehrveranstaltungen, Räume und den Terminplan. Das Geschäftslogikprogramm implementiert die Funktionen zur Erstellung des Terminplans und dessen Verwaltung, genauso wie die Kommunikation zwischen Model und View. Die Webseite agiert als User-Interface für Mitarbeiter und Studenten. Es bietet die Möglichkeit den Terminplan einzusehen und Benachritigungen zu Änderungen zu erhalten oder zu erstellen.
@@ -96,3 +107,4 @@ Wir haben uns fuer PostgreSQL entschieden, da das Prokjekt-Team mit diesem SQL D
 Zum Verwalten der Datenbank benutzten wir Adminer. Wir haben uns fuer dieses Tool entschieden, aufgrund der einfachen Installation und Konfiguration sowie der starken Performance.
 
 # 7. GUI-Design  
+![guidesign](websitedesign.png)
