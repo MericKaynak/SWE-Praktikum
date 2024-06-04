@@ -1,4 +1,4 @@
-
+// ZEITNAH IM KORREKTEN FORMAT HOCHLADEN
 # Software für Arbeitereinsatzplanung 
 
 # 1. Einleitung
@@ -68,10 +68,15 @@ Die Verwaltung hat 3 Use Cases:
 // Jeder use-case erfordert eine Tabelle, die den Use-case beschreibt
 // Use case 1: Terminplan erstellen, er macht xyz, voraussetzung ist zyx
 
-# 4. Architektur
+# 4. Architektur // ab hier geht es um unseren
 Es wird ein Model-View-Controller entwickelt, d.h. eine Kombination aus Datenbank Server, Geschäftslogikprogramm und User-Interface Webseite. Der Datenbank Server (Model) enthält die Daten zu Lehrpersonen, Studenten, Lehrveranstaltungen, Räume und den Terminplan. Das Geschäftslogikprogramm implementiert die Funktionen zur Erstellung des Terminplans und dessen Verwaltung, genauso wie die Kommunikation zwischen Model und View. Die Webseite agiert als User-Interface für Mitarbeiter und Studenten. Es bietet die Möglichkeit den Terminplan einzusehen und Benachritigungen zu Änderungen zu erhalten oder zu erstellen.
 ## 4.1 Komponenten- & Konnektoransicht
 ![Architektur](Architektur-KomponentKonnektor.png)
+// Wie komme ich an die Website -> Browser
+// Wo liegt der Webserver? physisch
+// Wie kommt der Webserver die Daten?
+// Ins Detail gehen, wie es aussieht und welche Technologien benutzt werden!
+// 
 ## 4.2 Modulansicht
 ![Architektur-Modulansicht](Architektur-Modulansicht.png)
 ### 4.3 Model View Controler (MVC) - Details der Implementierung
@@ -95,8 +100,16 @@ Es wird ein Model-View-Controller entwickelt, d.h. eine Kombination aus Datenban
 
 # 5. Geschäftsprozesse
 ## 5.1. Geschäftsprozess „Krankmeldung einer Lehrperson“
+// Zu technisch. Ein Sequenzdiagramm wäre besser.
+// Doz -krank-> Verw. -login-> Website --> Plan Creator --> DB
+//                                 <-------ok----------------
+// Detailliert welche Methoden erstellt werden müssen
+// 
+
 ![image](https://github.com/mekay007/SWE-Praktikum/assets/154843898/58598d06-a2d1-4ab8-add6-3e5bc8510346)
 # 6. Datenmodell
+// Terminplan überflüssig?
+// z.B. Query: Alle Spalten aus Lehrperson die einen Eintrag in LV haben extrahieren
 ![Untitled (4)](https://github.com/mekay007/SWE-Praktikum/assets/156111196/80a42331-fc13-4aed-872c-7d0d87a61c08)
 <?xml version="1.0" encoding="UTF-8"?>
 <!DOCTYPE svg PUBLIC "-//W3C//DTD SVG 1.1//EN" "http://www.w3.org/Graphics/SVG/1.1/DTD/svg11.dtd">
@@ -107,4 +120,13 @@ Wir haben uns fuer PostgreSQL entschieden, da das Prokjekt-Team mit diesem SQL D
 Zum Verwalten der Datenbank benutzten wir Adminer. Wir haben uns fuer dieses Tool entschieden, aufgrund der einfachen Installation und Konfiguration sowie der starken Performance.
 
 # 7. GUI-Design  
+// Wer ist Xdefined
+// Mehr Details
+// Es müssen Zeiten eingetragen und Tage eingetragen werden
+// Zu minimalistisch, es müssen mehr Informationen gekennzeichnet werden
+// Auch als Skizze mehr Klarheit einbringen
+
 ![guidesign](websitedesign.png)
+
+
+// Es ist in unserem Interesse möglichst aussagekräftige Fakten zu schaffen, die uns bei der Projektverhandlung unterstützen
