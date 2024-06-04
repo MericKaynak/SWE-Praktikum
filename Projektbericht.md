@@ -58,7 +58,30 @@ Die Verwaltung hat 3 Use Cases:
 ![image](https://github.com/mekay007/SWE-Praktikum/assets/154843898/aa17feea-2c83-48d2-aa0f-8edbcb231a18)
 
 # 4. Architektur
-![Architektur](image.png)
+Es wird ein Model-View-Controller entwickelt, d.h. eine Kombination aus Datenbank Server, Geschäftslogikprogramm und User-Interface Webseite. Der Datenbank Server (Model) enthält die Daten zu Lehrpersonen, Studenten, Lehrveranstaltungen, Räume und den Terminplan. Das Geschäftslogikprogramm implementiert die Funktionen zur Erstellung des Terminplans und dessen Verwaltung, genauso wie die Kommunikation zwischen Model und View. Die Webseite agiert als User-Interface für Mitarbeiter und Studenten. Es bietet die Möglichkeit den Terminplan einzusehen und Benachritigungen zu Änderungen zu erhalten oder zu erstellen.
+## Komponenten- & Konnektoransicht
+![Architektur](Architektur-KomponentenKonnektor.png)
+## Modulansicht
+![Architektur-Modulansicht](Architektur-Modulansicht.png)
+### Model View Controler (MVC) - Details der Implementierung
+**Model**: Speicherung und Zugriffskontrolle (Datenerhaltung)
+* PostgreSQL Database
+  * Containerized in Docker
+* Adminer GUI
+  * Monitoring der DB
+**View**: Darstellung der Daten für die Anwender (Präsentation)
+* React Frontend
+  * Kalenderansicht
+  * REST Methoden zum
+    * Anfordern von Daten
+    * Abschicken von Daten
+**Controller**: Vermittlung zwischen View und Model (Programmlogik)
+* REST Controller
+  * Spring Boot REST Controller
+  * Spring Data JPA
+  * Flyway SQL Version Control
+* Maven Dependency Management
+
 # 5. Geschäftsprozesse
 ## 5.1. Geschäftsprozess „Krankmeldung einer Lehrperson“
 ![image](https://github.com/mekay007/SWE-Praktikum/assets/154843898/58598d06-a2d1-4ab8-add6-3e5bc8510346)
