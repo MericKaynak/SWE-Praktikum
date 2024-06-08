@@ -149,43 +149,46 @@ public class TerminplanController {
         List<Lehrveranstaltung> elementsToRemove = new ArrayList<>();
 
         int lehrpersonIndex = 0;
-
-        lehrveranstaltungList = lehrveranstaltungRepository.findAll();
-        if (lehrveranstaltungList == null) {
-            throw new LehrveranstaltungNotFoundException(null);
+        try {
+            lehrveranstaltungList = lehrveranstaltungRepository.findAll();
+            if (lehrveranstaltungList == null) {
+                throw new LehrveranstaltungNotFoundException(null);
+            }
+        } catch (RuntimeException e) {
+            e.printStackTrace();
         }
+        try {
+            while (!lehrveranstaltungList.isEmpty()) {
+                System.out.println("while loop entry ok");
 
-        while (!lehrveranstaltungList.isEmpty()) {
-            System.out.println("while loop entry ok");
+                // assign Lehrpersonen to Lehrveranstaltung
+                for (Lehrveranstaltung lehrveranstaltung : lehrveranstaltungList) {
+                    Lehrperson lehrperson = lehrpersonList.get(lehrpersonIndex);
 
-            // assign Lehrpersonen to Lehrveranstaltung
-            for (Lehrveranstaltung lehrveranstaltung : lehrveranstaltungList) {
-                Lehrperson lehrperson = lehrpersonList.get(lehrpersonIndex);
-
-                // check if Lehrperson can be assigned
-                while (lehrperson.istVerfuegbar()) {
-                    System.out.println("next Lehrperson:" + lehrpersonIndex + " @ " + lehrveranstaltung.getTitel());
-                    if (++lehrpersonIndex >= lehrpersonList.size()) {
-                        throw new LehrpersonNotFoundException((long) lehrpersonIndex);
+                    // check if Lehrperson can be assigned
+                    while (lehrperson.istVerfuegbar()) {
+                        System.out.println("next Lehrperson:" + lehrpersonIndex + " @ " + lehrveranstaltung.getTitel());
+                        if (++lehrpersonIndex >= lehrpersonList.size()) {
+                            throw new LehrpersonNotFoundException((long) lehrpersonIndex);
+                        }
+                        lehrpersonRepository.save(lehrperson);
+                        lehrperson = lehrpersonList.get(lehrpersonIndex);
                     }
-                    lehrpersonRepository.save(lehrperson);
-                    lehrperson = lehrpersonList.get(lehrpersonIndex);
-                }
 
-                if (conditionChecks(lehrveranstaltung, lehrperson)) {
-                    // assign Lehrperson to lehrveranstaltung and save change
-                    lehrveranstaltung.setLehrperson(lehrperson);
-                    lehrveranstaltungRepository.save(lehrveranstaltung);
-                    elementsToRemove.add(lehrveranstaltung);
-                    lehrperson.setWochenarbeitsstunden(lehrperson.getWochenarbeitsstunden() + 2);
+                    if (conditionChecks(lehrveranstaltung, lehrperson)) {
+                        // assign Lehrperson to lehrveranstaltung and save change
+                        lehrveranstaltung.setLehrperson(lehrperson);
+                        lehrveranstaltungRepository.save(lehrveranstaltung);
+                        elementsToRemove.add(lehrveranstaltung);
+                        lehrperson.setWochenarbeitsstunden(lehrperson.getWochenarbeitsstunden() + 2);
+                    }
                 }
+                // remove elements which were successfully processed
+                // leave behind only unsuccessful elements
+                lehrveranstaltungList.removeAll(elementsToRemove);
             }
-            // remove elements which were successfully processed
-            // leave behind only unsuccessful elements
-            lehrveranstaltungList.removeAll(elementsToRemove);
-            for (Lehrveranstaltung lehrveranstaltung : lehrveranstaltungList) {
-                System.err.println(lehrveranstaltung.getTitel());
-            }
+        } catch (RuntimeException e) {
+            e.printStackTrace();
         }
     }
 
