@@ -3,7 +3,7 @@ FROM node:latest
 
 WORKDIR /app
 
-COPY package*.json ./
+COPY package.json ./
 
 # Installiere Abhängigkeiten
 RUN npm install
@@ -12,9 +12,8 @@ RUN npm install
 COPY . .
 
 
-RUN npm run dev
+RUN npm run build
 
 EXPOSE 80
 
-
-CMD ["npm", "start"]
+CMD ["npm","run" , "dev"]
