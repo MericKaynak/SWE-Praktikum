@@ -5,7 +5,7 @@ services:
     container_name: postgres
     image: postgres:latest
     environment:
-      - POSTGRES_USER=we
+      - POSTGRES_USER=swe
       - POSTGRES_PASSWORD=swe24
       - POSTGRES_DB=postgres
     ports:
