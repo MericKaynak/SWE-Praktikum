@@ -28,11 +28,11 @@ public class TerminplanController {
 
 
     // GET CALENDAR
-    @GetMapping("/fetch")
+    /*@GetMapping("/fetch")
     public ResponseEntity<String> getCalendar(@PathVariable Long id) throws CalendarNotFoundException {
         return new ResponseEntity<>(calendarRepository.findById(id)
         .orElseThrow(() -> new CalendarNotFoundException(id)), HttpStatus.OK);
-    };
+    };*/
 
 
     // PUT AUSFALL MELDEN
