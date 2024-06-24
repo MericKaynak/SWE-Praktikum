@@ -8,10 +8,10 @@ const api = axios.create({
 });
 
 export const login = (email, password) =>
-  api.post('/auth/login', { email, password });
+  api.post('http://localhost:8080/terminplan/login', { email, password });
 
 export const getAppointments = () =>
-  api.get('/appointments');
+  api.get('http://localhost:8080/terminplan/fetch');
 
 export const createAppointment = (appointment) =>
   api.post('/appointments', appointment);
