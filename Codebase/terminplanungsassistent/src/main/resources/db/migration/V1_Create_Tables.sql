@@ -1,11 +1,4 @@
--- Tabelle: Student
-DROP TABLE Student;
-DROP TABLE Lehrperson;
-DROP TABLE Raum;
-DROP TABLE Terminplan;
-DROP TABLE Lehrveranstaltung;
-DROP TABLE Benachrichtigung;
-DROP TABLE Besuchen;
+DROP TABLE Student, Lehrperson, Raum, Terminplan, Lehrveranstaltung, Benachrichtigung, Besuchen CASCADE;
 
 CREATE TABLE Student (
     ID INT PRIMARY KEY,
@@ -14,7 +7,6 @@ CREATE TABLE Student (
     Studiengang VARCHAR(100)
 );
 
--- Tabelle: Lehrperson
 CREATE TABLE Lehrperson (
     ID INT PRIMARY KEY,
     Name VARCHAR(100),
@@ -23,7 +15,6 @@ CREATE TABLE Lehrperson (
     Verfügbarkeit VARCHAR(100)
 );
 
--- Tabelle: Raum
 CREATE TABLE Raum (
     ID INT PRIMARY KEY,
     Bezeichnung VARCHAR(100),
@@ -31,7 +22,6 @@ CREATE TABLE Raum (
     Standort VARCHAR(100)
 );
 
--- Tabelle: Terminplan
 CREATE TABLE Terminplan (
     ID INT PRIMARY KEY,
     Name VARCHAR(100),
@@ -41,7 +31,6 @@ CREATE TABLE Terminplan (
     FOREIGN KEY (Raum_ID) REFERENCES Raum(ID)
 );
 
--- Tabelle: Lehrveranstaltung
 CREATE TABLE Lehrveranstaltung (
     ID INT PRIMARY KEY,
     Titel VARCHAR(100),
@@ -55,7 +44,6 @@ CREATE TABLE Lehrveranstaltung (
     FOREIGN KEY (Betreuende_Person_ID) REFERENCES Lehrperson(ID)
 );
 
--- Tabelle: Benachrichtigung
 CREATE TABLE Benachrichtigung (
     ID INT PRIMARY KEY,
     Nachrichtentyp VARCHAR(50),
@@ -66,7 +54,6 @@ CREATE TABLE Benachrichtigung (
     FOREIGN KEY (Terminplan_ID) REFERENCES Terminplan(ID)
 );
 
--- Beziehungstabelle für Studenten und Lehrveranstaltungen
 CREATE TABLE Besuchen (
     Student_ID INT,
     Lehrveranstaltung_ID INT,
