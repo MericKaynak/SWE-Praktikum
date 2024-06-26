@@ -62,11 +62,11 @@ CREATE TABLE Besuchen (
     FOREIGN KEY (Lehrveranstaltung_ID) REFERENCES Lehrveranstaltung(ID)
 );
 
-\COPY Student FROM 'datamart/student.csv' WITH (FORMAT csv, HEADER true);
-\COPY Student FROM 'datamart/benachrichtigung.csv' WITH (FORMAT csv, HEADER true);
-\COPY Student FROM 'datamart/besuchen.csv' WITH (FORMAT csv, HEADER true);
-\COPY Student FROM 'datamart/lehrperson.csv' WITH (FORMAT csv, HEADER true);
-\COPY Student FROM 'datamart/lehrveranstaltung.csv' WITH (FORMAT csv, HEADER true);
-\COPY Student FROM 'datamart/raum.csv' WITH (FORMAT csv, HEADER true);
-\COPY Student FROM 'datamart/terminplan.csv' WITH (FORMAT csv, HEADER true);
+\COPY student FROM 'datamart/student.csv' WITH (FORMAT csv, HEADER true);
+\COPY benachrichtigung FROM 'datamart/benachrichtigung.csv' WITH (FORMAT csv, HEADER true);
+\COPY besuchen FROM 'datamart/besuchen.csv' WITH (FORMAT csv, HEADER true);
+\COPY lehrperson FROM 'datamart/lehrperson.csv' WITH (FORMAT csv, HEADER true);
+\COPY lehrveranstaltung FROM 'datamart/lehrveranstaltung.csv' WITH (FORMAT csv, HEADER true);
+\COPY raum FROM 'datamart/raum.csv' WITH (FORMAT csv, HEADER true);
+\COPY terminplan FROM 'datamart/terminplan.csv' WITH (FORMAT csv, HEADER true);
 
