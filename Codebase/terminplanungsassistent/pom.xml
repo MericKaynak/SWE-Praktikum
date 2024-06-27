@@ -38,13 +38,13 @@
     		<artifactId>postgresql</artifactId>
     		<version>42.2.20</version>
 		</dependency>
-		
-		<depdency>
+
+		<dependency>
 			<groupId>org.projectlombok</groupId>
 			<artifactId>lombok</artifactId>
 			<version>1.18.30</version>
 			<scope>provided</scope>
-		</depdency>
+		</dependency>
 	</dependencies>
 
 	<build>

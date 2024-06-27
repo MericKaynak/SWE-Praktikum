@@ -12,7 +12,7 @@ const Login = () => {
     e.preventDefault();
     try {
       // TODO: Call backend API for login
-      const response = await axios.post('/api/auth/login', { email, password });
+      const response = await axios.post('http://localhost:8080/terminplan/login', { email, password });
       // Save token and login timestamp, then redirect to scheduler
       localStorage.setItem('token', response.data.token);
       localStorage.setItem('loginTimestamp', new Date().getTime());
