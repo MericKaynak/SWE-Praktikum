@@ -1,4 +1,4 @@
-DROP TABLE Student, Lehrperson, Raum, Terminplan, Lehrveranstaltung, Benachrichtigung, Besuchen CASCADE;
+DROP TABLE Student, Lehrperson, Raum, Termin, Lehrveranstaltung, Benachrichtigung, Besuchen CASCADE;
 
 CREATE TABLE Student (
     ID INT PRIMARY KEY,
@@ -22,7 +22,7 @@ CREATE TABLE Raum (
     Standort VARCHAR(100)
 );
 
-CREATE TABLE Terminplan (
+CREATE TABLE Termin(
     ID INT PRIMARY KEY,
     Datum DATE,
     Zeitraum_Start TIME,
@@ -37,10 +37,10 @@ CREATE TABLE Lehrveranstaltung (
     Fachbereich VARCHAR(100),
     Dauer INT,
     Raum_ID INT,
-    Terminplan_ID INT,
+    Termin_ID INT,
     Lehrperson_ID INT,
     FOREIGN KEY (Raum_ID) REFERENCES Raum(ID),
-    FOREIGN KEY (Terminplan_ID) REFERENCES Terminplan(ID),
+    FOREIGN KEY (Termin_ID) REFERENCES Termin(ID),
     FOREIGN KEY (Lehrperson_ID) REFERENCES Lehrperson(ID)
 );
 
@@ -57,9 +57,9 @@ CREATE TABLE Benachrichtigung (
     Nachrichtentyp VARCHAR(50),
     Text TEXT,
     Empfänger_ID INT,
-    Terminplan_ID INT,
+    Termin_ID INT,
     FOREIGN KEY (Empfänger_ID) REFERENCES Student(ID),
-    FOREIGN KEY (Terminplan_ID) REFERENCES Terminplan(ID)
+    FOREIGN KEY (Termin_ID) REFERENCES Termin(ID)
 );
 
 
@@ -67,7 +67,7 @@ CREATE TABLE Benachrichtigung (
 \COPY benachrichtigung FROM 'datamart/benachrichtigung.csv' WITH (FORMAT csv, HEADER true);
 \COPY raum FROM 'datamart/raum.csv' WITH (FORMAT csv, HEADER true);
 \COPY lehrperson FROM 'datamart/lehrperson.csv' WITH (FORMAT csv, HEADER true);
-\COPY terminplan FROM 'datamart/terminplan.csv' WITH (FORMAT csv, HEADER true);
+\COPY termin FROM 'datamart/termin.csv' WITH (FORMAT csv, HEADER true);
 \COPY lehrveranstaltung FROM 'datamart/lehrveranstaltung.csv' WITH (FORMAT csv, HEADER true);
 \COPY besuchen FROM 'datamart/besuchen.csv' WITH (FORMAT csv, HEADER true);
 
