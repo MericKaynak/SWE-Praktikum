@@ -62,16 +62,6 @@ CREATE TABLE Benachrichtigung (
     FOREIGN KEY (Termin_ID) REFERENCES Termin(ID)
 );
 
-
-\COPY student FROM 'datamart/student.csv' WITH (FORMAT csv, HEADER true);
-\COPY benachrichtigung FROM 'datamart/benachrichtigung.csv' WITH (FORMAT csv, HEADER true);
-\COPY raum FROM 'datamart/raum.csv' WITH (FORMAT csv, HEADER true);
-\COPY lehrperson FROM 'datamart/lehrperson.csv' WITH (FORMAT csv, HEADER true);
-\COPY termin FROM 'datamart/termin.csv' WITH (FORMAT csv, HEADER true);
-\COPY lehrveranstaltung FROM 'datamart/lehrveranstaltung.csv' WITH (FORMAT csv, HEADER true);
-\COPY besuchen FROM 'datamart/besuchen.csv' WITH (FORMAT csv, HEADER true);
-
-
 CREATE OR REPLACE FUNCTION check_raumbelegung()
 RETURNS TRIGGER AS $$
 BEGIN
@@ -95,5 +85,14 @@ CREATE TRIGGER raumbelegung
 BEFORE INSERT ON Termin
 FOR EACH ROW
 EXECUTE FUNCTION check_raumbelegung();
+
+\COPY student FROM 'datamart/student.csv' WITH (FORMAT csv, HEADER true);
+\COPY benachrichtigung FROM 'datamart/benachrichtigung.csv' WITH (FORMAT csv, HEADER true);
+\COPY raum FROM 'datamart/raum.csv' WITH (FORMAT csv, HEADER true);
+\COPY lehrperson FROM 'datamart/lehrperson.csv' WITH (FORMAT csv, HEADER true);
+\COPY termin FROM 'datamart/termin.csv' WITH (FORMAT csv, HEADER true);
+\COPY lehrveranstaltung FROM 'datamart/lehrveranstaltung.csv' WITH (FORMAT csv, HEADER true);
+\COPY besuchen FROM 'datamart/besuchen.csv' WITH (FORMAT csv, HEADER true);
+
 
 
