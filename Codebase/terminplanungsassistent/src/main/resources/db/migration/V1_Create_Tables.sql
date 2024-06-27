@@ -71,3 +71,29 @@ CREATE TABLE Benachrichtigung (
 \COPY lehrveranstaltung FROM 'datamart/lehrveranstaltung.csv' WITH (FORMAT csv, HEADER true);
 \COPY besuchen FROM 'datamart/besuchen.csv' WITH (FORMAT csv, HEADER true);
 
+
+CREATE OR REPLACE FUNCTION check_raumbelegung()
+RETURNS TRIGGER AS $$
+BEGIN
+    -- Prüfen, ob die Kombination bereits existiert
+    IF EXISTS (
+        SELECT 1
+        FROM Termin
+        WHERE Datum = NEW.Datum
+          AND Zeitraum_Start = NEW.Zeitraum_Start
+          AND Raum_ID = NEW.Raum_ID
+    ) THEN
+        RAISE EXCEPTION 'Der Raum ist zu diesem Zeitpunkt bereits belegt!!!';
+    END IF;
+
+    RETURN NEW;
+END;
+$$ LANGUAGE plpgsql;
+
+
+CREATE TRIGGER raumbelegung
+BEFORE INSERT ON Termin
+FOR EACH ROW
+EXECUTE FUNCTION check_raumbelegung();
+
+
