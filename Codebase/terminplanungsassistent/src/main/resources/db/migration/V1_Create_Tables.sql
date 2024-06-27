@@ -24,9 +24,9 @@ CREATE TABLE Raum (
 
 CREATE TABLE Terminplan (
     ID INT PRIMARY KEY,
-    Name VARCHAR(100),
-    Zeitraum_Start DATE,
-    Zeitraum_End DATE,
+    Datum DATE,
+    Zeitraum_Start TIME,
+    Zeitraum_End TIME,
     Raum_ID INT,
     FOREIGN KEY (Raum_ID) REFERENCES Raum(ID)
 );
@@ -38,10 +38,18 @@ CREATE TABLE Lehrveranstaltung (
     Dauer INT,
     Raum_ID INT,
     Terminplan_ID INT,
-    Betreuende_Person_ID INT,
+    Lehrperson_ID INT,
     FOREIGN KEY (Raum_ID) REFERENCES Raum(ID),
     FOREIGN KEY (Terminplan_ID) REFERENCES Terminplan(ID),
-    FOREIGN KEY (Betreuende_Person_ID) REFERENCES Lehrperson(ID)
+    FOREIGN KEY (Lehrperson_ID) REFERENCES Lehrperson(ID)
+);
+
+CREATE TABLE Besuchen (
+    Student_ID INT,
+    Lehrveranstaltung_ID INT,
+    PRIMARY KEY (Student_ID, Lehrveranstaltung_ID),
+    FOREIGN KEY (Student_ID) REFERENCES Student(ID),
+    FOREIGN KEY (Lehrveranstaltung_ID) REFERENCES Lehrveranstaltung(ID)
 );
 
 CREATE TABLE Benachrichtigung (
@@ -54,13 +62,6 @@ CREATE TABLE Benachrichtigung (
     FOREIGN KEY (Terminplan_ID) REFERENCES Terminplan(ID)
 );
 
-CREATE TABLE Besuchen (
-    Student_ID INT,
-    Lehrveranstaltung_ID INT,
-    PRIMARY KEY (Student_ID, Lehrveranstaltung_ID),
-    FOREIGN KEY (Student_ID) REFERENCES Student(ID),
-    FOREIGN KEY (Lehrveranstaltung_ID) REFERENCES Lehrveranstaltung(ID)
-);
 
 \COPY student FROM 'datamart/student.csv' WITH (FORMAT csv, HEADER true);
 \COPY benachrichtigung FROM 'datamart/benachrichtigung.csv' WITH (FORMAT csv, HEADER true);

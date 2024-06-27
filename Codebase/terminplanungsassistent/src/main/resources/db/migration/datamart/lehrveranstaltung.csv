@@ -1,1 +1,2 @@
-Titel, Fachbereich, Dauer, Raum_ID, Terminplan_ID, Betreuende_Person_ID
+ID, Titel, Fachbereich, Dauer, Raum_ID, Terminplan_ID, Lehrperson_ID
+1, Kiffologie, FB69, 2, 1, 1, 069
