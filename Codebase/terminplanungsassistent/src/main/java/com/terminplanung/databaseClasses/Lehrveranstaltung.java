@@ -1,34 +1,38 @@
 package com.terminplanung.databaseClasses;
 
-import jakarta.persistence.*;
-import java.util.Set;
+import jakarta.persistence.Entity;
+import jakarta.persistence.Id;
+import jakarta.persistence.Column;
+import jakarta.persistence.Table;
+import jakarta.persistence.ManyToOne;
+import jakarta.persistence.JoinColumn;
 
 @Entity
+@Table(name = "Lehrveranstaltung")
 public class Lehrveranstaltung {
-    
     @Id
-    private int id;
-    
+    private Integer id;
+
+    @Column(name = "Titel")
     private String titel;
-    
+
+    @Column(name = "Fachbereich")
     private String fachbereich;
-    
-    private int dauer;
-    
+
+    @Column(name = "Dauer")
+    private Integer dauer;
+
     @ManyToOne
-    @JoinColumn(name = "raum_id")
+    @JoinColumn(name = "Raum_ID")
     private Raum raum;
-    
+
     @ManyToOne
-    @JoinColumn(name = "terminplan_id")
-    private Terminplan terminplan;
-    
+    @JoinColumn(name = "Termin_ID")
+    private Termin termin;
+
     @ManyToOne
-    @JoinColumn(name = "betreuende_person_id")
+    @JoinColumn(name = "Lehrperson_ID")
     private Lehrperson lehrperson;
-    
-    @OneToMany(mappedBy = "lehrveranstaltung")
-    private Set<Besuchen> besuchen;
 
     // Getters and Setters
 }

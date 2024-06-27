@@ -12,7 +12,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.terminplanung.databaseClasses.Lehrperson;
-import com.terminplanung.databaseClasses.Terminplan;
+import com.terminplanung.databaseClasses.Termin;
 import com.terminplanung.databaseClasses.TerminplanRepository;
 import com.terminplanung.exceptions.TerminplanNotFoundException;
 
@@ -38,8 +38,8 @@ public class TerminplanController {
 
     // GET CALENDAR
     @GetMapping("/fetch")
-    public ResponseEntity<Terminplan> getTerminplan(@PathVariable Long id) throws TerminplanNotFoundException {
-        return new ResponseEntity<Terminplan>(terminplanRepository.findById(id)
+    public ResponseEntity<Termin> getTerminplan(@PathVariable Long id) throws TerminplanNotFoundException {
+        return new ResponseEntity<Termin>(terminplanRepository.findById(id)
         .orElseThrow(() -> new TerminplanNotFoundException(id)), HttpStatus.NOT_FOUND);
     }
 

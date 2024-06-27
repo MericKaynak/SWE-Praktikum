@@ -1,25 +1,24 @@
 package com.terminplanung.databaseClasses;
 
-import jakarta.persistence.*;
-import java.util.Set;
+import jakarta.persistence.Entity;
+import jakarta.persistence.Id;
+import jakarta.persistence.Column;
+import jakarta.persistence.Table;
 
 @Entity
+@Table(name = "Raum")
 public class Raum {
-    
     @Id
-    private int id;
-    
+    private Integer id;
+
+    @Column(name = "Bezeichnung")
     private String bezeichnung;
-    
-    private int kapazitat;
-    
+
+    @Column(name = "Kapazität")
+    private Integer kapazität;
+
+    @Column(name = "Standort")
     private String standort;
-    
-    @OneToMany(mappedBy = "raum")
-    private Set<Terminplan> terminplane;
-    
-    @OneToMany(mappedBy = "raum")
-    private Set<Lehrveranstaltung> lehrveranstaltungen;
 
     // Getters and Setters
 }
