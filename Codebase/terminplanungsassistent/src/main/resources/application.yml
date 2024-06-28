@@ -1,9 +1,0 @@
-app:
-  dataSource:
-    postgres:
-      port: 5432
-      username: swe
-      password: swe24
-      host: localhost
-      databaseName: postgres
-      jdbc-url: jdbc:postgresql://localhost:5432/postgres

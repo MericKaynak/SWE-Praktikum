@@ -1,0 +1,94 @@
+package com.backend.terminplanungsassitent.terminplanung;
+
+import java.util.List;
+
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.PutMapping;
+import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RestController;
+
+import com.backend.terminplanungsassitent.databaseClasses.BenachrichtigungRepository;
+import com.backend.terminplanungsassitent.databaseClasses.BesuchenRepository;
+import com.backend.terminplanungsassitent.databaseClasses.Lehrperson;
+import com.backend.terminplanungsassitent.databaseClasses.LehrpersonRepository;
+import com.backend.terminplanungsassitent.databaseClasses.Lehrveranstaltung;
+import com.backend.terminplanungsassitent.databaseClasses.LehrveranstaltungRepository;
+import com.backend.terminplanungsassitent.databaseClasses.RaumRepository;
+import com.backend.terminplanungsassitent.databaseClasses.StudentRepository;
+import com.backend.terminplanungsassitent.databaseClasses.TerminRepository;
+
+
+@RestController
+@RequestMapping("/terminplan")
+public class TerminplanController {
+
+    @Autowired
+    private TerminRepository terminRepository;
+
+    @Autowired
+    private StudentRepository studentRepository;
+
+    @Autowired
+    private LehrpersonRepository lehrpersonRepository;
+
+    @Autowired
+    private RaumRepository raumRepository;
+
+    @Autowired
+    private LehrveranstaltungRepository lehrveranstaltungRepository;
+
+    @Autowired
+    private BesuchenRepository besuchenRepository;
+
+    @Autowired
+    private BenachrichtigungRepository benachrichtigungRepository;
+
+
+    // --- REST METHODS ---
+
+    // POST LOGIN
+    @SuppressWarnings("null")
+    @PostMapping("/login")
+    public HttpStatus validateLogin(@RequestBody String requestBody) {
+        //TODO: implement validation logic
+
+        return HttpStatus.OK;
+    }
+
+
+    @GetMapping("/fetchlp/{id}")
+    public ResponseEntity<Lehrperson> findLP(@PathVariable Long id) {
+        Lehrperson lehrperson = lehrpersonRepository.findById(id).get();
+        
+        return new ResponseEntity<>(lehrperson, HttpStatus.OK);
+    }
+
+    // GET CALENDAR
+    @GetMapping("/fetch/{id}")
+    public ResponseEntity<List<Lehrveranstaltung>> find(@PathVariable Long id) {
+        Lehrperson lehrperson = lehrpersonRepository.findById(id).get();
+
+        List<Lehrveranstaltung> lehrveranstaltungsList = lehrveranstaltungRepository.findByLehrpersonId(id); 
+        
+        return new ResponseEntity<>(lehrveranstaltungsList, HttpStatus.OK);
+    }
+
+
+    // PUT AUSFALL MELDEN
+    @PutMapping("/notify")
+    public ResponseEntity<Lehrperson> putAusfall(@PathVariable Long id) {
+        
+        return null;
+    }
+
+
+    // // Falls noch Zeit: GET VERFÜGBARKEIT
+
+    //return new ResponseEntity<Termin>(terminRepository.findById(id).orElseThrow(() -> new TerminNotFoundException(id)), HttpStatus.NOT_FOUND);
+}
