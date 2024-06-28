@@ -1,4 +1,4 @@
-package com.terminplanung.exceptions;
+package com.exceptions;
 
 public class TerminNotFoundException extends RuntimeException {
 

@@ -1,4 +1,4 @@
-package com.terminplanung.databaseClasses;
+package com.databaseClasses;
 
 import jakarta.persistence.Entity;
 import jakarta.persistence.Id;

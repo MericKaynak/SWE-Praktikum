@@ -1,4 +1,4 @@
-package com.terminplanung.databaseClasses;
+package com.databaseClasses;
 
 import org.springframework.data.jpa.repository.JpaRepository;
 

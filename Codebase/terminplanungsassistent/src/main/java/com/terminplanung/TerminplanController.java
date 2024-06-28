@@ -1,4 +1,4 @@
-package com.terminplanung.terminplanungsassistent;
+package com.terminplanung;
 
 import java.util.List;
 
@@ -13,17 +13,17 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
-import com.terminplanung.databaseClasses.BenachrichtigungRepository;
-import com.terminplanung.databaseClasses.BesuchenRepository;
-import com.terminplanung.databaseClasses.Lehrperson;
-import com.terminplanung.databaseClasses.LehrpersonRepository;
-import com.terminplanung.databaseClasses.Lehrveranstaltung;
-import com.terminplanung.databaseClasses.LehrveranstaltungRepository;
-import com.terminplanung.databaseClasses.RaumRepository;
-import com.terminplanung.databaseClasses.StudentRepository;
-import com.terminplanung.databaseClasses.Termin;
-import com.terminplanung.databaseClasses.TerminRepository;
-import com.terminplanung.exceptions.TerminNotFoundException;
+import com.databaseClasses.BenachrichtigungRepository;
+import com.databaseClasses.BesuchenRepository;
+import com.databaseClasses.Lehrperson;
+import com.databaseClasses.LehrpersonRepository;
+import com.databaseClasses.Lehrveranstaltung;
+import com.databaseClasses.LehrveranstaltungRepository;
+import com.databaseClasses.RaumRepository;
+import com.databaseClasses.StudentRepository;
+import com.databaseClasses.Termin;
+import com.databaseClasses.TerminRepository;
+import com.exceptions.TerminNotFoundException;
 
 @RestController
 @RequestMapping("/terminplan")

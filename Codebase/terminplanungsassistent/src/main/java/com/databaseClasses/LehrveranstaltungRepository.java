@@ -1,4 +1,4 @@
-package com.terminplanung.databaseClasses;
+package com.databaseClasses;
 
 import java.util.List;
 
