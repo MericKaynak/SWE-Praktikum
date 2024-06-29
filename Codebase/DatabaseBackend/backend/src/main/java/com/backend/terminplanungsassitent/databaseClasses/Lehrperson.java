@@ -23,8 +23,8 @@ public class Lehrperson {
     @Column(name = "Rolle")
     private String rolle;
 
-    @Column(name = "Verfügbarkeit")
-    private String verfügbarkeit;
+    @Column(name = "Wochenarbeitsstunden")
+    private String Wochenarbeitsstunden;
 
     // Getters and Setters
 }

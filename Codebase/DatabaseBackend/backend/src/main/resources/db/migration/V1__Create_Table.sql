@@ -10,7 +10,7 @@ CREATE TABLE Lehrperson (
     Name VARCHAR(100),
     Email VARCHAR(100),
     Rolle VARCHAR(50),
-    Verfügbarkeit VARCHAR(100)
+    Wochenarbeitsstunden INT
 );
 
 CREATE TABLE Raum (

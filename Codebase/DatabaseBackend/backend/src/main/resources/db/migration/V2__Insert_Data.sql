@@ -4,9 +4,9 @@
 -- VALUES
 --      (4321, 1);
 
-INSERT INTO lehrperson (ID, Name, Email, Rolle, Verfügbarkeit)
+INSERT INTO lehrperson (ID, Name, Email, Rolle, Wochenarbeitsstunden)
 VALUES
-     (069, 'Jaman', 'jaman@stud.hn.de', 'Lehrer', 'ja');
+     (069, 'Jaman', 'jaman@stud.hn.de', 'Lehrer', 0);
 
 INSERT INTO raum (ID, Bezeichnung, Kapazität, Standort)
 VALUES 
