@@ -24,10 +24,6 @@ VALUES
      (2, 'F302', 200, 'Krefeld'),
      (3, 'B101', 200, 'Gladbach'),
 
-INSERT INTO termin (ID, Datum, Zeitraum_Start, Zeitraum_End, Raum_ID)
-VALUES
-    ;
-
 INSERT INTO lehrveranstaltung (ID, Titel, Fachbereich, Dauer, Raum_ID, Termin_ID, Lehrperson_ID)
 VALUES 
     (1, 'Kiffologie', 'FB69', 2, 1, NULL, NULL),
