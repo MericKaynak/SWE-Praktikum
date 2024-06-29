@@ -24,7 +24,7 @@ public class Lehrperson {
     private String rolle;
 
     @Column(name = "Wochenarbeitsstunden")
-    private String Wochenarbeitsstunden;
+    private Integer Wochenarbeitsstunden;
 
     // Getters and Setters
 }

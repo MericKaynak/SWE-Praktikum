@@ -64,15 +64,37 @@ public class TerminplanController {
     }
 
     // POST LERHPERSONZUTEILUNG
+    /**
+     * Maps Lehrpersonen to Lehrveranstaltung, taking into accout the working hour limit for Lehrperson for each week.
+     * 
+     * @return ResponseEntity containing all Lehrveranstaltung as JSON
+     * @throws LehrpersonNotFoundException
+     * @throws LehrveranstaltungNotFoundException
+     */
     @GetMapping("/createmapping")
     public ResponseEntity<List<Lehrveranstaltung>> createMapping() throws LehrpersonNotFoundException, LehrveranstaltungNotFoundException {
         List<Lehrveranstaltung> lehrveranstaltungList = lehrveranstaltungRepository.findAll();
+        List<Lehrperson> lehrpersonList = lehrpersonRepository.findAll();
+
+        int lehrpersonIndex = 0;
+
+        Lehrperson lehrperson = lehrpersonList.get(lehrpersonIndex);
 
         for (Lehrveranstaltung lehrveranstaltung : lehrveranstaltungList) {
+        
+            // ensure only LVs with no LP are updated 
             if(lehrveranstaltung.getLehrperson() == null) {
-                Lehrperson lehrperson = lehrpersonRepository.findById((long) 69)
-                    .orElseThrow(() -> new LehrpersonNotFoundException((long) 69));
+
+                // check if Lehrperson can be assigned
+                while (lehrperson.getWochenarbeitsstunden() >= 18) {
+                    if(++lehrpersonIndex >= lehrpersonList.size()) {
+                        throw new LehrpersonNotFoundException((long) lehrpersonIndex);
+                    }
+                    lehrperson = lehrpersonList.get(lehrpersonIndex);
+                }
+
                 lehrveranstaltung.setLehrperson(lehrperson);
+                lehrperson.setWochenarbeitsstunden(lehrperson.getWochenarbeitsstunden() + 2);
                 lehrveranstaltungRepository.save(lehrveranstaltung);
             }
         }
@@ -107,12 +129,7 @@ public class TerminplanController {
     // PUT AUSFALL MELDEN
     @PutMapping("/notify")
     public ResponseEntity<Lehrperson> putAusfall(@PathVariable Long id) {
-        
+        //TODO: Ausfall Logik implementieren
         return null;
     }
-
-
-    // // Falls noch Zeit: GET VERFÜGBARKEIT
-
-    //return new ResponseEntity<Termin>(terminRepository.findById(id).orElseThrow(() -> new TerminNotFoundException(id)), HttpStatus.NOT_FOUND);
 }
