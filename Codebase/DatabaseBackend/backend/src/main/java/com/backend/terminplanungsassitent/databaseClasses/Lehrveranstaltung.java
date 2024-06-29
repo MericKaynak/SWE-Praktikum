@@ -2,6 +2,9 @@ package com.backend.terminplanungsassitent.databaseClasses;
 
 import jakarta.persistence.Entity;
 import jakarta.persistence.Id;
+
+import com.backend.terminplanungsassitent.terminplanung.TimeComparison;
+
 import jakarta.persistence.Column;
 import jakarta.persistence.Table;
 import lombok.Data;
@@ -35,6 +38,19 @@ public class Lehrveranstaltung {
     @ManyToOne
     @JoinColumn(name = "Lehrperson_ID")
     private Lehrperson lehrperson;
+
+
+    public boolean checkTravelTimeConflict(Lehrveranstaltung lehrveranstaltung) {
+        return ((this.getRaum().getStandort() != lehrveranstaltung.getRaum().getStandort()) && 
+            (TimeComparison
+            .areTimesWithinTwoHours(lehrveranstaltung.getTermin().getZeitraumStart(), this.getTermin().getZeitraumEnd())
+            || TimeComparison
+                .areTimesWithinTwoHours(lehrveranstaltung.getTermin().getZeitraumEnd(), this.getTermin().getZeitraumStart())));
+    }
+
+    public boolean checkSameLehrperson(Lehrveranstaltung lehrveranstaltung) {
+        return this.getLehrperson() == lehrveranstaltung.getLehrperson();
+    }
 
     // Getters and Setters
 }
