@@ -63,6 +63,31 @@ public class TerminplanController {
         return HttpStatus.OK;
     }
 
+    // POST LERHPERSONZUTEILUNG
+    @GetMapping("/createmapping")
+    public ResponseEntity<List<Lehrveranstaltung>> createMapping() throws LehrpersonNotFoundException, LehrveranstaltungNotFoundException {
+        List<Lehrveranstaltung> lehrveranstaltungList = lehrveranstaltungRepository.findAll();
+
+        for (Lehrveranstaltung lehrveranstaltung : lehrveranstaltungList) {
+            if(lehrveranstaltung.getLehrperson() == null) {
+                Lehrperson lehrperson = lehrpersonRepository.findById((long) 69)
+                    .orElseThrow(() -> new LehrpersonNotFoundException((long) 69));
+                lehrveranstaltung.setLehrperson(lehrperson);
+                lehrveranstaltungRepository.save(lehrveranstaltung);
+            }
+        }
+
+        return new ResponseEntity<>(lehrveranstaltungList, HttpStatus.OK);
+    }
+
+
+    // READ LIST OF ALL LEHRPERSON
+    @GetMapping("/fetchAllLp")
+    public ResponseEntity<List<Lehrperson>> fetchAllLehrpersonen() throws LehrpersonNotFoundException {
+        List<Lehrperson> lehrpersonList = lehrpersonRepository.findAll();
+
+        return new ResponseEntity<>(lehrpersonList, HttpStatus.OK);
+    }
 
     @GetMapping("/fetchlp/{id}")
     public ResponseEntity<Lehrperson> findLP(@PathVariable Long id) throws LehrpersonNotFoundException {
