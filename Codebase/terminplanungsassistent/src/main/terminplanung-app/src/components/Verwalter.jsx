@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import Paper from '@mui/material/Paper';
 import { ViewState, EditingState } from '@devexpress/dx-react-scheduler';
 import {
@@ -11,15 +11,13 @@ import {
   AllDayPanel,
   ConfirmationDialog,
 } from '@devexpress/dx-react-scheduler-material-ui';
-import { MenuItem, Select, FormControl, InputLabel, Grid, Button } from '@mui/material';
+import { MenuItem, Select, FormControl, InputLabel, Grid } from '@mui/material';
 import { useNavigate } from 'react-router-dom';
-import LoginModal from './LoginModal'; // Import the LoginModal component
-
 
 const getMonday = (date) => {
   date = new Date(date);
   const day = date.getDay(),
-    diff = date.getDate() - day + (day === 0 ? -6 : 1);
+        diff = date.getDate() - day + (day === 0 ? -6 : 1);
   return new Date(date.setDate(diff));
 };
 
@@ -30,7 +28,7 @@ const generateWeeks = () => {
 
   for (let i = -12; i <= 12; i++) {
     const weekStart = new Date(currentMonday);
-    weekStart.setDate(currentMonday.getDate() + i * 7);
+    weekStart.setDate(currentMonday.getDate() + (i * 7));
     weeks.push(weekStart.toISOString().split('T')[0]);
   }
 
@@ -40,22 +38,22 @@ const generateWeeks = () => {
 const appointmentData = [
   {
     id: 1,
-    title: 'Kiffologie',
-    startDate: new Date('2024-06-24T08:00:00'),
-    endDate: new Date('2024-06-24T10:00:00'),
-    location: 'F303, Krefeld',
+    title: "Kiffologie",
+    startDate: new Date("2024-06-24T08:00:00"),
+    endDate: new Date("2024-06-24T10:00:00"),
+    location: "F303, Krefeld",
     professorId: 69,
-    professorName: 'Jaman',
+    professorName: "Jaman"
   },
   {
     id: 2,
-    title: 'ET2',
-    startDate: new Date('2024-06-24T10:00:00'),
-    endDate: new Date('2024-06-24T12:00:00'),
-    location: 'F303, Krefeld',
+    title: "ET2",
+    startDate: new Date("2024-06-24T10:00:00"),
+    endDate: new Date("2024-06-24T12:00:00"),
+    location: "F303, Krefeld",
     professorId: 69,
-    professorName: 'Jaman',
-  },
+    professorName: "Jaman"
+  }
 ];
 
 const professors = [
@@ -71,19 +69,10 @@ const Verwalter = () => {
   const [addedAppointment, setAddedAppointment] = useState({});
   const [appointmentChanges, setAppointmentChanges] = useState({});
   const [editingAppointment, setEditingAppointment] = useState(undefined);
-  const [weeks, setWeeks] = useState(generateWeeks());
+  const [weeks, setWeeks] = useState(generateWeeks);
   const [selectedUser, setSelectedUser] = useState('');
   const [userType, setUserType] = useState('Professor'); // Set initial userType to 'Professor'
-  const [showLoginModal, setShowLoginModal] = useState(false); // State to control login modal visibility
   const navigate = useNavigate();
-
-  const handleLoginClose = () => {
-    setShowLoginModal(false);
-  };
-
-  const handleLoginOpen = () => {
-    setShowLoginModal(true);
-  };
 
   const commitChanges = ({ added, changed, deleted }) => {
     setAppointments((prevAppointments) => {
@@ -93,12 +82,11 @@ const Verwalter = () => {
         data = [...data, { id: startingAddedId, ...added }];
       }
       if (changed) {
-        data = data.map((appointment) =>
-          changed[appointment.id] ? { ...appointment, ...changed[appointment.id] } : appointment
-        );
+        data = data.map(appointment => (
+          changed[appointment.id] ? { ...appointment, ...changed[appointment.id] } : appointment));
       }
       if (deleted !== undefined) {
-        data = data.filter((appointment) => appointment.id !== deleted);
+        data = data.filter(appointment => appointment.id !== deleted);
       }
       return data;
     });
@@ -111,7 +99,7 @@ const Verwalter = () => {
   const handleUserChange = (event) => {
     setSelectedUser(event.target.value);
     // Filter appointments based on selected user
-    const filteredAppointments = appointmentData.filter((app) => app.professorId === event.target.value);
+    const filteredAppointments = appointmentData.filter(app => app.professorId === event.target.value);
     setAppointments(filteredAppointments);
   };
 
@@ -123,7 +111,11 @@ const Verwalter = () => {
         <Grid item xs={4}>
           <FormControl fullWidth>
             <InputLabel id="week-select-label">Woche</InputLabel>
-            <Select labelId="week-select-label" value={currentDate} onChange={handleWeekChange}>
+            <Select
+              labelId="week-select-label"
+              value={currentDate}
+              onChange={handleWeekChange}
+            >
               {weeks.map((week) => (
                 <MenuItem key={week} value={week}>
                   {week}
@@ -135,7 +127,11 @@ const Verwalter = () => {
         <Grid item xs={8}>
           <FormControl fullWidth>
             <InputLabel id="user-select-label">Lehrperson</InputLabel>
-            <Select labelId="user-select-label" value={selectedUser} onChange={handleUserChange}>
+            <Select
+              labelId="user-select-label"
+              value={selectedUser}
+              onChange={handleUserChange}
+            >
               {professors.map((professor) => (
                 <MenuItem key={professor.id} value={professor.id}>
                   {professor.name}
@@ -145,8 +141,14 @@ const Verwalter = () => {
           </FormControl>
         </Grid>
       </Grid>
-      <DxScheduler data={appointments} height={660}>
-        <ViewState currentDate={currentDate} onCurrentDateChange={setCurrentDate} />
+      <DxScheduler
+        data={appointments}
+        height={800}
+      >
+        <ViewState
+          currentDate={currentDate}
+          onCurrentDateChange={setCurrentDate}
+        />
         <EditingState
           onCommitChanges={commitChanges}
           addedAppointment={addedAppointment}
@@ -156,20 +158,20 @@ const Verwalter = () => {
           editingAppointment={editingAppointment}
           onEditingAppointmentChange={setEditingAppointment}
         />
-        <WeekView startDayHour={8} endDayHour={20} />
+        <WeekView
+          startDayHour={8}
+          endDayHour={20}
+        />
         <AllDayPanel />
         <EditRecurrenceMenu />
         <ConfirmationDialog />
         <Appointments />
-        <AppointmentTooltip showOpenButton showDeleteButton />
+        <AppointmentTooltip
+          showOpenButton
+          showDeleteButton
+        />
         <DxAppointmentForm />
       </DxScheduler>
-
-      <Button variant="contained" color="primary" onClick={handleLoginOpen}>
-        Login
-      </Button>
-
-      <LoginModal isOpen={showLoginModal} onRequestClose={handleLoginClose} />
     </Paper>
   );
 };
