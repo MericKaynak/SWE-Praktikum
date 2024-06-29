@@ -22,11 +22,12 @@ CREATE TABLE Raum (
 
 CREATE TABLE Termin(
     ID INT PRIMARY KEY,
-    Datum DATE,
+    Wochentag VARCHAR(100),
     Zeitraum_Start TIME,
     Zeitraum_End TIME,
     Raum_ID INT,
-    FOREIGN KEY (Raum_ID) REFERENCES Raum(ID)
+    FOREIGN KEY (Raum_ID) REFERENCES Raum(ID),
+    CONSTRAINT Unique_Termin UNIQUE (Wochentag, Zeitraum_Start, Zeitraum_End, Raum_ID)
 );
 
 CREATE TABLE Lehrveranstaltung (

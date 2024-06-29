@@ -7,7 +7,6 @@ import jakarta.persistence.Table;
 import lombok.Data;
 import jakarta.persistence.ManyToOne;
 import jakarta.persistence.JoinColumn;
-import java.time.LocalDate;
 import java.time.LocalTime;
 
 @Data
@@ -18,7 +17,7 @@ public class Termin {
     private Integer id;
 
     @Column(name = "Datum")
-    private LocalDate datum;
+    private String Wochentag;
 
     @Column(name = "Zeitraum_Start")
     private LocalTime zeitraumStart;
