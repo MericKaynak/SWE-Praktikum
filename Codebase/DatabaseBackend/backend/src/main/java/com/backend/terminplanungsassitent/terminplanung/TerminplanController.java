@@ -23,6 +23,8 @@ import com.backend.terminplanungsassitent.databaseClasses.RaumRepository;
 import com.backend.terminplanungsassitent.databaseClasses.StudentRepository;
 import com.backend.terminplanungsassitent.databaseClasses.TerminRepository;
 
+import com.backend.terminplanungsassitent.exceptions.LehrpersonNotFoundException;
+import com.backend.terminplanungsassitent.exceptions.LehrveranstaltungNotFoundException;
 
 @RestController
 @RequestMapping("/terminplan")
@@ -63,17 +65,14 @@ public class TerminplanController {
 
 
     @GetMapping("/fetchlp/{id}")
-    public ResponseEntity<Lehrperson> findLP(@PathVariable Long id) {
-        Lehrperson lehrperson = lehrpersonRepository.findById(id).get();
-        
-        return new ResponseEntity<>(lehrperson, HttpStatus.OK);
+    public ResponseEntity<Lehrperson> findLP(@PathVariable Long id) throws LehrpersonNotFoundException {
+        return new ResponseEntity<Lehrperson>(lehrpersonRepository.findById(id)
+        .orElseThrow(() -> new LehrpersonNotFoundException(id)), HttpStatus.OK);
     }
 
     // GET CALENDAR
     @GetMapping("/fetch/{id}")
-    public ResponseEntity<List<Lehrveranstaltung>> find(@PathVariable Long id) {
-        Lehrperson lehrperson = lehrpersonRepository.findById(id).get();
-
+    public ResponseEntity<List<Lehrveranstaltung>> find(@PathVariable Long id) throws LehrveranstaltungNotFoundException {
         List<Lehrveranstaltung> lehrveranstaltungsList = lehrveranstaltungRepository.findByLehrpersonId(id); 
         
         return new ResponseEntity<>(lehrveranstaltungsList, HttpStatus.OK);

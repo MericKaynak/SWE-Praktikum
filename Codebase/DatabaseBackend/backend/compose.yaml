@@ -8,7 +8,7 @@ services:
     environment:
       POSTGRES_DB: location_db
       POSTGRES_USER: vision
-      POSTGRES_PASSWORD: password123
+      POSTGRES_PASSWORD: passwort123
     ports:
       - "8090:5432"
     volumes:

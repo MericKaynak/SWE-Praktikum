@@ -4,9 +4,11 @@ import jakarta.persistence.Entity;
 import jakarta.persistence.Id;
 import jakarta.persistence.Column;
 import jakarta.persistence.Table;
+import lombok.Data;
 import jakarta.persistence.ManyToOne;
 import jakarta.persistence.JoinColumn;
 
+@Data
 @Entity
 @Table(name = "Benachrichtigung")
 public class Benachrichtigung {
