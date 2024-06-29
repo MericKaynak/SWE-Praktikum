@@ -12,6 +12,6 @@ public interface LehrveranstaltungRepository extends JpaRepository<Lehrveranstal
     public Lehrveranstaltung findByLehrperson(Lehrperson lehrperson);
    
     @Query("SELECT lv FROM Lehrveranstaltung lv WHERE lv.lehrperson.id = :lehrpersonId")
-    List<Lehrveranstaltung> findByLehrpersonId(@Param("lehrpersonId") Long lehrpersonId);
+    List<Lehrveranstaltung> findByLehrpersonId(@Param("lehrpersonId") Integer integer);
 
 }

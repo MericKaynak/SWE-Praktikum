@@ -26,6 +26,8 @@ import com.backend.terminplanungsassitent.databaseClasses.TerminRepository;
 import com.backend.terminplanungsassitent.exceptions.LehrpersonNotFoundException;
 import com.backend.terminplanungsassitent.exceptions.LehrveranstaltungNotFoundException;
 
+import com.backend.terminplanungsassitent.terminplanung.TimeComparison;
+
 @RestController
 @RequestMapping("/terminplan")
 public class TerminplanController {
@@ -63,9 +65,9 @@ public class TerminplanController {
         return HttpStatus.OK;
     }
 
-    // POST LERHPERSONZUTEILUNG
+    // POST LEHRPERSONZUTEILUNG
     /**
-     * Maps Lehrpersonen to Lehrveranstaltung, taking into accout the working hour limit for Lehrperson for each week.
+     * Maps Lehrpersonen to Lehrveranstaltung, taking into account the per week working hour limit for Lehrperson.
      * 
      * @return ResponseEntity containing all Lehrveranstaltung as JSON
      * @throws LehrpersonNotFoundException
@@ -77,6 +79,7 @@ public class TerminplanController {
         List<Lehrperson> lehrpersonList = lehrpersonRepository.findAll();
 
         int lehrpersonIndex = 0;
+        int i = 0;
 
         Lehrperson lehrperson = lehrpersonList.get(lehrpersonIndex);
 
@@ -86,24 +89,65 @@ public class TerminplanController {
             if(lehrveranstaltung.getLehrperson() == null) {
 
                 // check if Lehrperson can be assigned
-                while (lehrperson.getWochenarbeitsstunden() >= 18) {
+                while (lehrperson.istVerfuegbar()) {
                     if(++lehrpersonIndex >= lehrpersonList.size()) {
                         throw new LehrpersonNotFoundException((long) lehrpersonIndex);
                     }
+                    lehrpersonRepository.save(lehrperson);
                     lehrperson = lehrpersonList.get(lehrpersonIndex);
                 }
 
+                List<Lehrveranstaltung> lehrpersonLVList = lehrveranstaltungRepository.findByLehrpersonId(lehrperson.getId());
+
+                // check if Lehrveranstaltung Termin is in same timeslot as other Lehrveranstaltung for this Lehrperson
+                for (Lehrveranstaltung lehrpersonLV : lehrpersonLVList) {
+                    if (lehrpersonLV.getTermin().getDatum() == lehrveranstaltung.getTermin().getDatum() 
+                    && lehrpersonLV.getTermin().getZeitraumStart() == lehrveranstaltung.getTermin().getZeitraumStart()) {
+                        // solve conflict for same timeslot
+                        while (lehrpersonIndex < lehrpersonList.size() && !lehrpersonList.get(lehrpersonIndex + i).istVerfuegbar()) {
+                            i++;
+                        }
+                        lehrveranstaltung.setLehrperson(lehrpersonList.get(lehrpersonIndex + i));
+                        i = 1;
+                    }
+                }
+
+                // check if Lehrveranstaltung Termin is in different locations
+                for (Lehrveranstaltung lehrpersonLV : lehrpersonLVList) {
+                    if(lehrpersonLV.getRaum().getStandort() != lehrveranstaltung.getRaum().getStandort()) {
+                        if(lehrpersonLV.getTermin().getDatum() == lehrveranstaltung.getTermin().getDatum() 
+                        && (TimeComparison.areTimesWithinTwoHours(lehrpersonLV.getTermin().getZeitraumEnd(), lehrveranstaltung.getTermin().getZeitraumStart()) 
+                             || TimeComparison.areTimesWithinTwoHours(lehrpersonLV.getTermin().getZeitraumStart(), lehrveranstaltung.getTermin().getZeitraumEnd()))
+                             ) {
+                                // solve conflict for being within 2 hours
+                        }
+
+                    }
+                }
+
+
+                // assign Lehrperson to Lehrveranstaltung & update Wochenarbeitsstunden
                 lehrveranstaltung.setLehrperson(lehrperson);
-                lehrperson.setWochenarbeitsstunden(lehrperson.getWochenarbeitsstunden() + 2);
                 lehrveranstaltungRepository.save(lehrveranstaltung);
+                lehrperson.setWochenarbeitsstunden(lehrperson.getWochenarbeitsstunden() + 2);
             }
         }
 
         return new ResponseEntity<>(lehrveranstaltungList, HttpStatus.OK);
     }
 
+    private Lehrperson findAvailableLehrperson(Lehrveranstaltung lehrveranstaltung) {
+        List<Lehrperson> lehrpersonList = lehrpersonRepository.findAll();
 
-    // READ LIST OF ALL LEHRPERSON
+        for (Lehrperson lehrperson : lehrpersonList) {
+            
+        }
+
+        return null;
+    }
+
+
+    // GET LIST OF ALL LEHRPERSONEN
     @GetMapping("/fetchAllLp")
     public ResponseEntity<List<Lehrperson>> fetchAllLehrpersonen() throws LehrpersonNotFoundException {
         List<Lehrperson> lehrpersonList = lehrpersonRepository.findAll();
@@ -111,15 +155,16 @@ public class TerminplanController {
         return new ResponseEntity<>(lehrpersonList, HttpStatus.OK);
     }
 
+    // GET LEHRPERSON BY ID
     @GetMapping("/fetchlp/{id}")
     public ResponseEntity<Lehrperson> findLP(@PathVariable Long id) throws LehrpersonNotFoundException {
         return new ResponseEntity<Lehrperson>(lehrpersonRepository.findById(id)
         .orElseThrow(() -> new LehrpersonNotFoundException(id)), HttpStatus.OK);
     }
 
-    // GET CALENDAR
+    // GET CALENDAR DATA FOR LEHRPERSON
     @GetMapping("/fetch/{id}")
-    public ResponseEntity<List<Lehrveranstaltung>> find(@PathVariable Long id) throws LehrveranstaltungNotFoundException {
+    public ResponseEntity<List<Lehrveranstaltung>> find(@PathVariable Integer id) throws LehrveranstaltungNotFoundException {
         List<Lehrveranstaltung> lehrveranstaltungsList = lehrveranstaltungRepository.findByLehrpersonId(id); 
         
         return new ResponseEntity<>(lehrveranstaltungsList, HttpStatus.OK);

@@ -26,5 +26,9 @@ public class Lehrperson {
     @Column(name = "Wochenarbeitsstunden")
     private Integer Wochenarbeitsstunden;
 
+    public boolean istVerfuegbar() {
+            return this.getWochenarbeitsstunden() >= 18;
+    }
+
     // Getters and Setters
 }
