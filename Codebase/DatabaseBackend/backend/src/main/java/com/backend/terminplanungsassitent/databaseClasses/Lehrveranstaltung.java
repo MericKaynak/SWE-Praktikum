@@ -39,6 +39,14 @@ public class Lehrveranstaltung {
         @JoinColumn(name = "Lehrperson_ID")
         private Lehrperson lehrperson;
 
+        /**
+         * If the Standort of the calling object is different from the passed object,
+         * check whether the passed object has a Termin that happens within 2 hours of
+         * the calling object's Termin.
+         * 
+         * @param lehrveranstaltung
+         * @return
+         */
         public boolean checkTravelTimeConflict(Lehrveranstaltung lehrveranstaltung) {
                 return ((this.getRaum().getStandort() != lehrveranstaltung.getRaum().getStandort()) &&
                                 this.getTermin().getWochentag() == lehrveranstaltung.getTermin().getWochentag() &&
@@ -53,6 +61,14 @@ public class Lehrveranstaltung {
                                                                                 this.getTermin().getZeitraumStart())));
         }
 
+        /**
+         * Check whether the Lehrperson for passed Lehrveranstaltung is the same as the
+         * calling object's.
+         * 
+         * @param lehrveranstaltung
+         * @param lehrperson
+         * @return true if same Lehrperson
+         */
         public boolean checkSameLehrperson(Lehrveranstaltung lehrveranstaltung, Lehrperson lehrperson) {
                 return lehrperson == lehrveranstaltung.getLehrperson();
         }

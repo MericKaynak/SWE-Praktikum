@@ -1,3 +1,5 @@
+-- FÜR TESTZWECKE, NICHT ALS FLYWAY ANWEISUNG
+
 DROP TABLE Student, Lehrperson,Raum,Termin,Lehrveranstaltung, Besuchen,Benachrichtigung,Verwalter CASCADE;
 
 CREATE TABLE Student (

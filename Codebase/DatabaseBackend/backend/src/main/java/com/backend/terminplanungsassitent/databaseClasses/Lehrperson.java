@@ -1,6 +1,5 @@
 package com.backend.terminplanungsassitent.databaseClasses;
 
-
 import jakarta.persistence.Entity;
 import jakarta.persistence.Id;
 import jakarta.persistence.Column;
@@ -26,8 +25,13 @@ public class Lehrperson {
     @Column(name = "Wochenarbeitsstunden")
     private Integer Wochenarbeitsstunden;
 
+    /**
+     * Check if the Lehrperson works 18 hours or more.
+     * 
+     * @return true if yes
+     */
     public boolean istVerfuegbar() {
-            return this.getWochenarbeitsstunden() >= 18;
+        return this.getWochenarbeitsstunden() <= 18;
     }
 
     // Getters and Setters

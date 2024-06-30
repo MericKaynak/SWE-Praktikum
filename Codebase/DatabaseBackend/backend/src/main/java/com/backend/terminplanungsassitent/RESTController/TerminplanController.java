@@ -42,19 +42,6 @@ public class TerminplanController {
     @Autowired
     private DataSource dataSource;
 
-    @PostMapping("/reset")
-    @PostConstruct
-    public void executeSqlFiles() {
-        ResourceDatabasePopulator resourceDatabasePopulator = new ResourceDatabasePopulator();
-        resourceDatabasePopulator.addScript(
-                new ClassPathResource(
-                        "db\\migration\\V2_Deployment.sql"));
-        resourceDatabasePopulator.addScript(
-                new ClassPathResource(
-                        "db\\migration\\V2__Insert_Data.sql"));
-        resourceDatabasePopulator.execute(dataSource);
-    }
-
     @Autowired
     private TerminRepository terminRepository;
 
@@ -78,6 +65,29 @@ public class TerminplanController {
 
     // --- REST METHODS ---
 
+    /**
+     * TEST FUNCTION ONLY - Resets the database to a clean slate. Database must be
+     * cleaned or else a Flyway checksum error fails next start of Application.
+     */
+    @PostMapping("/reset")
+    @PostConstruct
+    public void executeSqlFiles() {
+        ResourceDatabasePopulator resourceDatabasePopulator = new ResourceDatabasePopulator();
+        resourceDatabasePopulator.addScript(
+                new ClassPathResource(
+                        "db\\migration\\V2_Deployment.sql"));
+        resourceDatabasePopulator.addScript(
+                new ClassPathResource(
+                        "db\\migration\\V2__Insert_Data.sql"));
+        resourceDatabasePopulator.execute(dataSource);
+    }
+
+    /**
+     * Handles login requests.
+     * 
+     * @param requestBody
+     * @return
+     */
     // POST LOGIN
     @SuppressWarnings("null")
     @PostMapping("/login")
@@ -87,6 +97,28 @@ public class TerminplanController {
         return HttpStatus.OK;
     }
 
+    /**
+     * Creates a Lehrperson in the database.
+     * 
+     * @param lehrperson
+     * @return
+     */
+    // POST CREATE LEHRPERSON
+    @SuppressWarnings("null")
+    @PostMapping("/createLehrperson")
+    public ResponseEntity<Lehrperson> createLehrperson(@RequestBody Lehrperson lehrperson) {
+        lehrpersonRepository.save(lehrperson);
+        return new ResponseEntity<>(lehrperson, HttpStatus.OK);
+    }
+
+    /**
+     * Creates the mapping of Termin, Raum, and Lehrperson to Lehrveranstaltung, in
+     * that order.
+     * 
+     * @return
+     * @throws LehrpersonNotFoundException
+     * @throws LehrveranstaltungNotFoundException
+     */
     @GetMapping("/createmapping")
     public ResponseEntity<List<Lehrveranstaltung>> createMapping()
             throws LehrpersonNotFoundException, LehrveranstaltungNotFoundException {
@@ -100,8 +132,6 @@ public class TerminplanController {
             e.printStackTrace();
             System.out.println(e);
         }
-
-        System.out.println("List creation ok");
 
         lehrveranstaltungList = assignTermine(lehrveranstaltungList);
         lehrveranstaltungRepository.saveAll(lehrveranstaltungList);
@@ -117,6 +147,12 @@ public class TerminplanController {
         return null;
     }
 
+    /**
+     * Assigns a Termin to every Lehrveranstaltung.
+     * 
+     * @param lehrveranstaltungList
+     * @return
+     */
     private List<Lehrveranstaltung> assignTermine(List<Lehrveranstaltung> lehrveranstaltungList) {
         List<Termin> terminList = terminRepository.findAll();
         int terminIndex = 0;
@@ -130,6 +166,12 @@ public class TerminplanController {
         return lehrveranstaltungList;
     }
 
+    /**
+     * Assigns a Raum to every Lehrveranstaltung.
+     * 
+     * @param lehrveranstaltungList
+     * @return
+     */
     private List<Lehrveranstaltung> assignRaeume(List<Lehrveranstaltung> lehrveranstaltungList) {
         List<Raum> raumList = raumRepository.findAll();
         int raumIndex = 0;
@@ -143,8 +185,19 @@ public class TerminplanController {
         return lehrveranstaltungList;
     }
 
+    /**
+     * Assigns the pool of Lehrpersonen to Lehrveranstaltung, checking for time and
+     * travel conflicts while making sure no Lehrperson receives more than 18
+     * Wochenstunden.
+     * Throws an exception if the list of Lehrveranstaltungen is empty.
+     * Throws an exception if there aren't enough Lehrpersonen to assign one to
+     * every Lehrveranstaltung.
+     * 
+     * @param lehrveranstaltungList
+     * @throws LehrveranstaltungNotFoundException, LehrpersonNotFoundException
+     */
     private void assignLehrpersonen(List<Lehrveranstaltung> lehrveranstaltungList)
-            throws LehrveranstaltungNotFoundException {
+            throws LehrveranstaltungNotFoundException, LehrpersonNotFoundException {
         List<Lehrperson> lehrpersonList = lehrpersonRepository.findAll();
         List<Lehrveranstaltung> elementsToRemove = new ArrayList<>();
 
@@ -159,15 +212,12 @@ public class TerminplanController {
         }
         try {
             while (!lehrveranstaltungList.isEmpty()) {
-                System.out.println("while loop entry ok");
-
                 // assign Lehrpersonen to Lehrveranstaltung
                 for (Lehrveranstaltung lehrveranstaltung : lehrveranstaltungList) {
                     Lehrperson lehrperson = lehrpersonList.get(lehrpersonIndex);
 
-                    // check if Lehrperson can be assigned
-                    while (lehrperson.istVerfuegbar()) {
-                        System.out.println("next Lehrperson:" + lehrpersonIndex + " @ " + lehrveranstaltung.getTitel());
+                    // check if Lehrperson can be assigned & get next if not
+                    while (!lehrperson.istVerfuegbar()) {
                         if (++lehrpersonIndex >= lehrpersonList.size()) {
                             throw new LehrpersonNotFoundException((long) lehrpersonIndex);
                         }
@@ -192,6 +242,16 @@ public class TerminplanController {
         }
     }
 
+    /**
+     * Checks for two conditions: 1. would the Lehrperson be assigned to two
+     * Lehrveranstaltung happening at the same time?
+     * 2. Does the Lehrperson have 2 hours to travel to a new location if the
+     * Standort is in a different?
+     * 
+     * @param lehrveranstaltung
+     * @param lehrperson
+     * @return false if either condition is fails
+     */
     private boolean conditionChecks(Lehrveranstaltung lehrveranstaltung, Lehrperson lehrperson) {
 
         // check if Lehrperson is same as Lehrperson for LV with same timeslot

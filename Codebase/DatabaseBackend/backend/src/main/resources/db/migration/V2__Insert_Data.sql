@@ -54,8 +54,6 @@ VALUES
     (45, 'Sir Gawain', 'sir.gawain@hs-niederrhein.de', 'Professor', 0),
     (46, 'Guinevere', 'guinevere@hs-niederrhein.de', 'Professor', 0);
 
-
-
 INSERT INTO raum (ID, Bezeichnung, Kapazitaet, Standort)
 VALUES 
      (1, 'F303', 200, 'Krefeld'),
