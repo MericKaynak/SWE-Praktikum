@@ -21,7 +21,7 @@
   padding: 15px;
   margin: 10px auto;
   font-size: 18px;
-  background-color: #4CAF50;
+  background-color: #007BFF;
   color: white;
   border: none;
   border-radius: 5px;
@@ -30,8 +30,7 @@
 }
 
 .home-button:hover {
-  background-color: #007BFF;
-  transform: scale(1.05);
+  transform: scale(1.1);
 }
 
 .home-button a {

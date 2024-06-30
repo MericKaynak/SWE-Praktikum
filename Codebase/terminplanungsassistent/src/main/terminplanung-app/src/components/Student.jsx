@@ -37,7 +37,6 @@ const generateWeeks = () => {
   return weeks;
 };
 
-
 const Student = () => {
   const [appointments, setAppointments] = useState([]);
   const [currentDate, setCurrentDate] = useState(getMonday(new Date()).toISOString().split('T')[0]);
@@ -46,6 +45,7 @@ const Student = () => {
   const [editingAppointment, setEditingAppointment] = useState(undefined);
   const [weeks, setWeeks] = useState(generateWeeks());
   const [showLoginModal, setShowLoginModal] = useState(false);
+  const [loginError, setLoginError] = useState('');
   const navigate = useNavigate();
 
   useEffect(() => {
@@ -63,9 +63,20 @@ const Student = () => {
     setShowLoginModal(true);
   };
 
-  const handleLogin = () => {
-    setShowLoginModal(false);
-    // You can add logic to fetch student-specific appointments here
+  const sendLogin = async (email, password) => {
+    if (!email.endsWith('@stud.hn.de')) {
+      setLoginError('Email must end with @stud.hn.de');
+      return;
+    }
+    console.log("Email ist ok",email)
+    try {
+      const response = await axios.post('http://localhost:8080/terminplan/login', {email, password});
+      localStorage.setItem('token', response.data.token);
+      localStorage.setItem('loginTimestamp', new Date().getTime());
+      setShowLoginModal(false)
+    } catch (error) {
+      console.error('Login failed', error);
+    }
   };
 
   const commitChanges = ({ added, changed, deleted }) => {
@@ -106,7 +117,7 @@ const Student = () => {
           </Button>
         </Toolbar>
       </AppBar>
-      <LoginModal open={showLoginModal} onClose={handleLoginClose} onLogin={handleLogin} />
+      <LoginModal open={showLoginModal} onLogin={sendLogin} onClose={handleLoginClose} loginError={loginError} />
       <div style={{ flexGrow: 1 }}>
         <Paper style={{ height: '100%' }}>
           <Grid container spacing={2} alignItems="center" style={{ padding: '16px' }}>
@@ -139,7 +150,7 @@ const Student = () => {
             <EditRecurrenceMenu />
             <ConfirmationDialog />
             <Appointments />
-            <AppointmentTooltip/>
+            <AppointmentTooltip />
             <DxAppointmentForm />
           </DxScheduler>
         </Paper>

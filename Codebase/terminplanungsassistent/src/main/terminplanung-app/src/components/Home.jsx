@@ -6,9 +6,9 @@ function Home() {
     <div className="home-container">
         <div className="home-content">
             <h2>Willkommen!</h2>
-            <button className="home-button"><a href="/student">Studenten Pläne</a></button>
             <button className="home-button"><a href="/lehrpersonen">Lehrpersonen Pläne</a></button>
-            <button className="home-button"><a href="/verwalter">Verwaltung</a></button>
+            <button className="home-button"><a href="/student">Studenten Login</a></button>
+            <button className="home-button"><a href="/verwaltunghome">Verwaltung Login</a></button>
         </div>
     </div>
   );

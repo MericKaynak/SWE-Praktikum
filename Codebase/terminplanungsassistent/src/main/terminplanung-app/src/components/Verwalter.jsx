@@ -128,10 +128,21 @@ const Verwalter = () => {
     setShowLoginModal(true);
   };
 
-  const handleLogin = () => {
-    setShowLoginModal(false);
-    // You can add logic to fetch student-specific appointments here
-  };
+  const sendLogin = async (email, password) => {
+      if (!email.endsWith('@stud.hn.de')) {
+        console.error('Email must end with @hs-niederrhein.de');
+        return;
+      }
+      console.log("Email ist ok",email)
+      try {
+        const response = await axios.post('http://localhost:8080/terminplan/login', {email, password});
+        localStorage.setItem('token', response.data.token);
+        localStorage.setItem('loginTimestamp', new Date().getTime());
+        setShowLoginModal(false)
+      } catch (error) {
+        console.error('Login failed', error);
+      }
+    };
 
 
   const commitChanges = ({ added, changed, deleted }) => {
@@ -178,7 +189,7 @@ const Verwalter = () => {
           </Button>
         </Toolbar>
       </AppBar>
-      <LoginModal open={showLoginModal} onClose={handleLoginClose} onLogin={handleLogin} />
+      <LoginModal open={showLoginModal} onClose={handleLoginClose} onLogin={sendLogin} />
       <div style={{ flexGrow: 1 }}>
         <Paper style={{ height: '100%' }}>
           <Grid container spacing={2} alignItems="center" style={{ padding: '16px' }}>

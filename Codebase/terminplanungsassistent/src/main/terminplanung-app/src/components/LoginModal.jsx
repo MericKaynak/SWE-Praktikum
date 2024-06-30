@@ -7,14 +7,7 @@ const LoginModal = ({ open, onClose, onLogin }) => {
   const [password, setPassword] = useState('');
 
   const handleLogin = async () => {
-    try {
-      const response = await axios.post('/terminplan/login', { email, password });
-      localStorage.setItem('token', response.data.token);
-      localStorage.setItem('loginTimestamp', new Date().getTime());
-      onLogin();
-    } catch (error) {
-      console.error('Login failed', error);
-    }
+    onLogin(email,password)
   };
 
   return (
