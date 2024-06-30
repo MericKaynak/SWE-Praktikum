@@ -1,8 +1,10 @@
 import React, { useEffect } from 'react';
 import { useNavigate, Route, Routes } from 'react-router-dom';
-import Login from './components/Login';
-import Scheduler from './components/Scheduler';
+import Scheduler from './components/Student.jsx';
 import Verwalter from "./components/Verwalter.jsx";
+import Home from "./components/Home.jsx";
+import Student from "./components/Student.jsx";
+import Lehrpersonen from "./components/Lerpersonen.jsx";
 function App() {
   const navigate = useNavigate();
 
@@ -11,9 +13,11 @@ function App() {
   return (
     <div className="App">
       <Routes>
-        <Route path="/login" element={<Login />} />
-        <Route path="/" element={<Scheduler />} />
-          <Route path="/verwalter" element={<Verwalter/>}/>
+        <Route path="/" element={<Home />} />
+        <Route path="/home" element={<Home />} />
+        <Route path="/student" element={<Student />} />
+        <Route path="/verwalter" element={<Verwalter/>}/>
+          <Route path="/lehrpersonen" element={<Lehrpersonen/>}/>
       </Routes>
     </div>
   );

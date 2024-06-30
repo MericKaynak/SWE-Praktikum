@@ -11,10 +11,8 @@ import {
   AllDayPanel,
   ConfirmationDialog,
 } from '@devexpress/dx-react-scheduler-material-ui';
-import { MenuItem, Select, FormControl, InputLabel, Grid, Button, AppBar, Toolbar, Typography } from '@mui/material';
+import { MenuItem, Select, FormControl, InputLabel, Grid, AppBar, Toolbar, Typography, Button } from '@mui/material';
 import { useNavigate } from 'react-router-dom';
-import axios from 'axios';
-import LoginModal from "./LoginModal.jsx";
 
 const getMonday = (date) => {
   date = new Date(date);
@@ -38,7 +36,7 @@ const generateWeeks = () => {
 };
 
 const appointmentData = [
-  {
+ {
     id: 1,
     title: "Kiffologie",
     wochentag: "Monday",
@@ -101,8 +99,7 @@ const repeatWeekly = (appointments) => {
   return result;
 };
 
-
-const Verwalter = () => {
+const Lehrpersonen = () => {
   const [appointments, setAppointments] = useState([]);
   const [currentDate, setCurrentDate] = useState(getMonday(new Date()).toISOString().split('T')[0]);
   const [addedAppointment, setAddedAppointment] = useState({});
@@ -111,28 +108,6 @@ const Verwalter = () => {
   const [weeks, setWeeks] = useState(generateWeeks());
   const [selectedUser, setSelectedUser] = useState('');
   const navigate = useNavigate();
-  const [showLoginModal, setShowLoginModal] = useState(false);
-
-  useEffect(() => {
-    const token = localStorage.getItem('token');
-    if (!token) {
-      setShowLoginModal(true);
-    }
-  }, []);
-
-  const handleLoginClose = () => {
-    setShowLoginModal(false);
-  };
-
-  const handleLoginOpen = () => {
-    setShowLoginModal(true);
-  };
-
-  const handleLogin = () => {
-    setShowLoginModal(false);
-    // You can add logic to fetch student-specific appointments here
-  };
-
 
   const commitChanges = ({ added, changed, deleted }) => {
     setAppointments((prevAppointments) => {
@@ -168,17 +143,13 @@ const Verwalter = () => {
       <AppBar position="static">
         <Toolbar>
           <Typography variant="h6" style={{ flexGrow: 1 }}>
-            Verwalter Scheduler
+            Lehrpersonen Scheduler
           </Typography>
           <Button color="inherit" onClick={() => navigate('/home')}>
             Home
           </Button>
-          <Button color="inherit" onClick={handleLoginOpen}>
-            Login
-          </Button>
         </Toolbar>
       </AppBar>
-      <LoginModal open={showLoginModal} onClose={handleLoginClose} onLogin={handleLogin} />
       <div style={{ flexGrow: 1 }}>
         <Paper style={{ height: '100%' }}>
           <Grid container spacing={2} alignItems="center" style={{ padding: '16px' }}>
@@ -205,7 +176,6 @@ const Verwalter = () => {
                   labelId="user-select-label"
                   value={selectedUser}
                   onChange={handleUserChange}
-                  disabled={!localStorage.getItem('token')} // Disable select if not logged in
                 >
                   {professors.map((professor) => (
                     <MenuItem key={professor.id} value={professor.id}>
@@ -238,10 +208,7 @@ const Verwalter = () => {
             <EditRecurrenceMenu />
             <ConfirmationDialog />
             <Appointments />
-            <AppointmentTooltip
-              showOpenButton
-              showDeleteButton
-            />
+            <AppointmentTooltip/>
             <DxAppointmentForm />
           </DxScheduler>
         </Paper>
@@ -250,4 +217,4 @@ const Verwalter = () => {
   );
 };
 
-export default Verwalter;
+export default Lehrpersonen;

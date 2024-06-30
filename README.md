@@ -7,7 +7,7 @@ PostgreSQL DB & Adminer im Docker, start im ``Codebase/terminplanungsassistent``
 BASE ADDRESS
 http://localhost:8080/terminplan
 
-Login - POST LOGIN
+LoginModal - POST LOGIN
 http://localhost:8080/terminplan/login
 
 Terminplan - GET CALENDAR
@@ -22,13 +22,13 @@ http://localhost:8080/terminplan/create
 
 ## Postgres DB - Port: 5432
 
-Login Data
+LoginModal Data
 - User: swe
 - PW: swe24
 - DB Name: postgres
 
 ## Adminer - Port: 8091
-Login Data
+LoginModal Data
 - dropdown: PostgreSQL
 - server: postgres
 - user: swe
