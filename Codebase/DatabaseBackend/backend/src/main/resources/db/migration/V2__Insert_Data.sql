@@ -19,9 +19,44 @@ VALUES
     (10, 'Petra Wagner', 'petra.wagner@hs-niederrhein.de', 'Professor', 0),
         (11, 'Harry Potter', 'Harry.Potter@hs-niederrhein.de', 'Dozent', 0),
     (12, 'Diavolo', 'Diavolo@hs-niederrhein.de', 'Professor', 0),
-    (13, 'Giorno', 'Giorno@hs-niederrhein.de', 'Tutor', 0);
+    (13, 'Giorno', 'Giorno@hs-niederrhein.de', 'Tutor', 0),    
+    (14, 'Lisa Müller', 'lisa.mueller@hs-niederrhein.de', 'Dozent', 0),
+    (15, 'Michael Braun', 'michael.braun@hs-niederrhein.de', 'Professor', 0),
+    (16, 'Julia Becker', 'julia.becker@hs-niederrhein.de', 'Tutor', 0),
+    (17, 'David Schuster', 'david.schuster@hs-niederrhein.de', 'Dozent', 0),
+    (18, 'Katrin Richter', 'katrin.richter@hs-niederrhein.de', 'Professor', 0),
+    (19, 'Markus König', 'markus.koenig@hs-niederrhein.de', 'Tutor', 0),
+    (20, 'Sarah Neumann', 'sarah.neumann@hs-niederrhein.de', 'Dozent', 0),
+    (21, 'Jan Bauer', 'jan.bauer@hs-niederrhein.de', 'Professor', 0),
+    (22, 'Dio Brando', 'dio.brando@hs-niederrhein.de', 'Professor', 0),
+    (23, 'Götz', 'von.Berlichingen@hs-niederrhein.de', 'Professor', 0),
+        (24, 'William Shakespeare', 'william.shakespeare@hs-niederrhein.de', 'Professor', 0),
+    (25, 'Jane Austen', 'jane.austen@hs-niederrhein.de', 'Professor', 0),
+    (26, 'Mark Twain', 'mark.twain@hs-niederrhein.de', 'Professor', 0),
+    (27, 'Charles Dickens', 'charles.dickens@hs-niederrhein.de', 'Professor', 0),
+    (28, 'Leo Tolstoy', 'leo.tolstoy@hs-niederrhein.de', 'Professor', 0),
+    (29, 'Homer', 'homer@hs-niederrhein.de', 'Professor', 0),
+    (30, 'J.R.R. Tolkien', 'jrr.tolkien@hs-niederrhein.de', 'Professor', 0),
+    (31, 'Hercules', 'hercules@hs-niederrhein.de', 'Professor', 0),
+    (32, 'Odysseus', 'odysseus@hs-niederrhein.de', 'Professor', 0),
+    (33, 'Achilles', 'achilles@hs-niederrhein.de', 'Professor', 0),
+    (34, 'Aeneas', 'aeneas@hs-niederrhein.de', 'Professor', 0),
+    (35, 'Antigone', 'antigone@hs-niederrhein.de', 'Professor', 0),
+    (36, 'Beowulf', 'beowulf@hs-niederrhein.de', 'Professor', 0),
+    (37, 'Gilgamesh', 'gilgamesh@hs-niederrhein.de', 'Professor', 0),
+    (38, 'Oedipus', 'oedipus@hs-niederrhein.de', 'Professor', 0),
+    (39, 'Medea', 'medea@hs-niederrhein.de', 'Professor', 0),
+    (40, 'Thor', 'thor@hs-niederrhein.de', 'Professor', 0),
+    (41, 'Lancelot', 'lancelot@hs-niederrhein.de', 'Professor', 0),
+    (42, 'Arthur', 'arthur@hs-niederrhein.de', 'Professor', 0),
+    (43, 'Merlin', 'merlin@hs-niederrhein.de', 'Professor', 0),
+    (44, 'Robin Hood', 'robin.hood@hs-niederrhein.de', 'Professor', 0),
+    (45, 'Sir Gawain', 'sir.gawain@hs-niederrhein.de', 'Professor', 0),
+    (46, 'Guinevere', 'guinevere@hs-niederrhein.de', 'Professor', 0);
 
-INSERT INTO raum (ID, Bezeichnung, Kapazität, Standort)
+
+
+INSERT INTO raum (ID, Bezeichnung, Kapazitaet, Standort)
 VALUES 
      (1, 'F303', 200, 'Krefeld'),
      (2, 'F302', 200, 'Krefeld'),

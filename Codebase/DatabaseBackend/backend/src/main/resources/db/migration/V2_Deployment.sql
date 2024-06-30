@@ -18,7 +18,7 @@ CREATE TABLE Lehrperson (
 CREATE TABLE Raum (
     ID INT PRIMARY KEY,
     Bezeichnung VARCHAR(100),
-    Kapazität INT,
+    Kapazitaet INT,
     Standort VARCHAR(100)
 );
 
@@ -57,8 +57,8 @@ CREATE TABLE Benachrichtigung (
     ID INT PRIMARY KEY,
     Nachrichtentyp VARCHAR(50),
     Text TEXT,
-    Empfänger_ID INT,
+    Empfaenger_ID INT,
     Termin_ID INT,
-    FOREIGN KEY (Empfänger_ID) REFERENCES Student(ID),
+    FOREIGN KEY (Empfaenger_ID) REFERENCES Student(ID),
     FOREIGN KEY (Termin_ID) REFERENCES Termin(ID)
 );

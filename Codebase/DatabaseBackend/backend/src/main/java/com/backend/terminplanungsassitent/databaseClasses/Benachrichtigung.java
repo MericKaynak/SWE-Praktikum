@@ -22,8 +22,8 @@ public class Benachrichtigung {
     private String text;
 
     @ManyToOne
-    @JoinColumn(name = "Empfänger_ID")
-    private Student empfänger;
+    @JoinColumn(name = "Empfaenger_ID")
+    private Student empfaenger;
 
     @ManyToOne
     @JoinColumn(name = "Termin_ID")

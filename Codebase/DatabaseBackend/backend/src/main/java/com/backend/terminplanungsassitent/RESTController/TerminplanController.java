@@ -3,9 +3,13 @@ package com.backend.terminplanungsassitent.RESTController;
 import java.util.ArrayList;
 import java.util.List;
 
+import javax.sql.DataSource;
+
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.core.io.ClassPathResource;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.jdbc.datasource.init.ResourceDatabasePopulator;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -29,9 +33,27 @@ import com.backend.terminplanungsassitent.databaseClasses.TerminRepository;
 import com.backend.terminplanungsassitent.exceptions.LehrpersonNotFoundException;
 import com.backend.terminplanungsassitent.exceptions.LehrveranstaltungNotFoundException;
 
+import jakarta.annotation.PostConstruct;
+
 @RestController
 @RequestMapping("/terminplan")
 public class TerminplanController {
+
+    @Autowired
+    private DataSource dataSource;
+
+    @PostMapping("/reset")
+    @PostConstruct
+    public void executeSqlFiles() {
+        ResourceDatabasePopulator resourceDatabasePopulator = new ResourceDatabasePopulator();
+        resourceDatabasePopulator.addScript(
+                new ClassPathResource(
+                        "db\\migration\\V2_Deployment.sql"));
+        resourceDatabasePopulator.addScript(
+                new ClassPathResource(
+                        "db\\migration\\V2__Insert_Data.sql"));
+        resourceDatabasePopulator.execute(dataSource);
+    }
 
     @Autowired
     private TerminRepository terminRepository;
@@ -150,24 +172,22 @@ public class TerminplanController {
                     lehrperson = lehrpersonList.get(lehrpersonIndex);
                 }
 
-                if (!conditionChecks(lehrveranstaltung, lehrperson)) {
-                    // append current entry to end of list and remove from current position
-                    lehrveranstaltungList.add(lehrveranstaltung);
-                } else {
+                if (conditionChecks(lehrveranstaltung, lehrperson)) {
                     // assign Lehrperson to lehrveranstaltung and save change
                     lehrveranstaltung.setLehrperson(lehrperson);
                     lehrveranstaltungRepository.save(lehrveranstaltung);
                     elementsToRemove.add(lehrveranstaltung);
                     lehrperson.setWochenarbeitsstunden(lehrperson.getWochenarbeitsstunden() + 2);
                 }
-
             }
-
-            // remove elements which were successfully processed
-            // leave behind only unsuccessful elements
-            lehrveranstaltungList.removeAll(elementsToRemove);
         }
 
+        // remove elements which were successfully processed
+        // leave behind only unsuccessful elements
+        lehrveranstaltungList.removeAll(elementsToRemove);
+        for (Lehrveranstaltung lehrveranstaltung : lehrveranstaltungList) {
+            System.err.println(lehrveranstaltung.getTitel());
+        }
     }
 
     private boolean conditionChecks(Lehrveranstaltung lehrveranstaltung, Lehrperson lehrperson) {
