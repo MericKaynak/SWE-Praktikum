@@ -2,7 +2,8 @@ CREATE TABLE Student (
     ID INT PRIMARY KEY,
     Name VARCHAR(100),
     Email VARCHAR(100),
-    Studiengang VARCHAR(100)
+    Studiengang VARCHAR(100),
+    Passwort VARCHAR(20)
 );
 
 CREATE TABLE Lehrperson (
@@ -59,4 +60,11 @@ CREATE TABLE Benachrichtigung (
     Termin_ID INT,
     FOREIGN KEY (Empfaenger_ID) REFERENCES Student(ID),
     FOREIGN KEY (Termin_ID) REFERENCES Termin(ID)
+);
+
+CREATE TABLE Verwalter (
+    ID INT PRIMARY KEY,
+    Name VARCHAR(100),
+    Email VARCHAR(100),
+    Passwort VARCHAR(20)
 );
