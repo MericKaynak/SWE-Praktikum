@@ -39,17 +39,18 @@ public class Lehrveranstaltung {
     @JoinColumn(name = "Lehrperson_ID")
     private Lehrperson lehrperson;
 
-
     public boolean checkTravelTimeConflict(Lehrveranstaltung lehrveranstaltung) {
-        return ((this.getRaum().getStandort() != lehrveranstaltung.getRaum().getStandort()) && 
-            (TimeComparison
-            .areTimesWithinTwoHours(lehrveranstaltung.getTermin().getZeitraumStart(), this.getTermin().getZeitraumEnd())
-            || TimeComparison
-                .areTimesWithinTwoHours(lehrveranstaltung.getTermin().getZeitraumEnd(), this.getTermin().getZeitraumStart())));
+        return ((this.getRaum().getStandort() != lehrveranstaltung.getRaum().getStandort()) &&
+                (TimeComparison
+                        .areTimesWithinTwoHours(lehrveranstaltung.getTermin().getZeitraumStart(),
+                                this.getTermin().getZeitraumEnd())
+                        || TimeComparison
+                                .areTimesWithinTwoHours(lehrveranstaltung.getTermin().getZeitraumEnd(),
+                                        this.getTermin().getZeitraumStart())));
     }
 
-    public boolean checkSameLehrperson(Lehrveranstaltung lehrveranstaltung) {
-        return this.getLehrperson() == lehrveranstaltung.getLehrperson();
+    public boolean checkSameLehrperson(Lehrveranstaltung lehrveranstaltung, Lehrperson lehrperson) {
+        return lehrperson == lehrveranstaltung.getLehrperson();
     }
 
     // Getters and Setters

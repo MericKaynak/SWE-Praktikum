@@ -66,109 +66,46 @@ public class TerminplanController {
         return HttpStatus.OK;
     }
 
-    /*
-     * // POST LEHRPERSONZUTEILUNG
-     * /
-     * Maps Lehrpersonen to Lehrveranstaltung, taking into account the per week
-     * working hour limit for Lehrperson.
-     * 
-     * @return ResponseEntity containing all Lehrveranstaltung as JSON
-     * 
-     * @throws LehrpersonNotFoundException
-     * 
-     * @throws LehrveranstaltungNotFoundException
-     *
-     * @GetMapping("/createmapping")
-     * public ResponseEntity<List<Lehrveranstaltung>> createMapping() throws
-     * LehrpersonNotFoundException, LehrveranstaltungNotFoundException {
-     * List<Lehrveranstaltung> lehrveranstaltungList =
-     * lehrveranstaltungRepository.findAll();
-     * List<Lehrperson> lehrpersonList = lehrpersonRepository.findAll();
-     * 
-     * int lehrpersonIndex = 0;
-     * int i = 0;
-     * 
-     * Lehrperson lehrperson = lehrpersonList.get(lehrpersonIndex);
-     * 
-     * for (Lehrveranstaltung lehrveranstaltung : lehrveranstaltungList) {
-     * 
-     * // ensure only LVs with no LP are updated
-     * if(lehrveranstaltung.getLehrperson() == null) {
-     * 
-     * // check if Lehrperson can be assigned
-     * while (lehrperson.istVerfuegbar()) {
-     * if(++lehrpersonIndex >= lehrpersonList.size()) {
-     * throw new LehrpersonNotFoundException((long) lehrpersonIndex);
-     * }
-     * lehrpersonRepository.save(lehrperson);
-     * lehrperson = lehrpersonList.get(lehrpersonIndex);
-     * }
-     * 
-     * List<Lehrveranstaltung> lehrpersonLVList =
-     * lehrveranstaltungRepository.findByLehrpersonId(lehrperson.getId());
-     * 
-     * // check if Lehrveranstaltung Termin is in same timeslot as other
-     * Lehrveranstaltung for this Lehrperson
-     * for (Lehrveranstaltung lehrpersonLV : lehrpersonLVList) {
-     * if (lehrpersonLV.getTermin().getDatum() ==
-     * lehrveranstaltung.getTermin().getDatum()
-     * && lehrpersonLV.getTermin().getZeitraumStart() ==
-     * lehrveranstaltung.getTermin().getZeitraumStart()) {
-     * // solve conflict for same timeslot
-     * while (lehrpersonIndex < lehrpersonList.size() &&
-     * !lehrpersonList.get(lehrpersonIndex + i).istVerfuegbar()) {
-     * i++;
-     * }
-     * lehrveranstaltung.setLehrperson(lehrpersonList.get(lehrpersonIndex + i));
-     * i = 1;
-     * }
-     * }
-     * 
-     * // check if Lehrveranstaltung Termin is in different locations
-     * for (Lehrveranstaltung lehrpersonLV : lehrpersonLVList) {
-     * if(lehrpersonLV.getRaum().getStandort() !=
-     * lehrveranstaltung.getRaum().getStandort()) {
-     * if(lehrpersonLV.getTermin().getDatum() ==
-     * lehrveranstaltung.getTermin().getDatum()
-     * && (TimeComparison.areTimesWithinTwoHours(lehrpersonLV.getTermin().
-     * getZeitraumEnd(), lehrveranstaltung.getTermin().getZeitraumStart())
-     * || TimeComparison.areTimesWithinTwoHours(lehrpersonLV.getTermin().
-     * getZeitraumStart(), lehrveranstaltung.getTermin().getZeitraumEnd()))
-     * ) {
-     * // solve conflict for being within 2 hours
-     * }
-     * 
-     * }
-     * }
-     * 
-     * 
-     * // assign Lehrperson to Lehrveranstaltung & update Wochenarbeitsstunden
-     * lehrveranstaltung.setLehrperson(lehrperson);
-     * lehrveranstaltungRepository.save(lehrveranstaltung);
-     * lehrperson.setWochenarbeitsstunden(lehrperson.getWochenarbeitsstunden() + 2);
-     * }
-     * }
-     * 
-     * return new ResponseEntity<>(lehrveranstaltungList, HttpStatus.OK);
-     * }
-     */
-
     @GetMapping("/createmapping")
     public ResponseEntity<List<Lehrveranstaltung>> createMapping()
             throws LehrpersonNotFoundException, LehrveranstaltungNotFoundException {
-        List<Lehrperson> lehrpersonList = lehrpersonRepository.findAll();
-        List<Lehrveranstaltung> lehrveranstaltungList = lehrveranstaltungRepository.findAll();
-        List<Termin> terminList = terminRepository.findAll();
-        List<Raum> raumList = raumRepository.findAll();
+        List<Lehrveranstaltung> lehrveranstaltungList = null;
+        try {
+            lehrveranstaltungList = lehrveranstaltungRepository.findAll();
+            if (lehrveranstaltungList == null || lehrveranstaltungList.isEmpty()) {
+                throw new LehrveranstaltungNotFoundException(null);
+            }
+        } catch (RuntimeException e) {
+            System.out.println(e);
+        }
 
-        int lehrpersonIndex = 0;
+        assignTermine(lehrveranstaltungList)
+        assignRaeume(lehrveranstaltungList);
+        assignLehrpersonen(lehrveranstaltungList);
+
+        return null;
+    }
+
+    private List<Lehrveranstaltung> assignTermine(List<Lehrveranstaltung> lehrveranstaltungList) {
+        List<Termin> terminList = terminRepository.findAll();
         int terminIndex = 0;
-        int raumIndex = 0;
 
         // assign each Lehrveranstaltung a Termin
         for (Lehrveranstaltung lehrveranstaltung : lehrveranstaltungList) {
             lehrveranstaltung.setTermin(terminList.get(terminIndex++));
             terminIndex %= terminList.size();
+        }
+
+        return lehrveranstaltungList;
+    }
+
+    private List<Lehrveranstaltung> assignRaeume(List<Lehrveranstaltung> lehrveranstaltungList) {
+        List<Raum> raumList = raumRepository.findAll();
+        int raumIndex = 0;
+
+        lehrveranstaltungList = lehrveranstaltungRepository.findLehrveranstaltungWithoutLehrperson();
+        if (lehrveranstaltungList == null) {
+            throw new LehrveranstaltungNotFoundException(null);
         }
 
         // assign each Lehrveranstaltung a room
@@ -177,57 +114,75 @@ public class TerminplanController {
             raumIndex %= raumList.size();
         }
 
+        return lehrveranstaltungList;
+    }
+
+    private void assignLehrpersonen(List<Lehrveranstaltung> lehrveranstaltungList) {
+        List<Lehrperson> lehrpersonList = lehrpersonRepository.findAll();
+        List<Lehrveranstaltung> elementsToRemove = null;
+
+        int lehrpersonIndex = 0;
+
         lehrveranstaltungList = lehrveranstaltungRepository.findLehrveranstaltungWithoutLehrperson();
         if (lehrveranstaltungList == null) {
             throw new LehrveranstaltungNotFoundException(null);
         }
 
-        // assign Lehrpersonen to Lehrveranstaltung
-        for (Lehrveranstaltung lehrveranstaltung : lehrveranstaltungList) {
-            Lehrperson lehrperson = lehrpersonList.get(lehrpersonIndex);
+        while (!lehrveranstaltungList.isEmpty())
 
-            // check if Lehrperson can be assigned
-            while (lehrperson.istVerfuegbar()) {
-                if (++lehrpersonIndex >= lehrpersonList.size()) {
-                    throw new LehrpersonNotFoundException((long) lehrpersonIndex);
-                }
-                lehrpersonRepository.save(lehrperson);
-                lehrperson = lehrpersonList.get(lehrpersonIndex);
-            }
+            // assign Lehrpersonen to Lehrveranstaltung
+            for (Lehrveranstaltung lehrveranstaltung : lehrveranstaltungList) {
+                Lehrperson lehrperson = lehrpersonList.get(lehrpersonIndex);
 
-            // check if Lehrperson is same as Lehrperson for LV with same timeslot
-            List<Lehrveranstaltung> checkForSameTimeSlot = lehrveranstaltungRepository
-                    .findByTerminAndExcludeCurrent(lehrveranstaltung.getTermin(), lehrveranstaltung.getId());
-            if (checkForSameTimeSlot != null) {
-                for (Lehrveranstaltung otherLehrveranstaltung : checkForSameTimeSlot) {
-                    if (lehrveranstaltung.checkSameLehrperson(otherLehrveranstaltung)) {
-                        // handle same timeslot booking case
+                // check if Lehrperson can be assigned
+                while (lehrperson.istVerfuegbar()) {
+                    if (++lehrpersonIndex >= lehrpersonList.size()) {
+                        throw new LehrpersonNotFoundException((long) lehrpersonIndex);
                     }
+                    lehrpersonRepository.save(lehrperson);
+                    lehrperson = lehrpersonList.get(lehrpersonIndex);
+                }
+
+                if (!conditionChecks(lehrveranstaltung, lehrperson)) {
+                    // append current entry to end of list and remove from current position
+                    lehrveranstaltungList.add(lehrveranstaltung);
+                    elementsToRemove.add(lehrveranstaltung);
+                } else {
+                    // make change permanent
+                    lehrveranstaltung.setLehrperson(lehrperson);
+                    lehrveranstaltungRepository.save(lehrveranstaltung);
+                    lehrveranstaltungList.remove(lehrveranstaltungList.indexOf(lehrveranstaltung));
+                    lehrperson.setWochenarbeitsstunden(lehrperson.getWochenarbeitsstunden() + 2);
                 }
             }
 
-            // check if there would be travel time conflicts for the Lehrperson
-            List<Lehrveranstaltung> checkForDifferentStandort = lehrveranstaltungRepository
-                    .findByLehrpersonId(lehrperson.getId());
-            if (checkForDifferentStandort != null) {
-                for (Lehrveranstaltung otherLehrveranstaltung : checkForDifferentStandort) {
-                    if (lehrveranstaltung.checkTravelTimeConflict(otherLehrveranstaltung)) {
-                        // handle travel time conflict
-                    }
+    }
+
+    private boolean conditionChecks(Lehrveranstaltung lehrveranstaltung, Lehrperson lehrperson) {
+
+        // check if Lehrperson is same as Lehrperson for LV with same timeslot
+        List<Lehrveranstaltung> checkForSameTimeSlotList = lehrveranstaltungRepository
+                .findByTerminAndExcludeCurrent(lehrveranstaltung.getTermin(), lehrveranstaltung.getId());
+        if (checkForSameTimeSlotList != null) {
+            for (Lehrveranstaltung otherLehrveranstaltung : checkForSameTimeSlotList) {
+                if (lehrveranstaltung.checkSameLehrperson(otherLehrveranstaltung, lehrperson)) {
+                    return false;
                 }
             }
-
-            // assign Lehrperson to Lehrveranstaltung
-            lehrveranstaltung.setLehrperson(lehrperson);
-            lehrveranstaltungRepository.save(lehrveranstaltung);
-            lehrperson.setWochenarbeitsstunden(lehrperson.getWochenarbeitsstunden() + 2);
         }
 
-        for (Lehrveranstaltung lehrveranstaltung : lehrveranstaltungList) {
-            lehrveranstaltungRepository.save(lehrveranstaltung);z
+        // check if there would be travel time conflicts for the Lehrperson
+        List<Lehrveranstaltung> checkForDifferentStandort = lehrveranstaltungRepository
+                .findByLehrpersonId(lehrperson.getId());
+        if (checkForDifferentStandort != null) {
+            for (Lehrveranstaltung otherLehrveranstaltung : checkForDifferentStandort) {
+                if (lehrveranstaltung.checkTravelTimeConflict(otherLehrveranstaltung)) {
+                    return false;
+                }
+            }
         }
 
-        return null;
+        return true;
     }
 
     // GET LIST OF ALL LEHRPERSONEN
