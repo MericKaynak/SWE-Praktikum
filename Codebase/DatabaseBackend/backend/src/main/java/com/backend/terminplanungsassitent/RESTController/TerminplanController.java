@@ -75,12 +75,22 @@ public class TerminplanController {
                 throw new LehrveranstaltungNotFoundException(null);
             }
         } catch (RuntimeException e) {
+            e.printStackTrace();
             System.out.println(e);
         }
 
-        assignTermine(lehrveranstaltungList);
-        assignRaeume(lehrveranstaltungList);
+        System.out.println("List creation ok");
+
+        lehrveranstaltungList = assignTermine(lehrveranstaltungList);
+        lehrveranstaltungRepository.saveAll(lehrveranstaltungList);
+        System.out.println("Termine assigned");
+
+        lehrveranstaltungList = assignRaeume(lehrveranstaltungList);
+        lehrveranstaltungRepository.saveAll(lehrveranstaltungList);
+        System.out.println("Räume assigned");
+
         assignLehrpersonen(lehrveranstaltungList);
+        System.out.println("Lehrpersonen assigned");
 
         return null;
     }
@@ -128,8 +138,11 @@ public class TerminplanController {
             throw new LehrveranstaltungNotFoundException(null);
         }
 
-        while (!lehrveranstaltungList.isEmpty())
+        System.out.println("assignLP - List found");
+        System.out.println(lehrveranstaltungList.get(0).toString());
 
+        while (!lehrveranstaltungList.isEmpty()) {
+            System.out.println("while loop entry ok");
             // assign Lehrpersonen to Lehrveranstaltung
             for (Lehrveranstaltung lehrveranstaltung : lehrveranstaltungList) {
                 Lehrperson lehrperson = lehrpersonList.get(lehrpersonIndex);
@@ -158,6 +171,7 @@ public class TerminplanController {
                 // leave behind only unsuccessful elements
                 lehrveranstaltungList.removeAll(elementsToRemove);
             }
+        }
 
     }
 

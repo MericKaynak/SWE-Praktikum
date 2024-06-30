@@ -16,7 +16,7 @@ public class Termin {
     @Id
     private Integer id;
 
-    @Column(name = "Datum")
+    @Column(name = "Wochentag")
     private String Wochentag;
 
     @Column(name = "Zeitraum_Start")

@@ -41,6 +41,7 @@ public class Lehrveranstaltung {
 
     public boolean checkTravelTimeConflict(Lehrveranstaltung lehrveranstaltung) {
         return ((this.getRaum().getStandort() != lehrveranstaltung.getRaum().getStandort()) &&
+                this.getTermin().getWochentag() == lehrveranstaltung.getTermin().getWochentag() &&
                 (TimeComparison
                         .areTimesWithinTwoHours(lehrveranstaltung.getTermin().getZeitraumStart(),
                                 this.getTermin().getZeitraumEnd())
