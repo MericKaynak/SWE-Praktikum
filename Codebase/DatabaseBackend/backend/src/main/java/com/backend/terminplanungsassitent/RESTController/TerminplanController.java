@@ -167,10 +167,11 @@ public class TerminplanController {
                     lehrperson.setWochenarbeitsstunden(lehrperson.getWochenarbeitsstunden() + 2);
                 }
 
-                // remove elements which were successfully processed
-                // leave behind only unsuccessful elements
-                lehrveranstaltungList.removeAll(elementsToRemove);
             }
+
+            // remove elements which were successfully processed
+            // leave behind only unsuccessful elements
+            lehrveranstaltungList.removeAll(elementsToRemove);
         }
 
     }
