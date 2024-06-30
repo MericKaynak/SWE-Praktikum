@@ -1,5 +1,6 @@
 package com.backend.terminplanungsassitent.RESTController;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -13,7 +14,6 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
-import com.backend.terminplanungsassitent.RESTController.TimeComparison;
 import com.backend.terminplanungsassitent.databaseClasses.BenachrichtigungRepository;
 import com.backend.terminplanungsassitent.databaseClasses.BesuchenRepository;
 import com.backend.terminplanungsassitent.databaseClasses.Lehrperson;
@@ -116,9 +116,10 @@ public class TerminplanController {
         return lehrveranstaltungList;
     }
 
-    private void assignLehrpersonen(List<Lehrveranstaltung> lehrveranstaltungList) {
+    private void assignLehrpersonen(List<Lehrveranstaltung> lehrveranstaltungList)
+            throws LehrveranstaltungNotFoundException {
         List<Lehrperson> lehrpersonList = lehrpersonRepository.findAll();
-        List<Lehrveranstaltung> elementsToRemove = null;
+        List<Lehrveranstaltung> elementsToRemove = new ArrayList<>();
 
         int lehrpersonIndex = 0;
 
@@ -145,14 +146,17 @@ public class TerminplanController {
                 if (!conditionChecks(lehrveranstaltung, lehrperson)) {
                     // append current entry to end of list and remove from current position
                     lehrveranstaltungList.add(lehrveranstaltung);
-                    elementsToRemove.add(lehrveranstaltung);
                 } else {
-                    // make change permanent
+                    // assign Lehrperson to lehrveranstaltung and save change
                     lehrveranstaltung.setLehrperson(lehrperson);
                     lehrveranstaltungRepository.save(lehrveranstaltung);
-                    lehrveranstaltungList.remove(lehrveranstaltungList.indexOf(lehrveranstaltung));
+                    elementsToRemove.add(lehrveranstaltung);
                     lehrperson.setWochenarbeitsstunden(lehrperson.getWochenarbeitsstunden() + 2);
                 }
+
+                // remove elements which were successfully processed
+                // leave behind only unsuccessful elements
+                lehrveranstaltungList.removeAll(elementsToRemove);
             }
 
     }
@@ -160,10 +164,10 @@ public class TerminplanController {
     private boolean conditionChecks(Lehrveranstaltung lehrveranstaltung, Lehrperson lehrperson) {
 
         // check if Lehrperson is same as Lehrperson for LV with same timeslot
-        List<Lehrveranstaltung> checkForSameTimeSlotList = lehrveranstaltungRepository
+        List<Lehrveranstaltung> overlapCheckList = lehrveranstaltungRepository
                 .findByTerminAndExcludeCurrent(lehrveranstaltung.getTermin(), lehrveranstaltung.getId());
-        if (checkForSameTimeSlotList != null) {
-            for (Lehrveranstaltung otherLehrveranstaltung : checkForSameTimeSlotList) {
+        if (overlapCheckList != null) {
+            for (Lehrveranstaltung otherLehrveranstaltung : overlapCheckList) {
                 if (lehrveranstaltung.checkSameLehrperson(otherLehrveranstaltung, lehrperson)) {
                     return false;
                 }
@@ -171,10 +175,10 @@ public class TerminplanController {
         }
 
         // check if there would be travel time conflicts for the Lehrperson
-        List<Lehrveranstaltung> checkForDifferentStandort = lehrveranstaltungRepository
+        overlapCheckList = lehrveranstaltungRepository
                 .findByLehrpersonId(lehrperson.getId());
-        if (checkForDifferentStandort != null) {
-            for (Lehrveranstaltung otherLehrveranstaltung : checkForDifferentStandort) {
+        if (overlapCheckList != null) {
+            for (Lehrveranstaltung otherLehrveranstaltung : overlapCheckList) {
                 if (lehrveranstaltung.checkTravelTimeConflict(otherLehrveranstaltung)) {
                     return false;
                 }
