@@ -15,44 +15,47 @@ import jakarta.persistence.JoinColumn;
 @Entity
 @Table(name = "Lehrveranstaltung")
 public class Lehrveranstaltung {
-    @Id
-    private Integer id;
+        @Id
+        private Integer id;
 
-    @Column(name = "Titel")
-    private String titel;
+        @Column(name = "Titel")
+        private String titel;
 
-    @Column(name = "Fachbereich")
-    private String fachbereich;
+        @Column(name = "Fachbereich")
+        private String fachbereich;
 
-    @Column(name = "Dauer")
-    private Integer dauer;
+        @Column(name = "Dauer")
+        private Integer dauer;
 
-    @ManyToOne
-    @JoinColumn(name = "Raum_ID")
-    private Raum raum;
+        @ManyToOne
+        @JoinColumn(name = "Raum_ID")
+        private Raum raum;
 
-    @ManyToOne
-    @JoinColumn(name = "Termin_ID")
-    private Termin termin;
+        @ManyToOne
+        @JoinColumn(name = "Termin_ID")
+        private Termin termin;
 
-    @ManyToOne
-    @JoinColumn(name = "Lehrperson_ID")
-    private Lehrperson lehrperson;
+        @ManyToOne
+        @JoinColumn(name = "Lehrperson_ID")
+        private Lehrperson lehrperson;
 
-    public boolean checkTravelTimeConflict(Lehrveranstaltung lehrveranstaltung) {
-        return ((this.getRaum().getStandort() != lehrveranstaltung.getRaum().getStandort()) &&
-                this.getTermin().getWochentag() == lehrveranstaltung.getTermin().getWochentag() &&
-                (TimeComparison
-                        .areTimesWithinTwoHours(lehrveranstaltung.getTermin().getZeitraumStart(),
-                                this.getTermin().getZeitraumEnd())
-                        || TimeComparison
-                                .areTimesWithinTwoHours(lehrveranstaltung.getTermin().getZeitraumEnd(),
-                                        this.getTermin().getZeitraumStart())));
-    }
+        public boolean checkTravelTimeConflict(Lehrveranstaltung lehrveranstaltung) {
+                return ((this.getRaum().getStandort() != lehrveranstaltung.getRaum().getStandort()) &&
+                                this.getTermin().getWochentag() == lehrveranstaltung.getTermin().getWochentag() &&
+                                (TimeComparison
+                                                .areTimesWithinTwoHours(
+                                                                lehrveranstaltung.getTermin().getZeitraumStart(),
+                                                                this.getTermin().getZeitraumEnd())
+                                                || TimeComparison
+                                                                .areTimesWithinTwoHours(
+                                                                                lehrveranstaltung.getTermin()
+                                                                                                .getZeitraumEnd(),
+                                                                                this.getTermin().getZeitraumStart())));
+        }
 
-    public boolean checkSameLehrperson(Lehrveranstaltung lehrveranstaltung, Lehrperson lehrperson) {
-        return lehrperson == lehrveranstaltung.getLehrperson();
-    }
+        public boolean checkSameLehrperson(Lehrveranstaltung lehrveranstaltung, Lehrperson lehrperson) {
+                return lehrperson == lehrveranstaltung.getLehrperson();
+        }
 
-    // Getters and Setters
+        // Getters and Setters
 }

@@ -1,5 +1,6 @@
 package com.backend.terminplanungsassitent.databaseClasses;
 
+import java.time.LocalTime;
 import java.util.List;
 
 import org.springframework.data.jpa.repository.JpaRepository;
@@ -11,7 +12,7 @@ public interface LehrveranstaltungRepository extends JpaRepository<Lehrveranstal
     @Query("SELECT lv FROM Lehrveranstaltung lv WHERE lv.lehrperson.id = :lehrpersonId")
     List<Lehrveranstaltung> findByLehrpersonId(@Param("lehrpersonId") Integer integer);
 
-    @Query("SELECT lv FROM Lehrveranstaltung lv WHERE lv.lehrperson.id = NULL")
+    @Query("SELECT lv FROM Lehrveranstaltung lv WHERE lv.lehrperson = NULL")
     List<Lehrveranstaltung> findLehrveranstaltungWithoutLehrperson();
 
     @Query("SELECT lv FROM Lehrveranstaltung lv WHERE lv.raum.id = NULL")
@@ -20,7 +21,6 @@ public interface LehrveranstaltungRepository extends JpaRepository<Lehrveranstal
     @Query("SELECT lv FROM Lehrveranstaltung lv WHERE lv.termin.id = NULL")
     List<Lehrveranstaltung> findLehrveranstaltungWithoutTermin();
 
-    @Query("SELECT lv FROM Lehrveranstaltung lv WHERE lv.termin = :termin AND lv.id <> :id")
-    List<Lehrveranstaltung> findByTerminAndExcludeCurrent(@Param("termin") Termin termin, @Param("id") Integer id);
+    List<Lehrveranstaltung> findByTerminWochentagAndTerminZeitraumStart(String wochentag, LocalTime zeitraumStart);
 
 }

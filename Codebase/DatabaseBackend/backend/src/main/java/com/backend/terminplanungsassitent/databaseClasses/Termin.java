@@ -17,7 +17,7 @@ public class Termin {
     private Integer id;
 
     @Column(name = "Wochentag")
-    private String Wochentag;
+    private String wochentag;
 
     @Column(name = "Zeitraum_Start")
     private LocalTime zeitraumStart;

@@ -112,11 +112,6 @@ public class TerminplanController {
         List<Raum> raumList = raumRepository.findAll();
         int raumIndex = 0;
 
-        lehrveranstaltungList = lehrveranstaltungRepository.findLehrveranstaltungWithoutLehrperson();
-        if (lehrveranstaltungList == null) {
-            throw new LehrveranstaltungNotFoundException(null);
-        }
-
         // assign each Lehrveranstaltung a room
         for (Lehrveranstaltung lehrveranstaltung : lehrveranstaltungList) {
             lehrveranstaltung.setRaum(raumList.get(raumIndex++));
@@ -133,22 +128,21 @@ public class TerminplanController {
 
         int lehrpersonIndex = 0;
 
-        lehrveranstaltungList = lehrveranstaltungRepository.findLehrveranstaltungWithoutLehrperson();
+        lehrveranstaltungList = lehrveranstaltungRepository.findAll();
         if (lehrveranstaltungList == null) {
             throw new LehrveranstaltungNotFoundException(null);
         }
 
-        System.out.println("assignLP - List found");
-        System.out.println(lehrveranstaltungList.get(0).toString());
-
         while (!lehrveranstaltungList.isEmpty()) {
             System.out.println("while loop entry ok");
+
             // assign Lehrpersonen to Lehrveranstaltung
             for (Lehrveranstaltung lehrveranstaltung : lehrveranstaltungList) {
                 Lehrperson lehrperson = lehrpersonList.get(lehrpersonIndex);
 
                 // check if Lehrperson can be assigned
                 while (lehrperson.istVerfuegbar()) {
+                    System.out.println("next Lehrperson:" + lehrpersonIndex + " @ " + lehrveranstaltung.getTitel());
                     if (++lehrpersonIndex >= lehrpersonList.size()) {
                         throw new LehrpersonNotFoundException((long) lehrpersonIndex);
                     }
@@ -180,7 +174,9 @@ public class TerminplanController {
 
         // check if Lehrperson is same as Lehrperson for LV with same timeslot
         List<Lehrveranstaltung> overlapCheckList = lehrveranstaltungRepository
-                .findByTerminAndExcludeCurrent(lehrveranstaltung.getTermin(), lehrveranstaltung.getId());
+                .findByTerminWochentagAndTerminZeitraumStart(lehrveranstaltung.getTermin().getWochentag(),
+                        lehrveranstaltung.getTermin().getZeitraumStart());
+
         if (overlapCheckList != null) {
             for (Lehrveranstaltung otherLehrveranstaltung : overlapCheckList) {
                 if (lehrveranstaltung.checkSameLehrperson(otherLehrveranstaltung, lehrperson)) {
