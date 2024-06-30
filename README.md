@@ -16,6 +16,12 @@ http://localhost:8080/terminplan/fetch/{id}
 Lehrperson - GET LEHRPERSON BY ID
 http://localhost:8080/terminplan/fetchLp/{id}
 
+Lehrperson - DELETE LEHRPERSON BY ID
+http://localhost:8080/terminplan/delete/{id}
+
+Lehrperson - POST LEHRPERSON BY ID
+http://localhost:8080/terminplan/add/{id}
+
 Lehrpersonen - GET ALL LEHRPERSONEN
 http://localhost:8080/terminplan/fetchAllLp
 
