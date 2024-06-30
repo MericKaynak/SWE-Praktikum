@@ -1,4 +1,4 @@
-DROP TABLE Student, Lehrperson,Raum,Termin,Lehrveranstaltung, Besuchen,Benachrichtigung CASCADE;
+DROP TABLE Student, Lehrperson,Raum,Termin,Lehrveranstaltung, Besuchen,Benachrichtigung,Verwalter CASCADE;
 
 CREATE TABLE Student (
     ID INT PRIMARY KEY,
@@ -27,9 +27,7 @@ CREATE TABLE Termin(
     Wochentag VARCHAR(100),
     Zeitraum_Start TIME,
     Zeitraum_End TIME,
-    Raum_ID INT,
-    FOREIGN KEY (Raum_ID) REFERENCES Raum(ID),
-    CONSTRAINT Unique_Termin UNIQUE (Wochentag, Zeitraum_Start, Zeitraum_End, Raum_ID)
+    CONSTRAINT Unique_Termin UNIQUE (Wochentag, Zeitraum_Start, Zeitraum_End)
 );
 
 CREATE TABLE Lehrveranstaltung (
@@ -61,4 +59,11 @@ CREATE TABLE Benachrichtigung (
     Termin_ID INT,
     FOREIGN KEY (Empfaenger_ID) REFERENCES Student(ID),
     FOREIGN KEY (Termin_ID) REFERENCES Termin(ID)
+);
+
+CREATE TABLE Verwalter (
+    ID INT PRIMARY KEY,
+    Name VARCHAR(100),
+    Email VARCHAR(100),
+    Passwort VARCHAR(20)
 );

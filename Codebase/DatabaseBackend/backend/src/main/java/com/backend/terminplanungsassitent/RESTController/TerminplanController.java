@@ -180,13 +180,12 @@ public class TerminplanController {
                     lehrperson.setWochenarbeitsstunden(lehrperson.getWochenarbeitsstunden() + 2);
                 }
             }
-        }
-
-        // remove elements which were successfully processed
-        // leave behind only unsuccessful elements
-        lehrveranstaltungList.removeAll(elementsToRemove);
-        for (Lehrveranstaltung lehrveranstaltung : lehrveranstaltungList) {
-            System.err.println(lehrveranstaltung.getTitel());
+            // remove elements which were successfully processed
+            // leave behind only unsuccessful elements
+            lehrveranstaltungList.removeAll(elementsToRemove);
+            for (Lehrveranstaltung lehrveranstaltung : lehrveranstaltungList) {
+                System.err.println(lehrveranstaltung.getTitel());
+            }
         }
     }
 
@@ -200,6 +199,7 @@ public class TerminplanController {
         if (overlapCheckList != null) {
             for (Lehrveranstaltung otherLehrveranstaltung : overlapCheckList) {
                 if (lehrveranstaltung.checkSameLehrperson(otherLehrveranstaltung, lehrperson)) {
+                    System.err.println("same termin check");
                     return false;
                 }
             }
@@ -211,6 +211,7 @@ public class TerminplanController {
         if (overlapCheckList != null) {
             for (Lehrveranstaltung otherLehrveranstaltung : overlapCheckList) {
                 if (lehrveranstaltung.checkTravelTimeConflict(otherLehrveranstaltung)) {
+                    System.err.println("travel time check");
                     return false;
                 }
             }

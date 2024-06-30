@@ -5,8 +5,6 @@ import jakarta.persistence.Id;
 import jakarta.persistence.Column;
 import jakarta.persistence.Table;
 import lombok.Data;
-import jakarta.persistence.ManyToOne;
-import jakarta.persistence.JoinColumn;
 import java.time.LocalTime;
 
 @Data
@@ -24,10 +22,6 @@ public class Termin {
 
     @Column(name = "Zeitraum_End")
     private LocalTime zeitraumEnd;
-
-    @ManyToOne
-    @JoinColumn(name = "Raum_ID")
-    private Raum raum;
 
     // Getters and Setters
 }
