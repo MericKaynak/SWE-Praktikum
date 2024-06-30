@@ -66,3 +66,18 @@ CREATE TABLE Verwalter (
     Email VARCHAR(100),
     Passwort VARCHAR(20)
 );
+
+CREATE OR REPLACE FUNCTION add_student_to_courses() RETURNS TRIGGER AS $$
+BEGIN
+    INSERT INTO Besuchen (Student_ID, Lehrveranstaltung_ID)
+    SELECT NEW.ID, LV.ID
+    FROM Lehrveranstaltung LV
+    WHERE LV.Fachbereich = (SELECT Studiengang FROM Student WHERE ID = NEW.ID);
+    RETURN NEW;
+END;
+$$ LANGUAGE plpgsql;
+
+CREATE TRIGGER after_student_insert
+AFTER INSERT ON Student
+FOR EACH ROW
+EXECUTE FUNCTION add_student_to_courses();
