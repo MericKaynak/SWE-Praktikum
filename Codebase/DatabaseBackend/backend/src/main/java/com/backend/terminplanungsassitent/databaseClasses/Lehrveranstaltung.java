@@ -3,7 +3,7 @@ package com.backend.terminplanungsassitent.databaseClasses;
 import jakarta.persistence.Entity;
 import jakarta.persistence.Id;
 
-import com.backend.terminplanungsassitent.terminplanung.TimeComparison;
+import com.backend.terminplanungsassitent.RESTController.TimeComparison;
 
 import jakarta.persistence.Column;
 import jakarta.persistence.Table;

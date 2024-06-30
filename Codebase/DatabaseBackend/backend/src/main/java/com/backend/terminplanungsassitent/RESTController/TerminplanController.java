@@ -1,4 +1,4 @@
-package com.backend.terminplanungsassitent.terminplanung;
+package com.backend.terminplanungsassitent.RESTController;
 
 import java.util.List;
 
@@ -13,6 +13,7 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
+import com.backend.terminplanungsassitent.RESTController.TimeComparison;
 import com.backend.terminplanungsassitent.databaseClasses.BenachrichtigungRepository;
 import com.backend.terminplanungsassitent.databaseClasses.BesuchenRepository;
 import com.backend.terminplanungsassitent.databaseClasses.Lehrperson;
@@ -27,8 +28,6 @@ import com.backend.terminplanungsassitent.databaseClasses.TerminRepository;
 
 import com.backend.terminplanungsassitent.exceptions.LehrpersonNotFoundException;
 import com.backend.terminplanungsassitent.exceptions.LehrveranstaltungNotFoundException;
-
-import com.backend.terminplanungsassitent.terminplanung.TimeComparison;
 
 @RestController
 @RequestMapping("/terminplan")
@@ -79,7 +78,7 @@ public class TerminplanController {
             System.out.println(e);
         }
 
-        assignTermine(lehrveranstaltungList)
+        assignTermine(lehrveranstaltungList);
         assignRaeume(lehrveranstaltungList);
         assignLehrpersonen(lehrveranstaltungList);
 

@@ -1,4 +1,4 @@
-package com.backend.terminplanungsassitent.terminplanung;
+package com.backend.terminplanungsassitent.RESTController;
 
 import java.time.Duration;
 import java.time.LocalTime;
