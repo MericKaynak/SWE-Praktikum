@@ -129,7 +129,7 @@ const Verwalter = () => {
   };
 
   const sendLogin = async (email, password) => {
-      if (!email.endsWith('@stud.hn.de')) {
+      if (!email.endsWith('@hs-niederrhein.de')) {
         console.error('Email must end with @hs-niederrhein.de');
         return;
       }

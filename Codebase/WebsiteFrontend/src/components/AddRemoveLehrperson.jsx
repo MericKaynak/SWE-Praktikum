@@ -62,7 +62,7 @@ const AddRemoveProfessors = () => {
           <Typography variant="h6" style={{ flexGrow: 1 }}>
             Professor Management
           </Typography>
-          <Button color="inherit" onClick={() => console.log('Navigating to Home')}>
+          <Button color="inherit" onClick={() => navigate('/home')}>
             Home
           </Button>
         </Toolbar>
