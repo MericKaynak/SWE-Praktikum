@@ -1,13 +1,20 @@
-import React, {useState} from "react";
+import React, { useState } from "react";
 import axios from "axios";
-import {Button, Dialog, DialogActions, DialogContent, DialogTitle, TextField} from "@mui/material";
+import {
+  Button,
+  Dialog,
+  DialogActions,
+  DialogContent,
+  DialogTitle,
+  TextField,
+} from "@mui/material";
 
 const LoginModal = ({ open, onClose, onLogin }) => {
-  const [email, setEmail] = useState('');
-  const [password, setPassword] = useState('');
+  const [email, setEmail] = useState("");
+  const [password, setPassword] = useState("");
 
   const handleLogin = async () => {
-    onLogin(email,password)
+    onLogin(email, password);
   };
 
   return (

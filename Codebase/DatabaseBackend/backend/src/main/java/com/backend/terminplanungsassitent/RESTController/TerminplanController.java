@@ -10,6 +10,7 @@ import org.springframework.core.io.ClassPathResource;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.jdbc.datasource.init.ResourceDatabasePopulator;
+import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -35,6 +36,7 @@ import com.backend.terminplanungsassitent.exceptions.LehrveranstaltungNotFoundEx
 
 import jakarta.annotation.PostConstruct;
 
+@CrossOrigin(origins = "http://localhost:5173")
 @RestController
 @RequestMapping("/terminplan")
 public class TerminplanController {
@@ -75,11 +77,65 @@ public class TerminplanController {
         ResourceDatabasePopulator resourceDatabasePopulator = new ResourceDatabasePopulator();
         resourceDatabasePopulator.addScript(
                 new ClassPathResource(
-                        "db\\migration\\V2_Deployment.sql"));
+                        "db\\V2_Deployment.sql"));
         resourceDatabasePopulator.addScript(
                 new ClassPathResource(
                         "db\\migration\\V2__Insert_Data.sql"));
         resourceDatabasePopulator.execute(dataSource);
+    }
+
+    @PostMapping("/unittest")
+    public ResponseEntity<String> lehrpersonUnitTest(@RequestBody Lehrperson lehrperson)
+            throws LehrpersonNotFoundException {
+        boolean success = true;
+        String result = "Test failed.";
+        Long originalCount = lehrpersonRepository.count();
+
+        try {
+            lehrpersonRepository.save(lehrperson);
+        } catch (RuntimeException e) {
+            success = false;
+            e.printStackTrace();
+            result += "\n" + e.getStackTrace();
+        }
+
+        System.out.println("insert " + success);
+
+        try {
+            String original = lehrperson.toString();
+            String testObject = lehrpersonRepository.findById(lehrperson.getId()).get().toString();
+
+            if (!original.equals(testObject)) {
+                success = false;
+            }
+            System.out.println("find person" + success);
+            System.out.println(original);
+            System.out.println(testObject);
+        } catch (IllegalArgumentException e) {
+            e.printStackTrace();
+            result += "\n" + e.getStackTrace();
+        } catch (LehrpersonNotFoundException e) {
+            e.printStackTrace();
+            result += "\n" + e.getStackTrace();
+        }
+
+        try {
+            Long newCount = lehrpersonRepository.count();
+            System.out.println(newCount + " " + originalCount);
+            lehrpersonRepository.deleteById(lehrperson.getId());
+            if (originalCount == newCount) {
+                success = false;
+            }
+            System.out.println("delete " + success);
+        } catch (LehrpersonNotFoundException e) {
+            e.printStackTrace();
+            result += "\n" + e.getStackTrace();
+        }
+        if (success) {
+            result = "Test succeeded.";
+        }
+
+        return new ResponseEntity<>(result, HttpStatus.OK);
     }
 
     /**
@@ -202,14 +258,11 @@ public class TerminplanController {
         List<Lehrveranstaltung> elementsToRemove = new ArrayList<>();
 
         int lehrpersonIndex = 0;
-        try {
-            lehrveranstaltungList = lehrveranstaltungRepository.findAll();
-            if (lehrveranstaltungList == null) {
-                throw new LehrveranstaltungNotFoundException(null);
-            }
-        } catch (RuntimeException e) {
-            e.printStackTrace();
+
+        if (lehrveranstaltungList == null) {
+            throw new LehrveranstaltungNotFoundException(null);
         }
+
         try {
             while (!lehrveranstaltungList.isEmpty()) {
                 // assign Lehrpersonen to Lehrveranstaltung
@@ -219,7 +272,7 @@ public class TerminplanController {
                     // check if Lehrperson can be assigned & get next if not
                     while (!lehrperson.istVerfuegbar()) {
                         if (++lehrpersonIndex >= lehrpersonList.size()) {
-                            throw new LehrpersonNotFoundException((long) lehrpersonIndex);
+                            throw new LehrpersonNotFoundException(lehrpersonIndex);
                         }
                         lehrpersonRepository.save(lehrperson);
                         lehrperson = lehrpersonList.get(lehrpersonIndex);
@@ -262,7 +315,6 @@ public class TerminplanController {
         if (overlapCheckList != null) {
             for (Lehrveranstaltung otherLehrveranstaltung : overlapCheckList) {
                 if (lehrveranstaltung.checkSameLehrperson(otherLehrveranstaltung, lehrperson)) {
-                    System.err.println("same termin check");
                     return false;
                 }
             }
@@ -274,7 +326,6 @@ public class TerminplanController {
         if (overlapCheckList != null) {
             for (Lehrveranstaltung otherLehrveranstaltung : overlapCheckList) {
                 if (lehrveranstaltung.checkTravelTimeConflict(otherLehrveranstaltung)) {
-                    System.err.println("travel time check");
                     return false;
                 }
             }
@@ -293,8 +344,8 @@ public class TerminplanController {
 
     // GET LEHRPERSON BY ID
     @GetMapping("/fetchlp/{id}")
-    public ResponseEntity<Lehrperson> findLP(@PathVariable Long id) throws LehrpersonNotFoundException {
-        return new ResponseEntity<Lehrperson>(lehrpersonRepository.findById(id)
+    public ResponseEntity<Lehrperson> findLP(@PathVariable Integer id) throws LehrpersonNotFoundException {
+        return new ResponseEntity<>(lehrpersonRepository.findById(id)
                 .orElseThrow(() -> new LehrpersonNotFoundException(id)), HttpStatus.OK);
     }
 
