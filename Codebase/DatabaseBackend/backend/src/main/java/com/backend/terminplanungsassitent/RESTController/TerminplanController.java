@@ -110,7 +110,7 @@ public class TerminplanController {
 
             System.out.println("original: " + original);
             System.out.println("testObject: " + testObject);
-            
+
             if (!original.equals(testObject)) {
                 success = false;
             }
@@ -122,23 +122,45 @@ public class TerminplanController {
             e.printStackTrace();
             result += "\n" + e.getStackTrace();
         }
-        System.out.println("INSERT " + success);
+        System.out.println("READ " + success);
+
+        System.out.println("Testing UPDATE function");
+        try {
+            lehrperson.setName("Teststring");
+            lehrpersonRepository.save(lehrperson);
+            String originalUpdate = lehrperson.toString();
+            String testObjectUpdate = lehrpersonRepository.findById(lehrperson.getId()).get().toString();
+
+            System.out.println("original: " + originalUpdate);
+            System.out.println("testObject: " + testObjectUpdate);
+
+            if (!originalUpdate.equals(testObjectUpdate)) {
+                success = false;
+            }
+
+        } catch (IllegalArgumentException e) {
+            e.printStackTrace();
+            result += "\n" + e.getStackTrace();
+        } catch (LehrpersonNotFoundException e) {
+            e.printStackTrace();
+            result += "\n" + e.getStackTrace();
+        }
+        System.out.println("UPDATE " + success);
 
         System.out.println("Testing DELETE function");
         try {
             Long newCount = lehrpersonRepository.count();
-            System.out.println(newCount + " " + originalCount);
+            System.out.println("new count: " + newCount + ", old count: " + originalCount);
             lehrpersonRepository.deleteById(lehrperson.getId());
             if (originalCount == newCount) {
                 success = false;
             }
-            System.out.println("delete " + success);
         } catch (LehrpersonNotFoundException e) {
             e.printStackTrace();
             result += "\n" + e.getStackTrace();
         }
         System.out.println("DELETE " + success);
-                
+
         if (success) {
             result = "Test succeeded.";
         }
