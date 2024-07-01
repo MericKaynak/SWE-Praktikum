@@ -202,14 +202,11 @@ public class TerminplanController {
         List<Lehrveranstaltung> elementsToRemove = new ArrayList<>();
 
         int lehrpersonIndex = 0;
-        try {
-            lehrveranstaltungList = lehrveranstaltungRepository.findAll();
-            if (lehrveranstaltungList == null) {
-                throw new LehrveranstaltungNotFoundException(null);
-            }
-        } catch (RuntimeException e) {
-            e.printStackTrace();
+
+        if (lehrveranstaltungList == null) {
+            throw new LehrveranstaltungNotFoundException(null);
         }
+
         try {
             while (!lehrveranstaltungList.isEmpty()) {
                 // assign Lehrpersonen to Lehrveranstaltung
@@ -262,7 +259,6 @@ public class TerminplanController {
         if (overlapCheckList != null) {
             for (Lehrveranstaltung otherLehrveranstaltung : overlapCheckList) {
                 if (lehrveranstaltung.checkSameLehrperson(otherLehrveranstaltung, lehrperson)) {
-                    System.err.println("same termin check");
                     return false;
                 }
             }
@@ -274,7 +270,6 @@ public class TerminplanController {
         if (overlapCheckList != null) {
             for (Lehrveranstaltung otherLehrveranstaltung : overlapCheckList) {
                 if (lehrveranstaltung.checkTravelTimeConflict(otherLehrveranstaltung)) {
-                    System.err.println("travel time check");
                     return false;
                 }
             }
@@ -294,7 +289,7 @@ public class TerminplanController {
     // GET LEHRPERSON BY ID
     @GetMapping("/fetchlp/{id}")
     public ResponseEntity<Lehrperson> findLP(@PathVariable Long id) throws LehrpersonNotFoundException {
-        return new ResponseEntity<Lehrperson>(lehrpersonRepository.findById(id)
+        return new ResponseEntity<>(lehrpersonRepository.findById(id)
                 .orElseThrow(() -> new LehrpersonNotFoundException(id)), HttpStatus.OK);
     }
 
