@@ -1,4 +1,0 @@
--------------------------------------------------------------------------------
-Test set: com.terminplanung.terminplanungsassistent.TerminplanungsassistentApplicationTests
--------------------------------------------------------------------------------
-Tests run: 1, Failures: 0, Errors: 0, Skipped: 0, Time elapsed: 3.740 s -- in com.terminplanung.terminplanungsassistent.TerminplanungsassistentApplicationTests
