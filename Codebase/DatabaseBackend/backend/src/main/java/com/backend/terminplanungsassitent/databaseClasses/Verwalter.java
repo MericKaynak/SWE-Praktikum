@@ -1,6 +1,11 @@
 package com.backend.terminplanungsassitent.databaseClasses;
 
-import jakarta.persistence.*;
+import jakarta.persistence.Entity;
+import jakarta.persistence.Table;
+import jakarta.persistence.Id;
+import jakarta.persistence.GeneratedValue;
+import jakarta.persistence.GenerationType;
+import jakarta.persistence.Column;
 import lombok.Data;
 
 @Data
@@ -21,4 +26,5 @@ public class Verwalter {
     @Column(name = "Passwort")
     private String passwort;
 
+    // No getters and setters as requested
 }
