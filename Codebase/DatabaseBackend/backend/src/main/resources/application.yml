@@ -1,0 +1,9 @@
+app:
+  dataSource:
+    postgres:
+      port: 8090
+      username: vision
+      password: passwort123
+      host: localhost
+      databaseName: location_db
+      jdbc-url: jdbc:postgresql://localhost:8090/location_db

@@ -1,5 +1,7 @@
 {
   "java.debug.settings.onBuildFailureProceed": true,
   "java.configuration.updateBuildConfiguration": "automatic",
-  "maven.view": "hierarchical"
+  "maven.view": "hierarchical",
+  "java.format.settings.url": "eclipse-formatter.xml",
+  "java.compile.nullAnalysis.mode": "automatic"
 }
