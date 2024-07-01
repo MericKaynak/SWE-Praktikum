@@ -1,6 +1,6 @@
-import React, { useState, useEffect } from 'react';
-import Paper from '@mui/material/Paper';
-import { ViewState, EditingState } from '@devexpress/dx-react-scheduler';
+import React, { useState, useEffect } from "react";
+import Paper from "@mui/material/Paper";
+import { ViewState, EditingState } from "@devexpress/dx-react-scheduler";
 import {
   Scheduler as DxScheduler,
   Appointments,
@@ -10,14 +10,24 @@ import {
   EditRecurrenceMenu,
   AllDayPanel,
   ConfirmationDialog,
-} from '@devexpress/dx-react-scheduler-material-ui';
-import { MenuItem, Select, FormControl, InputLabel, Grid, AppBar, Toolbar, Typography, Button } from '@mui/material';
-import { useNavigate } from 'react-router-dom';
+} from "@devexpress/dx-react-scheduler-material-ui";
+import {
+  MenuItem,
+  Select,
+  FormControl,
+  InputLabel,
+  Grid,
+  AppBar,
+  Toolbar,
+  Typography,
+  Button,
+} from "@mui/material";
+import { useNavigate } from "react-router-dom";
 
 const getMonday = (date) => {
   date = new Date(date);
   const day = date.getDay(),
-        diff = date.getDate() - day + (day === 0 ? -6 : 1);
+    diff = date.getDate() - day + (day === 0 ? -6 : 1);
   return new Date(date.setDate(diff));
 };
 
@@ -28,15 +38,15 @@ const generateWeeks = () => {
 
   for (let i = -12; i <= 12; i++) {
     const weekStart = new Date(currentMonday);
-    weekStart.setDate(currentMonday.getDate() + (i * 7));
-    weeks.push(weekStart.toISOString().split('T')[0]);
+    weekStart.setDate(currentMonday.getDate() + i * 7);
+    weeks.push(weekStart.toISOString().split("T")[0]);
   }
 
   return weeks;
 };
 
 const appointmentData = [
- {
+  {
     id: 1,
     title: "Kiffologie",
     wochentag: "Monday",
@@ -44,7 +54,7 @@ const appointmentData = [
     zeitraumEnd: "10:00:00",
     location: "F303, Krefeld",
     professorId: 69,
-    professorName: "Jaman"
+    professorName: "Jaman",
   },
   {
     id: 2,
@@ -54,14 +64,14 @@ const appointmentData = [
     zeitraumEnd: "12:00:00",
     location: "F303, Krefeld",
     professorId: 69,
-    professorName: "Jaman"
-  }
+    professorName: "Jaman",
+  },
 ];
 
 const professors = [
-  { id: 69, name: 'Jaman' },
-  { id: 2, name: 'Professor B' },
-  { id: 3, name: 'Professor C' },
+  { id: 69, name: "Jaman" },
+  { id: 2, name: "Professor B" },
+  { id: 3, name: "Professor C" },
   // Add more professors as needed
 ];
 
@@ -70,19 +80,47 @@ const repeatWeekly = (appointments) => {
   const today = new Date();
   const currentMonday = getMonday(today);
 
-  appointments.forEach(appointment => {
+  appointments.forEach((appointment) => {
     for (let i = 0; i < 52; i++) {
       const startDate = new Date(currentMonday);
       const endDate = new Date(currentMonday);
 
-      startDate.setDate(startDate.getDate() + ["Sunday", "Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday"].indexOf(appointment.wochentag));
-      startDate.setHours(appointment.zeitraumStart.split(':')[0], appointment.zeitraumStart.split(':')[1]);
+      startDate.setDate(
+        startDate.getDate() +
+          [
+            "Sunday",
+            "Monday",
+            "Tuesday",
+            "Wednesday",
+            "Thursday",
+            "Friday",
+            "Saturday",
+          ].indexOf(appointment.wochentag)
+      );
+      startDate.setHours(
+        appointment.zeitraumStart.split(":")[0],
+        appointment.zeitraumStart.split(":")[1]
+      );
 
-      endDate.setDate(endDate.getDate() + ["Sunday", "Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday"].indexOf(appointment.wochentag));
-      endDate.setHours(appointment.zeitraumEnd.split(':')[0], appointment.zeitraumEnd.split(':')[1]);
+      endDate.setDate(
+        endDate.getDate() +
+          [
+            "Sunday",
+            "Monday",
+            "Tuesday",
+            "Wednesday",
+            "Thursday",
+            "Friday",
+            "Saturday",
+          ].indexOf(appointment.wochentag)
+      );
+      endDate.setHours(
+        appointment.zeitraumEnd.split(":")[0],
+        appointment.zeitraumEnd.split(":")[1]
+      );
 
-      startDate.setDate(startDate.getDate() + (i * 7));
-      endDate.setDate(endDate.getDate() + (i * 7));
+      startDate.setDate(startDate.getDate() + i * 7);
+      endDate.setDate(endDate.getDate() + i * 7);
 
       result.push({
         id: appointment.id,
@@ -91,7 +129,7 @@ const repeatWeekly = (appointments) => {
         endDate: endDate,
         location: appointment.location,
         professorId: appointment.professorId,
-        professorName: appointment.professorName
+        professorName: appointment.professorName,
       });
     }
   });
@@ -101,27 +139,33 @@ const repeatWeekly = (appointments) => {
 
 const Lehrpersonen = () => {
   const [appointments, setAppointments] = useState([]);
-  const [currentDate, setCurrentDate] = useState(getMonday(new Date()).toISOString().split('T')[0]);
+  const [currentDate, setCurrentDate] = useState(
+    getMonday(new Date()).toISOString().split("T")[0]
+  );
   const [addedAppointment, setAddedAppointment] = useState({});
   const [appointmentChanges, setAppointmentChanges] = useState({});
   const [editingAppointment, setEditingAppointment] = useState(undefined);
   const [weeks, setWeeks] = useState(generateWeeks());
-  const [selectedUser, setSelectedUser] = useState('');
+  const [selectedUser, setSelectedUser] = useState("");
   const navigate = useNavigate();
 
   const commitChanges = ({ added, changed, deleted }) => {
     setAppointments((prevAppointments) => {
       let data = prevAppointments;
       if (added) {
-        const startingAddedId = data.length > 0 ? data[data.length - 1].id + 1 : 0;
+        const startingAddedId =
+          data.length > 0 ? data[data.length - 1].id + 1 : 0;
         data = [...data, { id: startingAddedId, ...added }];
       }
       if (changed) {
-        data = data.map(appointment => (
-          changed[appointment.id] ? { ...appointment, ...changed[appointment.id] } : appointment));
+        data = data.map((appointment) =>
+          changed[appointment.id]
+            ? { ...appointment, ...changed[appointment.id] }
+            : appointment
+        );
       }
       if (deleted !== undefined) {
-        data = data.filter(appointment => appointment.id !== deleted);
+        data = data.filter((appointment) => appointment.id !== deleted);
       }
       return data;
     });
@@ -134,25 +178,32 @@ const Lehrpersonen = () => {
   const handleUserChange = (event) => {
     setSelectedUser(event.target.value);
     // Filter appointments based on selected user
-    const filteredAppointments = repeatWeekly(appointmentData.filter(app => app.professorId === event.target.value));
+    const filteredAppointments = repeatWeekly(
+      appointmentData.filter((app) => app.professorId === event.target.value)
+    );
     setAppointments(filteredAppointments);
   };
 
   return (
-    <div style={{ height: '100vh', display: 'flex', flexDirection: 'column' }}>
+    <div style={{ height: "100vh", display: "flex", flexDirection: "column" }}>
       <AppBar position="static">
         <Toolbar>
           <Typography variant="h6" style={{ flexGrow: 1 }}>
             Lehrpersonen Scheduler
           </Typography>
-          <Button color="inherit" onClick={() => navigate('/home')}>
+          <Button color="inherit" onClick={() => navigate("/home")}>
             Home
           </Button>
         </Toolbar>
       </AppBar>
       <div style={{ flexGrow: 1 }}>
-        <Paper style={{ height: '100%' }}>
-          <Grid container spacing={2} alignItems="center" style={{ padding: '16px' }}>
+        <Paper style={{ height: "100%" }}>
+          <Grid
+            container
+            spacing={2}
+            alignItems="center"
+            style={{ padding: "16px" }}
+          >
             <Grid item xs={4}>
               <FormControl fullWidth>
                 <InputLabel id="week-select-label">Woche</InputLabel>
@@ -200,15 +251,12 @@ const Lehrpersonen = () => {
               editingAppointment={editingAppointment}
               onEditingAppointmentChange={setEditingAppointment}
             />
-            <WeekView
-              startDayHour={8}
-              endDayHour={20}
-            />
+            <WeekView startDayHour={8} endDayHour={20} />
             <AllDayPanel />
             <EditRecurrenceMenu />
             <ConfirmationDialog />
             <Appointments />
-            <AppointmentTooltip/>
+            <AppointmentTooltip />
             <DxAppointmentForm />
           </DxScheduler>
         </Paper>

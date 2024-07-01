@@ -5,7 +5,7 @@ DB_USER="swe"
 DB_NAME="postgres"
 DB_HOST="localhost"        # z.B. localhost
 DB_PASSWORD="swe24"
-SQL_FILE="V1_Create_Tables.sql"
+SQL_FILE="../migration/V1_Create_Tables.sql"
 
 export PGPASSWORD=$DB_PASSWORD
 
