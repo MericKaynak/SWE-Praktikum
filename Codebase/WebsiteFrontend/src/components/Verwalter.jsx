@@ -171,6 +171,8 @@ const Verwalter = () => {
     if (!email.endsWith('hs-niederhein.de')) {
       return
     }
+    console.log('Email ist ok')
+
     setShowLoginModal(false);
     try {
       const response = await axios.post("http://localhost:8080/terminplan/login", {
