@@ -84,6 +84,14 @@ public class TerminplanController {
         resourceDatabasePopulator.execute(dataSource);
     }
 
+    /**
+     * Runs through several steps to test the basic CRUD (Create, Read, Update,
+     * Delete) functions for the Lehrperson class and LehrpersonRepository
+     * 
+     * @param lehrperson
+     * @return
+     * @throws LehrpersonNotFoundException
+     */
     @PostMapping("/unittest")
     public ResponseEntity<String> lehrpersonUnitTest(@RequestBody Lehrperson lehrperson)
             throws LehrpersonNotFoundException {
