@@ -91,6 +91,9 @@ public class TerminplanController {
         String result = "Test failed.";
         Long originalCount = lehrpersonRepository.count();
 
+        System.out.println(lehrperson.toString());
+
+        System.out.println("Testing INSERT");
         try {
             lehrpersonRepository.save(lehrperson);
         } catch (RuntimeException e) {
@@ -98,19 +101,20 @@ public class TerminplanController {
             e.printStackTrace();
             result += "\n" + e.getStackTrace();
         }
+        System.out.println("INSERT " + success);
 
-        System.out.println("insert " + success);
-
+        System.out.println("Testing READ function");
         try {
             String original = lehrperson.toString();
             String testObject = lehrpersonRepository.findById(lehrperson.getId()).get().toString();
 
+            System.out.println("original: " + original);
+            System.out.println("testObject: " + testObject);
+
             if (!original.equals(testObject)) {
                 success = false;
             }
-            System.out.println("find person" + success);
-            System.out.println(original);
-            System.out.println(testObject);
+
         } catch (IllegalArgumentException e) {
             e.printStackTrace();
             result += "\n" + e.getStackTrace();
@@ -118,19 +122,45 @@ public class TerminplanController {
             e.printStackTrace();
             result += "\n" + e.getStackTrace();
         }
+        System.out.println("READ " + success);
 
+        System.out.println("Testing UPDATE function");
         try {
-            Long newCount = lehrpersonRepository.count();
-            System.out.println(newCount + " " + originalCount);
-            lehrpersonRepository.deleteById(lehrperson.getId());
-            if (originalCount == newCount) {
+            lehrperson.setName("Teststring");
+            lehrpersonRepository.save(lehrperson);
+            String originalUpdate = lehrperson.toString();
+            String testObjectUpdate = lehrpersonRepository.findById(lehrperson.getId()).get().toString();
+
+            System.out.println("original: " + originalUpdate);
+            System.out.println("testObject: " + testObjectUpdate);
+
+            if (!originalUpdate.equals(testObjectUpdate)) {
                 success = false;
             }
-            System.out.println("delete " + success);
+
+        } catch (IllegalArgumentException e) {
+            e.printStackTrace();
+            result += "\n" + e.getStackTrace();
         } catch (LehrpersonNotFoundException e) {
             e.printStackTrace();
             result += "\n" + e.getStackTrace();
         }
+        System.out.println("UPDATE " + success);
+
+        System.out.println("Testing DELETE function");
+        try {
+            Long newCount = lehrpersonRepository.count();
+            System.out.println("new count: " + newCount + ", old count: " + originalCount);
+            lehrpersonRepository.deleteById(lehrperson.getId());
+            if (originalCount == newCount) {
+                success = false;
+            }
+        } catch (LehrpersonNotFoundException e) {
+            e.printStackTrace();
+            result += "\n" + e.getStackTrace();
+        }
+        System.out.println("DELETE " + success);
+
         if (success) {
             result = "Test succeeded.";
         }
