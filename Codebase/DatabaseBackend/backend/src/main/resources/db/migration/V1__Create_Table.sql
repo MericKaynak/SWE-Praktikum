@@ -67,11 +67,6 @@ CREATE TABLE Verwalter (
     Passwort VARCHAR(20)
 );
 
-CREATE TABLE Vertretung (
-    Datum DATE,
-    Lehrperson_ID INT
-);
-
 CREATE OR REPLACE FUNCTION add_student_to_courses() RETURNS TRIGGER AS $$
 BEGIN
     INSERT INTO Besuchen (Student_ID, Lehrveranstaltung_ID)

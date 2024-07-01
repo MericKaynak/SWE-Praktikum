@@ -1,6 +1,7 @@
 -- FÜR TESTZWECKE, NICHT ALS FLYWAY ANWEISUNG
 
 DROP TABLE Student, Lehrperson,Raum,Termin,Lehrveranstaltung, Besuchen,Benachrichtigung,Verwalter CASCADE;
+DROP FUNCTION add_student_to_courses;
 
 CREATE TABLE Student (
     ID INT PRIMARY KEY,

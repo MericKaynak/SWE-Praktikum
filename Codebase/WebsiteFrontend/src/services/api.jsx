@@ -15,3 +15,5 @@ export const getAppointments = () =>
 
 export const createAppointment = (appointment) =>
   api.post('/appointments', appointment);
+
+
