@@ -1,6 +1,6 @@
-import React, { useState, useEffect } from "react";
-import Paper from "@mui/material/Paper";
-import { ViewState, EditingState } from "@devexpress/dx-react-scheduler";
+import React, { useState, useEffect } from 'react';
+import Paper from '@mui/material/Paper';
+import { ViewState, EditingState } from '@devexpress/dx-react-scheduler';
 import {
   Scheduler as DxScheduler,
   Appointments,
@@ -10,21 +10,11 @@ import {
   EditRecurrenceMenu,
   AllDayPanel,
   ConfirmationDialog,
-} from "@devexpress/dx-react-scheduler-material-ui";
-import {
-  MenuItem,
-  Select,
-  FormControl,
-  InputLabel,
-  Grid,
-  Button,
-  AppBar,
-  Toolbar,
-  Typography,
-} from "@mui/material";
-import { useNavigate } from "react-router-dom";
-import axios from "axios";
-import LoginModal from "./LoginModal.jsx";
+} from '@devexpress/dx-react-scheduler-material-ui';
+import { MenuItem, Select, FormControl, InputLabel, Grid, Button, AppBar, Toolbar, Typography } from '@mui/material';
+import { useNavigate } from 'react-router-dom';
+import axios from 'axios';
+import LoginModal from './LoginModal.jsx';
 
 const getMonday = (date) => {
   date = new Date(date);
@@ -41,7 +31,7 @@ const generateWeeks = () => {
   for (let i = -12; i <= 12; i++) {
     const weekStart = new Date(currentMonday);
     weekStart.setDate(currentMonday.getDate() + i * 7);
-    weeks.push(weekStart.toISOString().split("T")[0]);
+    weeks.push(weekStart.toISOString().split('T')[0]);
   }
 
   return weeks;
@@ -50,31 +40,24 @@ const generateWeeks = () => {
 const appointmentData = [
   {
     id: 1,
-    title: "Kiffologie",
-    wochentag: "Monday",
-    zeitraumStart: "08:00:00",
-    zeitraumEnd: "10:00:00",
-    location: "F303, Krefeld",
+    title: 'Kiffologie',
+    wochentag: 'Monday',
+    zeitraumStart: '08:00:00',
+    zeitraumEnd: '10:00:00',
+    location: 'F303, Krefeld',
     professorId: 69,
-    professorName: "Jaman",
+    professorName: 'Jaman',
   },
   {
     id: 2,
-    title: "ET2",
-    wochentag: "Monday",
-    zeitraumStart: "10:00:00",
-    zeitraumEnd: "12:00:00",
-    location: "F303, Krefeld",
+    title: 'ET2',
+    wochentag: 'Monday',
+    zeitraumStart: '10:00:00',
+    zeitraumEnd: '12:00:00',
+    location: 'F303, Krefeld',
     professorId: 69,
-    professorName: "Jaman",
+    professorName: 'Jaman',
   },
-];
-
-const professors = [
-  { id: 69, name: "Jaman" },
-  { id: 2, name: "Professor B" },
-  { id: 3, name: "Professor C" },
-  // Add more professors as needed
 ];
 
 const repeatWeekly = (appointments) => {
@@ -89,37 +72,15 @@ const repeatWeekly = (appointments) => {
 
       startDate.setDate(
         startDate.getDate() +
-          [
-            "Sunday",
-            "Monday",
-            "Tuesday",
-            "Wednesday",
-            "Thursday",
-            "Friday",
-            "Saturday",
-          ].indexOf(appointment.wochentag)
+          ['Sunday', 'Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday'].indexOf(appointment.wochentag)
       );
-      startDate.setHours(
-        appointment.zeitraumStart.split(":")[0],
-        appointment.zeitraumStart.split(":")[1]
-      );
+      startDate.setHours(appointment.zeitraumStart.split(':')[0], appointment.zeitraumStart.split(':')[1]);
 
       endDate.setDate(
         endDate.getDate() +
-          [
-            "Sunday",
-            "Monday",
-            "Tuesday",
-            "Wednesday",
-            "Thursday",
-            "Friday",
-            "Saturday",
-          ].indexOf(appointment.wochentag)
+          ['Sunday', 'Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday'].indexOf(appointment.wochentag)
       );
-      endDate.setHours(
-        appointment.zeitraumEnd.split(":")[0],
-        appointment.zeitraumEnd.split(":")[1]
-      );
+      endDate.setHours(appointment.zeitraumEnd.split(':')[0], appointment.zeitraumEnd.split(':')[1]);
 
       startDate.setDate(startDate.getDate() + i * 7);
       endDate.setDate(endDate.getDate() + i * 7);
@@ -141,22 +102,37 @@ const repeatWeekly = (appointments) => {
 
 const Verwalter = () => {
   const [appointments, setAppointments] = useState([]);
-  const [currentDate, setCurrentDate] = useState(
-    getMonday(new Date()).toISOString().split("T")[0]
-  );
+  const [currentDate, setCurrentDate] = useState(getMonday(new Date()).toISOString().split('T')[0]);
   const [addedAppointment, setAddedAppointment] = useState({});
   const [appointmentChanges, setAppointmentChanges] = useState({});
   const [editingAppointment, setEditingAppointment] = useState(undefined);
   const [weeks, setWeeks] = useState(generateWeeks());
-  const [selectedUser, setSelectedUser] = useState("");
+  const [selectedUser, setSelectedUser] = useState('');
+  const [professors, setProfessors] = useState([]);
+  const [loadingProfessors, setLoadingProfessors] = useState(true);
   const navigate = useNavigate();
   const [showLoginModal, setShowLoginModal] = useState(false);
 
   useEffect(() => {
-    const token = localStorage.getItem("token");
+    const token = localStorage.getItem('token');
     if (!token) {
       setShowLoginModal(true);
     }
+  }, []);
+
+  useEffect(() => {
+    const fetchProfessors = async () => {
+      try {
+        const response = await axios.get('http://localhost:8080/terminplan/fetchAllLp');
+        setProfessors(response.data);
+        setLoadingProfessors(false);
+      } catch (error) {
+        console.error('Error fetching professors:', error);
+        setLoadingProfessors(false);
+      }
+    };
+
+    fetchProfessors();
   }, []);
 
   const handleLoginClose = () => {
@@ -168,21 +144,18 @@ const Verwalter = () => {
   };
 
   const sendLogin = async (email, password) => {
-    if (!email.endsWith("@hs-niederrhein.de")) {
-      console.error("Email must end with @hs-niederrhein.de");
+    if (!email.endsWith('@hs-niederrhein.de')) {
+      console.error('Email must end with @hs-niederrhein.de');
       return;
     }
-    console.log("Email ist ok", email);
+    console.log('Email ist ok', email);
     try {
-      const response = await axios.post(
-        "http://localhost:8080/terminplan/login",
-        { email, password }
-      );
-      localStorage.setItem("token", response.data.token);
-      localStorage.setItem("loginTimestamp", new Date().getTime());
+      const response = await axios.post('http://localhost:8080/terminplan/login', { email, password });
+      localStorage.setItem('token', response.data.token);
+      localStorage.setItem('loginTimestamp', new Date().getTime());
       setShowLoginModal(false);
     } catch (error) {
-      console.error("Login failed", error);
+      console.error('Login failed', error);
     }
   };
 
@@ -190,15 +163,12 @@ const Verwalter = () => {
     setAppointments((prevAppointments) => {
       let data = prevAppointments;
       if (added) {
-        const startingAddedId =
-          data.length > 0 ? data[data.length - 1].id + 1 : 0;
+        const startingAddedId = data.length > 0 ? data[data.length - 1].id + 1 : 0;
         data = [...data, { id: startingAddedId, ...added }];
       }
       if (changed) {
         data = data.map((appointment) =>
-          changed[appointment.id]
-            ? { ...appointment, ...changed[appointment.id] }
-            : appointment
+          changed[appointment.id] ? { ...appointment, ...changed[appointment.id] } : appointment
         );
       }
       if (deleted !== undefined) {
@@ -222,41 +192,28 @@ const Verwalter = () => {
   };
 
   return (
-    <div style={{ height: "100vh", display: "flex", flexDirection: "column" }}>
+    <div style={{ height: '100vh', display: 'flex', flexDirection: 'column' }}>
       <AppBar position="static">
         <Toolbar>
-          <Typography variant="h6" style={{ flexGrow: 1 }}>
+          <Typography variant='h6' style={{ flexGrow: 1 }}>
             Verwalter Scheduler
           </Typography>
-          <Button color="inherit" onClick={() => navigate("/home")}>
+          <Button color='inherit' onClick={() => navigate('/home')}>
             Home
           </Button>
-          <Button color="inherit" onClick={handleLoginOpen}>
+          <Button color='inherit' onClick={handleLoginOpen}>
             Login
           </Button>
         </Toolbar>
       </AppBar>
-      <LoginModal
-        open={showLoginModal}
-        onClose={handleLoginClose}
-        onLogin={sendLogin}
-      />
+      <LoginModal open={showLoginModal} onClose={handleLoginClose} onLogin={sendLogin} />
       <div style={{ flexGrow: 1 }}>
-        <Paper style={{ height: "100%" }}>
-          <Grid
-            container
-            spacing={2}
-            alignItems="center"
-            style={{ padding: "16px" }}
-          >
+        <Paper style={{ height: '100%' }}>
+          <Grid container spacing={2} alignItems='center' style={{ padding: '16px' }}>
             <Grid item xs={4}>
               <FormControl fullWidth>
-                <InputLabel id="week-select-label">Woche</InputLabel>
-                <Select
-                  labelId="week-select-label"
-                  value={currentDate}
-                  onChange={handleWeekChange}
-                >
+                <InputLabel id='week-select-label'>Woche</InputLabel>
+                <Select labelId='week-select-label' value={currentDate} onChange={handleWeekChange}>
                   {weeks.map((week) => (
                     <MenuItem key={week} value={week}>
                       {week}
@@ -267,12 +224,12 @@ const Verwalter = () => {
             </Grid>
             <Grid item xs={8}>
               <FormControl fullWidth>
-                <InputLabel id="user-select-label">Lehrperson</InputLabel>
+                <InputLabel id='user-select-label'>Lehrperson</InputLabel>
                 <Select
-                  labelId="user-select-label"
+                  labelId='user-select-label'
                   value={selectedUser}
                   onChange={handleUserChange}
-                  //disabled={!localStorage.getItem('token')} // Disable select if not logged in
+                  disabled={loadingProfessors}
                 >
                   {professors.map((professor) => (
                     <MenuItem key={professor.id} value={professor.id}>
@@ -283,11 +240,8 @@ const Verwalter = () => {
               </FormControl>
             </Grid>
           </Grid>
-          <DxScheduler data={appointments} height="calc(100vh - 112px)">
-            <ViewState
-              currentDate={currentDate}
-              onCurrentDateChange={setCurrentDate}
-            />
+          <DxScheduler data={appointments} height='calc(100vh - 112px)'>
+            <ViewState currentDate={currentDate} onCurrentDateChange={setCurrentDate} />
             <EditingState
               onCommitChanges={commitChanges}
               addedAppointment={addedAppointment}
