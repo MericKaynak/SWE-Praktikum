@@ -1,0 +1,25 @@
+version: "3.7"
+
+services:
+  postgres:
+    image: postgres
+    container_name: postgres-container
+    restart: always
+    environment:
+      POSTGRES_DB: location_db
+      POSTGRES_USER: vision
+      POSTGRES_PASSWORD: passwort123
+    ports:
+      - "8090:5432"
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+
+  adminer:
+    image: adminer
+    container_name: adminer-container
+    restart: always
+    ports:
+      - "8091:8080"
+
+volumes:
+  postgres_data:
