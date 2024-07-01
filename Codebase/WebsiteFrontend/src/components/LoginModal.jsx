@@ -14,17 +14,7 @@ const LoginModal = ({ open, onClose, onLogin }) => {
   const [password, setPassword] = useState("");
 
   const handleLogin = async () => {
-    try {
-      const response = await axios.post("/terminplan/login", {
-        email,
-        password,
-      });
-      localStorage.setItem("token", response.data.token);
-      localStorage.setItem("loginTimestamp", new Date().getTime());
-      onLogin();
-    } catch (error) {
-      console.error("Login failed", error);
-    }
+
   };
 
   return (
@@ -51,7 +41,7 @@ const LoginModal = ({ open, onClose, onLogin }) => {
       </DialogContent>
       <DialogActions>
         <Button onClick={onClose}>Cancel</Button>
-        <Button onClick={handleLogin}>Login</Button>
+        <Button onClick={onLogin}>Login</Button>
       </DialogActions>
     </Dialog>
   );

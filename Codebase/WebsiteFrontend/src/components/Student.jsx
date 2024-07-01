@@ -79,108 +79,120 @@ const Student = () => {
     setShowLoginModal(true);
   };
 
-  const handleLogin = () => {
+  const handleLogin = async () => {
+    if (!email.endsWith('@stud.hn.de')) {
+      return
+    }
     setShowLoginModal(false);
-    // You can add logic to fetch student-specific appointments here
+    try {
+      const response = await axios.post("http://localhost:8080/terminplan/login", {
+        email,
+        password,
+      });
+      localStorage.setItem("token", response.data.token);
+      localStorage.setItem("loginTimestamp", new Date().getTime());
+    } catch (error) {
+      console.error("Login failed", error);
+    }
   };
 
-  const commitChanges = ({ added, changed, deleted }) => {
-    setAppointments((prevAppointments) => {
-      let data = prevAppointments;
-      if (added) {
-        const startingAddedId =
-          data.length > 0 ? data[data.length - 1].id + 1 : 0;
-        data = [...data, { id: startingAddedId, ...added }];
-      }
-      if (changed) {
-        data = data.map((appointment) =>
-          changed[appointment.id]
-            ? { ...appointment, ...changed[appointment.id] }
-            : appointment
-        );
-      }
-      if (deleted !== undefined) {
-        data = data.filter((appointment) => appointment.id !== deleted);
-      }
-      return data;
-    });
-  };
+    const commitChanges = ({added, changed, deleted}) => {
+      setAppointments((prevAppointments) => {
+        let data = prevAppointments;
+        if (added) {
+          const startingAddedId =
+              data.length > 0 ? data[data.length - 1].id + 1 : 0;
+          data = [...data, {id: startingAddedId, ...added}];
+        }
+        if (changed) {
+          data = data.map((appointment) =>
+              changed[appointment.id]
+                  ? {...appointment, ...changed[appointment.id]}
+                  : appointment
+          );
+        }
+        if (deleted !== undefined) {
+          data = data.filter((appointment) => appointment.id !== deleted);
+        }
+        return data;
+      });
+    };
 
-  const handleWeekChange = (event) => {
-    setCurrentDate(event.target.value);
-  };
+    const handleWeekChange = (event) => {
+      setCurrentDate(event.target.value);
+    };
 
-  return (
-    <div style={{ height: "100vh", display: "flex", flexDirection: "column" }}>
-      <AppBar position="static">
-        <Toolbar>
-          <Typography variant="h6" style={{ flexGrow: 1 }}>
-            Student Scheduler
-          </Typography>
-          <Button color="inherit" onClick={() => navigate("/home")}>
-            Home
-          </Button>
-          <Button color="inherit" onClick={handleLoginOpen}>
-            Login
-          </Button>
-        </Toolbar>
-      </AppBar>
-      <LoginModal
-        open={showLoginModal}
-        onClose={handleLoginClose}
-        onLogin={handleLogin}
-      />
-      <div style={{ flexGrow: 1 }}>
-        <Paper style={{ height: "100%" }}>
-          <Grid
-            container
-            spacing={2}
-            alignItems="center"
-            style={{ padding: "16px" }}
-          >
-            <Grid item xs={4}>
-              <FormControl fullWidth>
-                <InputLabel id="week-select-label">Woche</InputLabel>
-                <Select
-                  labelId="week-select-label"
-                  value={currentDate}
-                  onChange={handleWeekChange}
-                >
-                  {weeks.map((week) => (
-                    <MenuItem key={week} value={week}>
-                      {week}
-                    </MenuItem>
-                  ))}
-                </Select>
-              </FormControl>
-            </Grid>
-          </Grid>
-          <DxScheduler data={appointments} height="calc(100vh - 112px)">
-            <ViewState
-              currentDate={currentDate}
-              onCurrentDateChange={setCurrentDate}
-            />
-            <EditingState
-              onCommitChanges={commitChanges}
-              addedAppointment={addedAppointment}
-              onAddedAppointmentChange={setAddedAppointment}
-              appointmentChanges={appointmentChanges}
-              onAppointmentChangesChange={setAppointmentChanges}
-              editingAppointment={editingAppointment}
-              onEditingAppointmentChange={setEditingAppointment}
-            />
-            <WeekView startDayHour={8} endDayHour={20} />
-            <AllDayPanel />
-            <EditRecurrenceMenu />
-            <ConfirmationDialog />
-            <Appointments />
-            <AppointmentTooltip />
-            <DxAppointmentForm />
-          </DxScheduler>
-        </Paper>
-      </div>
-    </div>
-  );
-};
+    return (
+        <div style={{height: "100vh", display: "flex", flexDirection: "column"}}>
+          <AppBar position="static">
+            <Toolbar>
+              <Typography variant="h6" style={{flexGrow: 1}}>
+                Student Scheduler
+              </Typography>
+              <Button color="inherit" onClick={() => navigate("/home")}>
+                Home
+              </Button>
+              <Button color="inherit" onClick={handleLoginOpen}>
+                Login
+              </Button>
+            </Toolbar>
+          </AppBar>
+          <LoginModal
+              open={showLoginModal}
+              onClose={handleLoginClose}
+              onLogin={handleLogin}
+          />
+          <div style={{flexGrow: 1}}>
+            <Paper style={{height: "100%"}}>
+              <Grid
+                  container
+                  spacing={2}
+                  alignItems="center"
+                  style={{padding: "16px"}}
+              >
+                <Grid item xs={4}>
+                  <FormControl fullWidth>
+                    <InputLabel id="week-select-label">Woche</InputLabel>
+                    <Select
+                        labelId="week-select-label"
+                        value={currentDate}
+                        onChange={handleWeekChange}
+                    >
+                      {weeks.map((week) => (
+                          <MenuItem key={week} value={week}>
+                            {week}
+                          </MenuItem>
+                      ))}
+                    </Select>
+                  </FormControl>
+                </Grid>
+              </Grid>
+              <DxScheduler data={appointments} height="calc(100vh - 112px)">
+                <ViewState
+                    currentDate={currentDate}
+                    onCurrentDateChange={setCurrentDate}
+                />
+                <EditingState
+                    onCommitChanges={commitChanges}
+                    addedAppointment={addedAppointment}
+                    onAddedAppointmentChange={setAddedAppointment}
+                    appointmentChanges={appointmentChanges}
+                    onAppointmentChangesChange={setAppointmentChanges}
+                    editingAppointment={editingAppointment}
+                    onEditingAppointmentChange={setEditingAppointment}
+                />
+                <WeekView startDayHour={8} endDayHour={20}/>
+                <AllDayPanel/>
+                <EditRecurrenceMenu/>
+                <ConfirmationDialog/>
+                <Appointments/>
+                <AppointmentTooltip/>
+                <DxAppointmentForm/>
+              </DxScheduler>
+            </Paper>
+          </div>
+        </div>
+    );
+  };
 
 export default Student;

@@ -167,9 +167,21 @@ const Verwalter = () => {
     setShowLoginModal(true);
   };
 
-  const handleLogin = () => {
+  const handleLogin = async () => {
+    if (!email.endsWith('hs-niederhein.de')) {
+      return
+    }
     setShowLoginModal(false);
-    // You can add logic to fetch student-specific appointments here
+    try {
+      const response = await axios.post("http://localhost:8080/terminplan/login", {
+        email,
+        password,
+      });
+      localStorage.setItem("token", response.data.token);
+      localStorage.setItem("loginTimestamp", new Date().getTime());
+    } catch (error) {
+      console.error("Login failed", error);
+    }
   };
 
   const commitChanges = ({ added, changed, deleted }) => {
