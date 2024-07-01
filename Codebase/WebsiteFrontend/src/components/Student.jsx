@@ -1,6 +1,10 @@
 import React, { useState, useEffect } from "react";
 import Paper from "@mui/material/Paper";
-import { ViewState, EditingState } from "@devexpress/dx-react-scheduler";
+import {
+  ViewState,
+  EditingState,
+  IntegratedEditing,
+} from "@devexpress/dx-react-scheduler";
 import {
   Scheduler as DxScheduler,
   Appointments,
@@ -17,11 +21,6 @@ import {
   FormControl,
   InputLabel,
   Grid,
-  Dialog,
-  DialogActions,
-  DialogContent,
-  DialogTitle,
-  TextField,
   Button,
   AppBar,
   Toolbar,
@@ -30,27 +29,7 @@ import {
 import { useNavigate } from "react-router-dom";
 import axios from "axios";
 import LoginModal from "./LoginModal.jsx";
-
-const getMonday = (date) => {
-  date = new Date(date);
-  const day = date.getDay(),
-    diff = date.getDate() - day + (day === 0 ? -6 : 1);
-  return new Date(date.setDate(diff));
-};
-
-const generateWeeks = () => {
-  const weeks = [];
-  const today = new Date();
-  const currentMonday = getMonday(today);
-
-  for (let i = -12; i <= 12; i++) {
-    const weekStart = new Date(currentMonday);
-    weekStart.setDate(currentMonday.getDate() + i * 7);
-    weeks.push(weekStart.toISOString().split("T")[0]);
-  }
-
-  return weeks;
-};
+import { getMonday, generateWeeks, repeatWeekly } from "./AppointmentsFuncs.jsx";
 
 const Student = () => {
   const [appointments, setAppointments] = useState([]);
@@ -85,7 +64,6 @@ const Student = () => {
       setLoginError("Email must end with @stud.hn.de");
       return;
     }
-    console.log("Email ist ok", email);
     try {
       const response = await axios.post(
         "http://localhost:8080/terminplan/login",
@@ -94,35 +72,27 @@ const Student = () => {
       localStorage.setItem("token", response.data.token);
       localStorage.setItem("loginTimestamp", new Date().getTime());
       setShowLoginModal(false);
+      fetchAppointments();
     } catch (error) {
       console.error("Login failed", error);
     }
   };
 
-  const commitChanges = ({ added, changed, deleted }) => {
-    setAppointments((prevAppointments) => {
-      let data = prevAppointments;
-      if (added) {
-        const startingAddedId =
-          data.length > 0 ? data[data.length - 1].id + 1 : 0;
-        data = [...data, { id: startingAddedId, ...added }];
-      }
-      if (changed) {
-        data = data.map((appointment) =>
-          changed[appointment.id]
-            ? { ...appointment, ...changed[appointment.id] }
-            : appointment
-        );
-      }
-      if (deleted !== undefined) {
-        data = data.filter((appointment) => appointment.id !== deleted);
-      }
-      return data;
-    });
+  const fetchAppointments = async () => {
+    try {
+      const response = await axios.get("http://localhost:8080/terminplan/appointments");
+      setAppointments(response.data);
+    } catch (error) {
+      console.error("Error fetching appointments:", error);
+    }
   };
 
   const handleWeekChange = (event) => {
     setCurrentDate(event.target.value);
+  };
+
+  const commitChanges = ({ added, changed, deleted }) => {
+    // Handle CRUD operations on appointments
   };
 
   return (
@@ -185,6 +155,7 @@ const Student = () => {
               editingAppointment={editingAppointment}
               onEditingAppointmentChange={setEditingAppointment}
             />
+            <IntegratedEditing />
             <WeekView startDayHour={8} endDayHour={20} />
             <AllDayPanel />
             <EditRecurrenceMenu />

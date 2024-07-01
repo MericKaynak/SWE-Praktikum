@@ -1,6 +1,7 @@
 import axios from 'axios';
+import {repeatWeekly} from "./AppointmentsFuncs.jsx";
 
-export const fetchAllAppointments = async () => {
+export const fetchProfessors = async () => {
   try {
     const response = await axios.get('http://localhost:8080/terminplan/fetchAllLp');
     return response.data;
@@ -9,3 +10,18 @@ export const fetchAllAppointments = async () => {
     throw error;
   }
 };
+
+export const fetchAppointments = async (userId) => {
+    try {
+      const response = await axios.get(
+        `http://localhost:8080/terminplan/add/${userId}`
+      );
+      const data = response.data;
+      const filteredAppointments = repeatWeekly(
+        data.filter((app) => app.professorId === userId)
+      );
+      setAppointments(filteredAppointments);
+    } catch (error) {
+      console.error("Error fetching appointments:", error);
+    }
+  };

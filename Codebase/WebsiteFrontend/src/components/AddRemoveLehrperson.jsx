@@ -1,5 +1,6 @@
 import React, { useState } from 'react';
 import { FormControl, InputLabel, Select, MenuItem, Grid, TextField, Button, Paper, Typography, AppBar, Toolbar } from '@mui/material';
+import axios from "axios";
 
 const AddRemoveProfessors = () => {
   const [actionType, setActionType] = useState('');
@@ -32,26 +33,31 @@ const AddRemoveProfessors = () => {
   };
 
   const handleFormSubmit = () => {
-    // Hier könnten Sie die Logik für das Absenden des Formulars implementieren
-    console.log(formData);
-    // Beispiel: axios.post('/api/professors/add', formData);
-    // Nach dem Absenden könnten Sie das Formular zurücksetzen
-    setFormData({
-      name: '',
-      email: '',
-      rolle: '',
-      wochenarbeitsstunden: ''
-    });
+    try {
+      console.log(formData);
+      const response = axios.post('/api/professors/add', formData);
+      setFormData({
+        name: '',
+        email: '',
+        rolle: '',
+        wochenarbeitsstunden: ''
+      });
+      console.error('Succesfully added professor');
+    } catch (error){
+      console.error('Error adding professor:', error);
+    }
   };
 
   const handleActionSubmit = () => {
     if (actionType === 'remove' && selectedProfessor !== '') {
-      // Hier könnten Sie die Logik für das Entfernen der ausgewählten Lehrperson implementieren
-      console.log(`Remove Professor with ID ${selectedProfessor}`);
-      // Beispiel: axios.delete(`/api/professors/${selectedProfessor}`);
-      // Nach dem Entfernen zurücksetzen
-      setSelectedProfessor('');
-      setActionType('');
+      try {
+          const response = axios.post(`http://localhost:8080/terminplan/delete/${selectedProfessor.id}`, formData);
+          console.log(`Removed Professor: ${selectedProfessor.name}`);
+          setSelectedProfessor('');
+          setActionType('');
+      } catch (error) {
+        console.error('Error deleting professor:', error);
+      }
     }
   };
 

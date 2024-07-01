@@ -23,119 +23,9 @@ import {
   Button,
 } from "@mui/material";
 import { useNavigate } from "react-router-dom";
-
-const getMonday = (date) => {
-  date = new Date(date);
-  const day = date.getDay(),
-    diff = date.getDate() - day + (day === 0 ? -6 : 1);
-  return new Date(date.setDate(diff));
-};
-
-const generateWeeks = () => {
-  const weeks = [];
-  const today = new Date();
-  const currentMonday = getMonday(today);
-
-  for (let i = -12; i <= 12; i++) {
-    const weekStart = new Date(currentMonday);
-    weekStart.setDate(currentMonday.getDate() + i * 7);
-    weeks.push(weekStart.toISOString().split("T")[0]);
-  }
-
-  return weeks;
-};
-
-const appointmentData = [
-  {
-    id: 1,
-    title: "Kiffologie",
-    wochentag: "Monday",
-    zeitraumStart: "08:00:00",
-    zeitraumEnd: "10:00:00",
-    location: "F303, Krefeld",
-    professorId: 69,
-    professorName: "Jaman",
-  },
-  {
-    id: 2,
-    title: "ET2",
-    wochentag: "Monday",
-    zeitraumStart: "10:00:00",
-    zeitraumEnd: "12:00:00",
-    location: "F303, Krefeld",
-    professorId: 69,
-    professorName: "Jaman",
-  },
-];
-
-const professors = [
-  { id: 69, name: "Jaman" },
-  { id: 2, name: "Professor B" },
-  { id: 3, name: "Professor C" },
-  // Add more professors as needed
-];
-
-const repeatWeekly = (appointments) => {
-  const result = [];
-  const today = new Date();
-  const currentMonday = getMonday(today);
-
-  appointments.forEach((appointment) => {
-    for (let i = 0; i < 52; i++) {
-      const startDate = new Date(currentMonday);
-      const endDate = new Date(currentMonday);
-
-      startDate.setDate(
-        startDate.getDate() +
-          [
-            "Sunday",
-            "Monday",
-            "Tuesday",
-            "Wednesday",
-            "Thursday",
-            "Friday",
-            "Saturday",
-          ].indexOf(appointment.wochentag)
-      );
-      startDate.setHours(
-        appointment.zeitraumStart.split(":")[0],
-        appointment.zeitraumStart.split(":")[1]
-      );
-
-      endDate.setDate(
-        endDate.getDate() +
-          [
-            "Sunday",
-            "Monday",
-            "Tuesday",
-            "Wednesday",
-            "Thursday",
-            "Friday",
-            "Saturday",
-          ].indexOf(appointment.wochentag)
-      );
-      endDate.setHours(
-        appointment.zeitraumEnd.split(":")[0],
-        appointment.zeitraumEnd.split(":")[1]
-      );
-
-      startDate.setDate(startDate.getDate() + i * 7);
-      endDate.setDate(endDate.getDate() + i * 7);
-
-      result.push({
-        id: appointment.id,
-        title: appointment.title,
-        startDate: startDate,
-        endDate: endDate,
-        location: appointment.location,
-        professorId: appointment.professorId,
-        professorName: appointment.professorName,
-      });
-    }
-  });
-
-  return result;
-};
+import axios from "axios"; // Import axios for HTTP requests
+import { getMonday, generateWeeks, repeatWeekly } from "./AppointmentsFuncs.jsx";
+import {fetchAppointments, fetchProfessors} from './api.jsx'
 
 const Lehrpersonen = () => {
   const [appointments, setAppointments] = useState([]);
@@ -146,8 +36,31 @@ const Lehrpersonen = () => {
   const [appointmentChanges, setAppointmentChanges] = useState({});
   const [editingAppointment, setEditingAppointment] = useState(undefined);
   const [weeks, setWeeks] = useState(generateWeeks());
+  const [professors, setProfessors] = useState([]);
   const [selectedUser, setSelectedUser] = useState("");
   const navigate = useNavigate();
+
+  useEffect(() => {
+    // Fetch professors initially
+    fetchProfessors();
+  }, []);
+
+
+  useEffect(() => {
+    // Fetch appointments when selectedUser changes
+    if (selectedUser) {
+      fetchAppointments(selectedUser);
+    }
+  }, [selectedUser]);
+
+
+  const handleWeekChange = (event) => {
+    setCurrentDate(event.target.value);
+  };
+
+  const handleUserChange = (event) => {
+    setSelectedUser(event.target.value);
+  };
 
   const commitChanges = ({ added, changed, deleted }) => {
     setAppointments((prevAppointments) => {
@@ -169,19 +82,6 @@ const Lehrpersonen = () => {
       }
       return data;
     });
-  };
-
-  const handleWeekChange = (event) => {
-    setCurrentDate(event.target.value);
-  };
-
-  const handleUserChange = (event) => {
-    setSelectedUser(event.target.value);
-    // Filter appointments based on selected user
-    const filteredAppointments = repeatWeekly(
-      appointmentData.filter((app) => app.professorId === event.target.value)
-    );
-    setAppointments(filteredAppointments);
   };
 
   return (

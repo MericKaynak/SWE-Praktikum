@@ -15,90 +15,7 @@ import { MenuItem, Select, FormControl, InputLabel, Grid, Button, AppBar, Toolba
 import { useNavigate } from 'react-router-dom';
 import axios from 'axios';
 import LoginModal from './LoginModal.jsx';
-
-const getMonday = (date) => {
-  date = new Date(date);
-  const day = date.getDay(),
-    diff = date.getDate() - day + (day === 0 ? -6 : 1);
-  return new Date(date.setDate(diff));
-};
-
-const generateWeeks = () => {
-  const weeks = [];
-  const today = new Date();
-  const currentMonday = getMonday(today);
-
-  for (let i = -12; i <= 12; i++) {
-    const weekStart = new Date(currentMonday);
-    weekStart.setDate(currentMonday.getDate() + i * 7);
-    weeks.push(weekStart.toISOString().split('T')[0]);
-  }
-
-  return weeks;
-};
-
-const appointmentData = [
-  {
-    id: 1,
-    title: 'Kiffologie',
-    wochentag: 'Monday',
-    zeitraumStart: '08:00:00',
-    zeitraumEnd: '10:00:00',
-    location: 'F303, Krefeld',
-    professorId: 69,
-    professorName: 'Jaman',
-  },
-  {
-    id: 2,
-    title: 'ET2',
-    wochentag: 'Monday',
-    zeitraumStart: '10:00:00',
-    zeitraumEnd: '12:00:00',
-    location: 'F303, Krefeld',
-    professorId: 69,
-    professorName: 'Jaman',
-  },
-];
-
-const repeatWeekly = (appointments) => {
-  const result = [];
-  const today = new Date();
-  const currentMonday = getMonday(today);
-
-  appointments.forEach((appointment) => {
-    for (let i = 0; i < 52; i++) {
-      const startDate = new Date(currentMonday);
-      const endDate = new Date(currentMonday);
-
-      startDate.setDate(
-        startDate.getDate() +
-          ['Sunday', 'Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday'].indexOf(appointment.wochentag)
-      );
-      startDate.setHours(appointment.zeitraumStart.split(':')[0], appointment.zeitraumStart.split(':')[1]);
-
-      endDate.setDate(
-        endDate.getDate() +
-          ['Sunday', 'Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday'].indexOf(appointment.wochentag)
-      );
-      endDate.setHours(appointment.zeitraumEnd.split(':')[0], appointment.zeitraumEnd.split(':')[1]);
-
-      startDate.setDate(startDate.getDate() + i * 7);
-      endDate.setDate(endDate.getDate() + i * 7);
-
-      result.push({
-        id: appointment.id,
-        title: appointment.title,
-        startDate: startDate,
-        endDate: endDate,
-        location: appointment.location,
-        professorId: appointment.professorId,
-        professorName: appointment.professorName,
-      });
-    }
-  });
-
-  return result;
-};
+import { getMonday, generateWeeks, repeatWeekly } from './AppointmentsFuncs.jsx';
 
 const Verwalter = () => {
   const [appointments, setAppointments] = useState([]);
@@ -110,8 +27,8 @@ const Verwalter = () => {
   const [selectedUser, setSelectedUser] = useState('');
   const [professors, setProfessors] = useState([]);
   const [loadingProfessors, setLoadingProfessors] = useState(true);
-  const navigate = useNavigate();
   const [showLoginModal, setShowLoginModal] = useState(false);
+  const navigate = useNavigate();
 
   useEffect(() => {
     const token = localStorage.getItem('token');
@@ -148,12 +65,13 @@ const Verwalter = () => {
       console.error('Email must end with @hs-niederrhein.de');
       return;
     }
-    console.log('Email ist ok', email);
+
     try {
       const response = await axios.post('http://localhost:8080/terminplan/login', { email, password });
       localStorage.setItem('token', response.data.token);
       localStorage.setItem('loginTimestamp', new Date().getTime());
       setShowLoginModal(false);
+      fetchProfessors(); // Reload professors after successful login
     } catch (error) {
       console.error('Login failed', error);
     }
@@ -184,11 +102,21 @@ const Verwalter = () => {
 
   const handleUserChange = (event) => {
     setSelectedUser(event.target.value);
-    // Filter appointments based on selected user
-    const filteredAppointments = repeatWeekly(
-      appointmentData.filter((app) => app.professorId === event.target.value)
-    );
-    setAppointments(filteredAppointments);
+    // Fetch appointments based on selected user
+    fetchAppointments(event.target.value);
+  };
+
+  const fetchAppointments = async (userId) => {
+    try {
+      const response = await axios.get(`http://localhost:8080/terminplan/add/${userId}`);
+      const data = response.data;
+      const filteredAppointments = repeatWeekly(
+        data.filter((app) => app.professorId === userId)
+      );
+      setAppointments(filteredAppointments);
+    } catch (error) {
+      console.error('Error fetching appointments:', error);
+    }
   };
 
   return (
