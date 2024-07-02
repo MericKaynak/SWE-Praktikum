@@ -23,9 +23,8 @@ import {
   Button,
 } from "@mui/material";
 import { useNavigate } from "react-router-dom";
-import axios from "axios";
 import { getMonday, generateWeeks, repeatWeekly } from "./AppointmentsFuncs.jsx";
-import {fetchAppointments, fetchProfessors} from './api.jsx'
+import { fetchAppointments as fetchAppointmentsApi, fetchProfessors as fetchProfessorsApi } from './api.jsx';
 
 const Lehrpersonen = () => {
   const [appointments, setAppointments] = useState([]);
@@ -41,18 +40,33 @@ const Lehrpersonen = () => {
   const navigate = useNavigate();
 
   useEffect(() => {
-    // Fetch professors initially
+    const fetchProfessors = async () => {
+      try {
+        const data = await fetchProfessorsApi();
+        setProfessors(data);
+      } catch (error) {
+        console.error("Error fetching professors:", error);
+      }
+    };
     fetchProfessors();
   }, []);
 
-
   useEffect(() => {
-    // Fetch appointments when selectedUser changes
+    const fetchAppointments = async (userId) => {
+      try {
+        const data = await fetchAppointmentsApi(userId);
+        const filteredAppointments = repeatWeekly(
+          data.filter((app) => app.professorId === userId)
+        );
+        setAppointments(filteredAppointments);
+      } catch (error) {
+        console.error("Error fetching appointments:", error);
+      }
+    };
     if (selectedUser) {
       fetchAppointments(selectedUser);
     }
   }, [selectedUser]);
-
 
   const handleWeekChange = (event) => {
     setCurrentDate(event.target.value);

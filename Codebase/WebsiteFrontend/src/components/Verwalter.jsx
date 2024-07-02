@@ -46,7 +46,7 @@ const Verwalter = () => {
   const [showLoginModal, setShowLoginModal] = useState(false);
   const navigate = useNavigate();
 
-  const createSchedule = () => {
+  const createSchedule = async () => {
     try {
       const currentDate = new Date();
       const startDatum = new Date();
@@ -63,16 +63,13 @@ const Verwalter = () => {
         endDatum: formattedEndDatum,
       };
 
-      axios
-        .post("http://localhost:8080/terminplan/create", data)
-        .then((response) => {
-          console.log("Schedule created successfully", response);
-        })
-        .catch((error) => {
-          console.error("Error creating schedule", error);
-        });
+      const response = await axios.post(
+        "http://localhost:8080/terminplan/create",
+        data
+      );
+      console.log("Schedule created successfully", response);
     } catch (error) {
-      console.error("Error in createSchedule function", error);
+      console.error("Error creating schedule", error);
     }
   };
 
@@ -100,11 +97,9 @@ const Verwalter = () => {
     fetchProfessors();
   }, []);
 
-  const handleLoginClose = () => {};
+  const handleLoginClose = () => setShowLoginModal(false);
 
-  const handleLoginOpen = () => {
-    setShowLoginModal(true);
-  };
+  const handleLoginOpen = () => setShowLoginModal(true);
 
   const sendLogin = async (email, password) => {
     if (!email.endsWith("@hs-niederrhein.de")) {
@@ -161,14 +156,25 @@ const Verwalter = () => {
   const fetchAppointments = async (userId) => {
     try {
       const response = await axios.get(
-        `http://localhost:8080/terminplan/fetch/${userId}`
+        `http://localhost:8080/terminplan/fetchLp/${userId}`
       );
       const data = response.data;
       console.log(data);
-      const filteredAppointments = repeatWeekly(
-        data.filter((app) => app.professorId === userId)
-      );
-      setAppointments(filteredAppointments);
+
+      // Transform the data into the format expected by the Scheduler
+      const appointments = data.map((lecture) => ({
+        id: lecture.id,
+        title: lecture.titel,
+        startDate: new Date(
+          `2023-01-02T${lecture.termin.zeitraumStart}`
+        ), // Replace `2023-01-02` with the appropriate start date
+        endDate: new Date(`2023-01-02T${lecture.termin.zeitraumEnd}`), // Replace `2023-01-02` with the appropriate end date
+        location: lecture.raum.bezeichnung,
+        professorId: lecture.lehrperson.id,
+        professorName: lecture.lehrperson.name,
+      }));
+
+      setAppointments(appointments);
     } catch (error) {
       console.error("Error fetching appointments:", error);
     }
@@ -253,7 +259,7 @@ const Verwalter = () => {
               editingAppointment={editingAppointment}
               onEditingAppointmentChange={setEditingAppointment}
             />
-            <WeekView startDayHour={8} endDayHour={20} />
+            <WeekView startDayHour={8} endDayHour={20} firstDayOfWeek={1} />
             <AllDayPanel />
             <EditRecurrenceMenu />
             <ConfirmationDialog />
