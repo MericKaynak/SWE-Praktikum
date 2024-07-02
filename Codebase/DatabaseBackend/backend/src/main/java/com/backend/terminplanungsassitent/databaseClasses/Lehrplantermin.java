@@ -3,6 +3,7 @@ package com.backend.terminplanungsassitent.databaseClasses;
 import jakarta.persistence.Entity;
 import jakarta.persistence.Table;
 import jakarta.persistence.Id;
+import jakarta.persistence.JoinColumn;
 import jakarta.persistence.Column;
 import jakarta.persistence.ManyToOne;
 import java.time.LocalDate;
@@ -21,7 +22,7 @@ public class Lehrplantermin {
     private LocalDate datum;
 
     @ManyToOne
-    @Column(name = "Lehrveranstaltung_ID")
+    @JoinColumn(name = "Lehrveranstaltung_ID")
     private Lehrveranstaltung lehrveranstaltung;
 
     // Getters and Setters

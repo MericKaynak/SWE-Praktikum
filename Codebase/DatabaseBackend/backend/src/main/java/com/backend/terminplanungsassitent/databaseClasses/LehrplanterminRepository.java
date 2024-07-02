@@ -6,7 +6,7 @@ import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
 
-public interface LehrplantermineRepository extends JpaRepository<Lehrplantermine, Integer> {
+public interface LehrplanterminRepository extends JpaRepository<Lehrplantermin, Integer> {
     /**
      * @returns
      *          String lehrveranstaltung -> row[0]

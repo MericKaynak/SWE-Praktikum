@@ -15,18 +15,15 @@ import lombok.Data;
 public class Vertretung {
 
     @Id
-    @Column(name = "Vertretung_ID")
-    private int vertretungId;
+    @JoinColumn(name = "Lehrveranstaltung_ID")
+    private Lehrveranstaltung lehrveranstaltung;
 
     @Column(name = "Datum")
     private Date datum;
 
-    @Column(name = "Lehrperson")
-    private String lehrperson;
-
     @ManyToOne
-    @JoinColumn(name = "Vertretung_ID", referencedColumnName = "ID")
-    private Lehrveranstaltung lehrveranstaltung;
+    @JoinColumn(name = "Lehrperson_ID")
+    private Lehrperson lehrperson;
 
     // Getters and Setters
 }

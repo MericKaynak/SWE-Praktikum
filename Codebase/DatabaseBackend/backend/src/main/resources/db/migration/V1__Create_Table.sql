@@ -68,23 +68,24 @@ CREATE TABLE Verwalter (
 );
 
 CREATE TABLE Vertretung (
-    Vertretung_ID INT,
+    Lehrveranstaltung_ID INT,
     Datum DATE,
-    Lehrperson VARCHAR(100),
-    FOREIGN KEY (Vertretung_ID) REFERENCES Lehrveranstaltung(ID)
+    Lehrperson_ID INT,
+    FOREIGN KEY (Vertretung_ID) REFERENCES Lehrveranstaltung(ID),
+    FOREIGN KEY (Lehrperson_ID) REFERENCES Lehrperson(ID)
 );
 
 CREATE TABLE Lehrplantermin (
     ID INT,
     Lehrveranstaltung_ID INT,
     Datum DATE,
-    FOREIGN KEY (Lehrveranstaltung_ID) REFERENCES Lehrveranstaltung(ID),
+    FOREIGN KEY (Lehrveranstaltung_ID) REFERENCES Lehrveranstaltung(ID)
 );
 
 CREATE TABLE Semesterstart (
     ID INT,
     Startdatum DATE
-)
+);
 
 CREATE OR REPLACE FUNCTION add_student_to_courses() RETURNS TRIGGER AS $$
 BEGIN
