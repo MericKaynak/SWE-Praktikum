@@ -440,22 +440,24 @@ public class TerminplanController {
         List<Object[]> test = lehrplanterminRepository
                 .findLehrveranstaltungenByLehrpersonName(kranke_person.getName());
 
-        for (Object[] row : test) {
-            String lehrveranstaltung = (String) row[0];
-            String lehrperson = (String) row[1];
-            String raum = (String) row[2];
-            String wochentag = (String) row[3];
-            LocalTime zeitraumStart = (LocalTime) row[4];
-            LocalTime zeitraumEnd = (LocalTime) row[5];
-            LocalDate datum = (LocalDate) row[6];
-
-            System.out.println("Lehrveranstaltung: " + lehrveranstaltung);
-            System.out.println("Lehrperson: " + lehrperson);
-            System.out.println("Raum: " + raum);
-            System.out.println("Wochentag: " + wochentag);
-            System.out.println("Zeitraum: " + zeitraumStart + " - " + zeitraumEnd);
-            System.out.println("Datum: " + datum);
-        }
+        /*
+         * for (Object[] row : test) {
+         * String lehrveranstaltung = (String) row[0];
+         * String lehrperson = (String) row[1];
+         * String raum = (String) row[2];
+         * String wochentag = (String) row[3];
+         * LocalTime zeitraumStart = (LocalTime) row[4];
+         * LocalTime zeitraumEnd = (LocalTime) row[5];
+         * LocalDate datum = (LocalDate) row[6];
+         * 
+         * System.out.println("Lehrveranstaltung: " + lehrveranstaltung);
+         * System.out.println("Lehrperson: " + lehrperson);
+         * System.out.println("Raum: " + raum);
+         * System.out.println("Wochentag: " + wochentag);
+         * System.out.println("Zeitraum: " + zeitraumStart + " - " + zeitraumEnd);
+         * System.out.println("Datum: " + datum);
+         * }
+         */
 
         /*
          * List<Lehrveranstaltung> lvVonKranklp =
