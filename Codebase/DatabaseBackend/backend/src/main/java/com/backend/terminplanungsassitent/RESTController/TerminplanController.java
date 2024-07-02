@@ -481,9 +481,15 @@ public class TerminplanController {
 
             Vertretung vertretung = new Vertretung();
             for (Lehrperson lehrperson : lehrpersonList) {
+                System.out.println("Ich bin nicht drin!");
+                System.out.println(lehrperson.getId() != kranke_person.getId());
+                System.out.println(lehrperson.istVerfuegbar());
+                System.out.println(conditionChecks(lv, lehrperson));
                 if (lehrperson.getId() != kranke_person.getId() &&
                         lehrperson.istVerfuegbar() &&
                         conditionChecks(lv, lehrperson)) {
+
+                    System.out.println("Ich bin hier: " + lv.getTitel() + " - " + lehrperson.getName());
 
                     vertretung.setLehrperson(lehrperson);
                     vertretung.setDatum(datum);
@@ -512,12 +518,16 @@ public class TerminplanController {
             }
         }
 
-        besuchenList = besuchenRepository.findAll();
-        for (Besuchen besuchen : besuchenList) {
-            System.out.println("Benachrichtige Student " + besuchen.getStudent().getEmail() + " wegen Änderung an "
-                    + besuchen.getLehrveranstaltung().getTitel());
-        }
+        for (Vertretung vertretung : vertretungList) {
+            System.out.println(vertretung.toString());
 
+            // besuchenList =
+            // besuchenRepository.findAllByLehrveranstaltungId(vertretung.getLehrveranstaltung().getId());
+            for (Besuchen besuchen : besuchenList) {
+                System.out.println("Benachrichtige Student " + besuchen.getStudent().getEmail() + " wegen Änderung an "
+                        + besuchen.getLehrveranstaltung().getTitel());
+            }
+        }
         return new ResponseEntity<>(vertretungList, HttpStatus.OK);
     }
 }
