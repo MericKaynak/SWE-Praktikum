@@ -23,7 +23,7 @@ import {
   Button,
 } from "@mui/material";
 import { useNavigate } from "react-router-dom";
-import { getMonday, generateWeeks, repeatWeekly } from "./AppointmentsFuncs.jsx";
+import { getMonday, generateWeeks } from "./AppointmentsFuncs.jsx";
 import { fetchAppointments as fetchAppointmentsApi, fetchProfessors as fetchProfessorsApi } from './api.jsx';
 
 const Lehrpersonen = () => {
@@ -55,10 +55,7 @@ const Lehrpersonen = () => {
     const fetchAppointments = async (userId) => {
       try {
         const data = await fetchAppointmentsApi(userId);
-        const filteredAppointments = repeatWeekly(
-          data.filter((app) => app.professorId === userId)
-        );
-        setAppointments(filteredAppointments);
+        setAppointments(data);
       } catch (error) {
         console.error("Error fetching appointments:", error);
       }

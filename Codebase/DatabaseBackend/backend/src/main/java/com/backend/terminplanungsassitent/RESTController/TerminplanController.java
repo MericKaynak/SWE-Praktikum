@@ -35,10 +35,13 @@ import com.backend.terminplanungsassitent.databaseClasses.LehrveranstaltungRepos
 import com.backend.terminplanungsassitent.databaseClasses.Raum;
 import com.backend.terminplanungsassitent.databaseClasses.RaumRepository;
 import com.backend.terminplanungsassitent.databaseClasses.StudentRepository;
+import com.backend.terminplanungsassitent.databaseClasses.Student;
 import com.backend.terminplanungsassitent.databaseClasses.Termin;
 import com.backend.terminplanungsassitent.databaseClasses.TerminRepository;
 import com.backend.terminplanungsassitent.databaseClasses.Vertretung;
 import com.backend.terminplanungsassitent.databaseClasses.VertretungRepository;
+import com.backend.terminplanungsassitent.databaseClasses.VerwaltungRepository;
+import com.backend.terminplanungsassitent.databaseClasses.Verwaltung;
 
 import com.backend.terminplanungsassitent.exceptions.LehrpersonNotFoundException;
 import com.backend.terminplanungsassitent.exceptions.LehrveranstaltungNotFoundException;
@@ -77,6 +80,11 @@ public class TerminplanController {
 
     @Autowired
     private VertretungRepository vertretungRepository;
+
+    @Autowired
+    private VerwaltungRepository verwaltungRepository;
+
+
 
     // --- REST METHODS ---
 
@@ -203,9 +211,31 @@ public class TerminplanController {
     @SuppressWarnings("null")
     @PostMapping("/login")
     public HttpStatus validateLogin(@RequestBody String requestBody) {
-        // TODO: implement validation logic
+        JSONObject jsonObject = new JSONObject(requestBody);
+        String email = jsonObject.getString("email");
+        String password = jsonObject.getString("password");
+        List<Verwalter> verwalterList = verwaltungRepository.findAll();
+        List<Student> studentList = studentRepository.findAll();
+        if(email.endsWidt(email.endsWith("@stud.hn.de"))){
+            for (Student v:StudentList) {
+                if (v.getEmail()==email || v.getPassword()==password){
+                    return HttpStatus.OK;
+                }
+            }
+            return HttpStatus.OK;
+        }
+        else if (email.endsWith("@hs-niederrhein.de") ) {
+            for (Verwalter v:verwalterList) {
+                if (v.getEmail()==email || v.getPassword()==password){
+                    return HttpStatus.OK;
+                }
+            }
+            return HttpStatus.OK;
 
-        return HttpStatus.OK;
+        } else {
+            return HttpStatus.BAD_REQUEST; // Or any other appropriate status code
+        }
+        return HttpStatus.BAD_REQUEST;
     }
 
     /**

@@ -108,17 +108,25 @@ const Verwalter = () => {
     }
 
     try {
-      const response = await axios.post(
-        "http://localhost:8080/terminplan/login",
-        { email, password }
-      );
+    const response = await axios.post(
+      "http://localhost:8080/terminplan/login",
+      { email, password }
+    );
+
+    // Überprüfung des HTTP-Statuscodes der Antwort
+    if (response.status === 200) {
       localStorage.setItem("token", response.data.token);
       localStorage.setItem("loginTimestamp", new Date().getTime());
       setShowLoginModal(false);
-      fetchProfessors(); // Reload professors after successful login
-    } catch (error) {
-      console.error("Login failed", error);
+      fetchAppointments();
+    } else {
+      // Behandlung des Falles, dass der Server nicht mit 200 OK antwortet
+      setLoginError("Login failed: Invalid credentials or other error");
     }
+  } catch (error) {
+    console.error("Login failed", error);
+    setLoginError("Login failed: Server error or network issue");
+  }
   };
 
   const commitChanges = ({ added, changed, deleted }) => {
