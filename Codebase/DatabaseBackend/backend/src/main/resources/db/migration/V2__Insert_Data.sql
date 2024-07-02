@@ -1,9 +1,5 @@
 -- INSERT INTO benachrichtigung VALUES ();
 
--- INSERT INTO besuchen (Student_ID, Lehrveranstaltung_ID) 
--- VALUES
---      (4321, 1);
-
 INSERT INTO lehrperson (ID, Name, Email, Rolle, Wochenarbeitsstunden)
 VALUES
      (069, 'Jaman', 'jaman@stud.hn.de', 'Lehrer', 0),

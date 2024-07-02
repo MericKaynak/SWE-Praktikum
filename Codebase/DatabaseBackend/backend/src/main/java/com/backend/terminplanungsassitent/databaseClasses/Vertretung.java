@@ -6,7 +6,8 @@ import jakarta.persistence.Id;
 import jakarta.persistence.Column;
 import jakarta.persistence.ManyToOne;
 import jakarta.persistence.JoinColumn;
-import java.util.Date;
+
+import java.time.LocalDate;
 import lombok.Data;
 
 @Data
@@ -23,7 +24,7 @@ public class Vertretung {
     private Lehrveranstaltung lehrveranstaltung;
 
     @Column(name = "Datum")
-    private Date datum;
+    private LocalDate datum;
 
     @ManyToOne
     @JoinColumn(name = "Lehrperson_ID")
