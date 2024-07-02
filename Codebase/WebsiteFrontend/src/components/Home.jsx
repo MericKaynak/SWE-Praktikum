@@ -13,7 +13,7 @@ function Home() {
           <a href="/student">Studenten Login</a>
         </button>
         <button className="home-button">
-          <a href="/verwaltunghome">Verwaltung Login</a>
+          <a href="/verwaltunghome">Verwaltung Home</a>
         </button>
       </div>
     </div>

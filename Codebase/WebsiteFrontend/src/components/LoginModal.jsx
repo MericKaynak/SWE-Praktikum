@@ -40,7 +40,6 @@ const LoginModal = ({ open, onClose, onLogin }) => {
         />
       </DialogContent>
       <DialogActions>
-        <Button onClick={onClose}>Cancel</Button>
         <Button onClick={handleLogin}>Login</Button>
       </DialogActions>
     </Dialog>
