@@ -43,9 +43,7 @@ import com.backend.terminplanungsassitent.databaseClasses.VertretungRepository;
 import com.backend.terminplanungsassitent.exceptions.LehrpersonNotFoundException;
 import com.backend.terminplanungsassitent.exceptions.LehrveranstaltungNotFoundException;
 
-import jakarta.annotation.PostConstruct;
-
-@CrossOrigin(origins = "http://localhost:5173")
+@CrossOrigin
 @RestController
 @RequestMapping("/terminplan")
 public class TerminplanController {
