@@ -23,7 +23,7 @@ import {
   Button,
 } from "@mui/material";
 import { useNavigate } from "react-router-dom";
-import axios from "axios"; // Import axios for HTTP requests
+import axios from "axios";
 import { getMonday, generateWeeks, repeatWeekly } from "./AppointmentsFuncs.jsx";
 import {fetchAppointments, fetchProfessors} from './api.jsx'
 
