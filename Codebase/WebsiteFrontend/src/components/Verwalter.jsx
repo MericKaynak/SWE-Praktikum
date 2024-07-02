@@ -30,6 +30,35 @@ const Verwalter = () => {
   const [showLoginModal, setShowLoginModal] = useState(false);
   const navigate = useNavigate();
 
+  const createSchedule = () => {
+         try {
+             const currentDate = new Date();
+             const startDatum = new Date();
+             const endDatum = new Date();
+             console.log("Plan wurde erstellt")
+             startDatum.setDate(currentDate.getDate() - 12 * 7); // 12 weeks ago
+             endDatum.setDate(currentDate.getDate() + 12 * 7); // 12 weeks ahead
+
+             const formattedStartDatum = startDatum.toISOString().split('T')[0];
+             const formattedEndDatum = endDatum.toISOString().split('T')[0];
+
+             const data = {
+                 startDatum: formattedStartDatum,
+                 endDatum: formattedEndDatum
+             };
+
+             axios.post("http://localhost:8080/terminplan/create", data)
+                 .then(response => {
+                     console.log("Schedule created successfully", response);
+                 })
+                 .catch(error => {
+                     console.error("Error creating schedule", error);
+                 });
+         } catch (error) {
+             console.error("Error in createSchedule function", error);
+         }
+  }
+
   useEffect(() => {
     const token = localStorage.getItem('token');
     if (!token) {
@@ -53,7 +82,6 @@ const Verwalter = () => {
   }, []);
 
   const handleLoginClose = () => {
-    setShowLoginModal(false);
   };
 
   const handleLoginOpen = () => {
@@ -126,6 +154,7 @@ const Verwalter = () => {
           <Typography variant='h6' style={{ flexGrow: 1 }}>
             Verwalter Scheduler
           </Typography>
+          <Button color='inherit' onClick={createSchedule}>Erstelle Plan</Button>
           <Button color='inherit' onClick={() => navigate('/home')}>
             Home
           </Button>

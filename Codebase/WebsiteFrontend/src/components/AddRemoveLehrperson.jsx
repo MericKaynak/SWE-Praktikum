@@ -1,8 +1,11 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { FormControl, InputLabel, Select, MenuItem, Grid, TextField, Button, Paper, Typography, AppBar, Toolbar } from '@mui/material';
 import axios from "axios";
+import { useNavigate } from "react-router-dom";
+import LoginModal from './LoginModal.jsx';
 
 const AddRemoveProfessors = () => {
+  const navigate = useNavigate();
   const [actionType, setActionType] = useState('');
   const [selectedProfessor, setSelectedProfessor] = useState('');
   const [formData, setFormData] = useState({
@@ -11,6 +14,7 @@ const AddRemoveProfessors = () => {
     rolle: '',
     wochenarbeitsstunden: ''
   });
+  const [showLoginModal, setShowLoginModal] = useState(false);
 
   const professors = [
     { id: 1, name: 'Professor A' },
@@ -18,6 +22,33 @@ const AddRemoveProfessors = () => {
     { id: 3, name: 'Professor C' }
     // Hier können Sie weitere Lehrpersonen hinzufügen
   ];
+
+  useEffect(() => {
+    const token = localStorage.getItem('token');
+    if (!token) {
+      setShowLoginModal(true);
+    }
+  }, []);
+
+  const handleLoginClose = () => setShowLoginModal(false);
+
+  const handleLoginOpen = () => setShowLoginModal(true);
+
+  const sendLogin = async (email, password) => {
+    if (!email.endsWith('@hs-niederrhein.de')) {
+      console.error('Email must end with @hs-niederrhein.de');
+      return;
+    }
+
+    try {
+      const response = await axios.post('http://localhost:8080/terminplan/login', { email, password });
+      localStorage.setItem('token', response.data.token);
+      localStorage.setItem('loginTimestamp', new Date().getTime());
+      setShowLoginModal(false);
+    } catch (error) {
+      console.error('Login failed', error);
+    }
+  };
 
   const handleProfessorChange = (event) => {
     setSelectedProfessor(event.target.value);
@@ -32,29 +63,30 @@ const AddRemoveProfessors = () => {
     setFormData({ ...formData, [name]: value });
   };
 
-  const handleFormSubmit = () => {
+  const handleFormSubmit = async (event) => {
+    event.preventDefault();
     try {
       console.log(formData);
-      const response = axios.post('/api/professors/add', formData);
+      await axios.post('/api/professors/add', formData);
       setFormData({
         name: '',
         email: '',
         rolle: '',
         wochenarbeitsstunden: ''
       });
-      console.error('Succesfully added professor');
-    } catch (error){
+      console.log('Successfully added professor');
+    } catch (error) {
       console.error('Error adding professor:', error);
     }
   };
 
-  const handleActionSubmit = () => {
+  const handleActionSubmit = async () => {
     if (actionType === 'remove' && selectedProfessor !== '') {
       try {
-          const response = axios.post(`http://localhost:8080/terminplan/delete/${selectedProfessor.id}`, formData);
-          console.log(`Removed Professor: ${selectedProfessor.name}`);
-          setSelectedProfessor('');
-          setActionType('');
+        await axios.post(`http://localhost:8080/terminplan/delete/${selectedProfessor}`, formData);
+        console.log(`Removed Professor: ${selectedProfessor}`);
+        setSelectedProfessor('');
+        setActionType('');
       } catch (error) {
         console.error('Error deleting professor:', error);
       }
@@ -73,6 +105,7 @@ const AddRemoveProfessors = () => {
           </Button>
         </Toolbar>
       </AppBar>
+      <LoginModal open={showLoginModal} onClose={handleLoginClose} onLogin={sendLogin} />
       <div style={{ flexGrow: 1, padding: '16px' }}>
         <Grid container spacing={2} justifyContent="center">
           <Grid item xs={12}>
