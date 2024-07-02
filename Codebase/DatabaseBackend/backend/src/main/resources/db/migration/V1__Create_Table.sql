@@ -83,11 +83,6 @@ CREATE TABLE Lehrplantermin (
     FOREIGN KEY (Lehrveranstaltung_ID) REFERENCES Lehrveranstaltung(ID)
 );
 
-CREATE TABLE Semesterstart (
-    ID INT,
-    Startdatum DATE
-);
-
 CREATE OR REPLACE FUNCTION add_student_to_courses() RETURNS TRIGGER AS $$
 BEGIN
     INSERT INTO Besuchen (Student_ID, Lehrveranstaltung_ID)

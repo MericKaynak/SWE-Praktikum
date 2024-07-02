@@ -10,6 +10,7 @@ import javax.sql.DataSource;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.core.io.ClassPathResource;
 import org.springframework.http.HttpStatus;
+import org.springframework.http.HttpStatusCode;
 import org.springframework.http.ResponseEntity;
 import org.springframework.jdbc.datasource.init.ResourceDatabasePopulator;
 import org.springframework.web.bind.annotation.CrossOrigin;
@@ -33,8 +34,6 @@ import com.backend.terminplanungsassitent.databaseClasses.Lehrveranstaltung;
 import com.backend.terminplanungsassitent.databaseClasses.LehrveranstaltungRepository;
 import com.backend.terminplanungsassitent.databaseClasses.Raum;
 import com.backend.terminplanungsassitent.databaseClasses.RaumRepository;
-import com.backend.terminplanungsassitent.databaseClasses.Semesterstart;
-import com.backend.terminplanungsassitent.databaseClasses.SemesterstartRepository;
 import com.backend.terminplanungsassitent.databaseClasses.StudentRepository;
 import com.backend.terminplanungsassitent.databaseClasses.Termin;
 import com.backend.terminplanungsassitent.databaseClasses.TerminRepository;
@@ -81,27 +80,28 @@ public class TerminplanController {
     @Autowired
     private VertretungRepository vertretungRepository;
 
-    @Autowired
-    private SemesterstartRepository semesterstartRepository;
-
     // --- REST METHODS ---
 
     /**
      * TEST FUNCTION ONLY - Resets the database to a clean slate. Database must be
      * cleaned or else a Flyway checksum error fails next start of Application.
      */
-    @PostMapping("/reset")
-    @PostConstruct
-    public void executeSqlFiles() {
-        ResourceDatabasePopulator resourceDatabasePopulator = new ResourceDatabasePopulator();
-        resourceDatabasePopulator.addScript(
-                new ClassPathResource(
-                        "db\\V2_Deployment.sql"));
-        resourceDatabasePopulator.addScript(
-                new ClassPathResource(
-                        "db\\migration\\V2__Insert_Data.sql"));
-        resourceDatabasePopulator.execute(dataSource);
-    }
+    /*
+     * @PostMapping("/reset")
+     * 
+     * @PostConstruct
+     * public void executeSqlFiles() {
+     * ResourceDatabasePopulator resourceDatabasePopulator = new
+     * ResourceDatabasePopulator();
+     * resourceDatabasePopulator.addScript(
+     * new ClassPathResource(
+     * "db\\resetDB.sql"));
+     * resourceDatabasePopulator.addScript(
+     * new ClassPathResource(
+     * "db\\migration\\V2__Insert_Data.sql"));
+     * resourceDatabasePopulator.execute(dataSource);
+     * }
+     */
 
     /**
      * Runs through several steps to test the basic CRUD (Create, Read, Update,
@@ -233,16 +233,9 @@ public class TerminplanController {
      * @throws LehrveranstaltungNotFoundException
      */
     @GetMapping("/create")
-    public ResponseEntity<List<Lehrveranstaltung>> createMapping(@RequestBody LocalDate startDatum)
+    public ResponseEntity<List<Lehrveranstaltung>> createMapping(/* @RequestBody LocalDate startDatum */)
             throws LehrpersonNotFoundException, LehrveranstaltungNotFoundException {
-        List<Lehrveranstaltung> lehrveranstaltungList = null;
-
-        Semesterstart semesterstart = new Semesterstart();
-
-        semesterstartRepository.deleteAll();
-        semesterstart.setStartdatum(startDatum);
-
-        semesterstartRepository.save(semesterstart);
+        List<Lehrveranstaltung> lehrveranstaltungList = new ArrayList<>();
 
         try {
             lehrveranstaltungList = lehrveranstaltungRepository.findAll();
@@ -264,6 +257,8 @@ public class TerminplanController {
 
         assignLehrpersonen(lehrveranstaltungList);
         System.out.println("Lehrpersonen assigned");
+
+        populateLehrplanterminTable();
 
         return null;
     }
@@ -400,7 +395,15 @@ public class TerminplanController {
     }
 
     private void populateLehrplanterminTable() {
+        Lehrplantermin lehrplantermin = new Lehrplantermin();
+        Lehrveranstaltung lv = lehrveranstaltungRepository.findById(1L).get();
+        lehrplantermin.setId(1);
+        lehrplantermin.setDatum(LocalDate.now());
+        lehrplantermin.setLehrveranstaltung(lv);
 
+        lehrplanterminRepository.save(lehrplantermin);
+
+        System.out.println("Erstelle die spezifischen Termine basierend auf einem Startdatum und Enddatum");
     }
 
     // GET LIST OF ALL LEHRPERSONEN
@@ -435,30 +438,22 @@ public class TerminplanController {
     }
 
     @GetMapping("/vertretung")
-    public ResponseEntity<Vertretung> Vertretung(@RequestParam List<LocalDate> datumList,
-            @RequestParam Lehrperson kranke_person) {
+    public ResponseEntity<Vertretung> Vertretung(/* @RequestParam List<LocalDate> datumList, */
+            @RequestBody Lehrperson kranke_person) {
 
         List<Besuchen> besuchenList = new ArrayList<>();
         List<Lehrveranstaltung> lehrveranstaltungList = new ArrayList<>();
-        List<Object[]> test = lehrplanterminRepository
-                .findLehrveranstaltungenByLehrpersonName(kranke_person.getName());
+        List<Lehrplantermin> test = lehrplanterminRepository
+                .findLehrplantermineByLehrpersonId(kranke_person.getId());
 
-        for (Object[] row : test) {
-            Lehrveranstaltung lehrveranstaltung = (Lehrveranstaltung) row[0];
-            lehrveranstaltungList.add(lehrveranstaltung);
-            Lehrperson lehrperson = (Lehrperson) row[1];
-            String raum = (String) row[2];
-            String wochentag = (String) row[3];
-            LocalTime zeitraumStart = (LocalTime) row[4];
-            LocalTime zeitraumEnd = (LocalTime) row[5];
-            LocalDate datum = (LocalDate) row[6];
-
-            System.out.println("Lehrveranstaltung: " + lehrveranstaltung);
-            System.out.println("Lehrperson: " + lehrperson);
-            System.out.println("Raum: " + raum);
-            System.out.println("Wochentag: " + wochentag);
-            System.out.println("Zeitraum: " + zeitraumStart + " - " + zeitraumEnd);
-            System.out.println("Datum: " + datum);
+        for (Lehrplantermin lehrplantermin : test) {
+            System.out.println("Lehrveranstaltung: " + lehrplantermin.getLehrveranstaltung().getTitel());
+            System.out.println("Lehrperson: " + lehrplantermin.getLehrveranstaltung().getLehrperson().getName());
+            System.out.println("Raum: " + lehrplantermin.getLehrveranstaltung().getRaum().getBezeichnung());
+            System.out.println("Wochentag: " + lehrplantermin.getLehrveranstaltung().getTermin().getWochentag());
+            System.out.println("Zeitraum: " + lehrplantermin.getLehrveranstaltung().getTermin().getZeitraumStart()
+                    + " - " + lehrplantermin.getLehrveranstaltung().getTermin().getZeitraumEnd());
+            System.out.println("Datum: " + lehrplantermin.getDatum());
         }
 
         /*
@@ -480,8 +475,8 @@ public class TerminplanController {
          * boolean vertretung_Found = false;
          * 
          * Lehrveranstaltung lv_curr = lvVonKranklp.get(lv_idx);
-         * List<Lehrplantermine> lp_termineList =
-         * LehrplantermineRepository.findLehrplantermineByDate()
+         * List<Lehrplantermin> lp_termineList =
+         * LehrplanterminRepository.findLehrplanterminByDate()
          * 
          * 
          * for (Lehrperson lehrperson : lehrpersonList) {
@@ -527,6 +522,6 @@ public class TerminplanController {
             }
         }
 
-        return null; // new ResponseEntity<>(vertretungList, HttpStatus.OK);
+        return new ResponseEntity<>(null, HttpStatus.OK); // new ResponseEntity<>(vertretungList, HttpStatus.OK);
     }
 }
