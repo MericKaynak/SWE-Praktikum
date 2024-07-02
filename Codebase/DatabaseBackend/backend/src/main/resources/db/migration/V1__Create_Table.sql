@@ -67,6 +67,22 @@ CREATE TABLE Verwalter (
     Passwort VARCHAR(20)
 );
 
+CREATE TABLE Vertretung (
+    ID INT PRIMARY KEY,
+    Lehrveranstaltung_ID INT,
+    Datum DATE,
+    Lehrperson_ID INT,
+    FOREIGN KEY (Lehrveranstaltung_ID) REFERENCES Lehrveranstaltung(ID),
+    FOREIGN KEY (Lehrperson_ID) REFERENCES Lehrperson(ID)
+);
+
+CREATE TABLE Lehrplantermin (
+    ID INT PRIMARY KEY,
+    Lehrveranstaltung_ID INT,
+    Datum DATE,
+    FOREIGN KEY (Lehrveranstaltung_ID) REFERENCES Lehrveranstaltung(ID)
+);
+
 CREATE OR REPLACE FUNCTION add_student_to_courses() RETURNS TRIGGER AS $$
 BEGIN
     INSERT INTO Besuchen (Student_ID, Lehrveranstaltung_ID)

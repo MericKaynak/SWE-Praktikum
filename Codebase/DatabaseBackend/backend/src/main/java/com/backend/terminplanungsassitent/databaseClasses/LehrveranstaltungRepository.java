@@ -22,5 +22,4 @@ public interface LehrveranstaltungRepository extends JpaRepository<Lehrveranstal
     List<Lehrveranstaltung> findLehrveranstaltungWithoutTermin();
 
     List<Lehrveranstaltung> findByTerminWochentagAndTerminZeitraumStart(String wochentag, LocalTime zeitraumStart);
-
 }

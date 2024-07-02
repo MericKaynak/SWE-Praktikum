@@ -1,5 +1,7 @@
 package com.backend.terminplanungsassitent.RESTController;
 
+import java.time.LocalDate;
+import java.time.LocalTime;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -8,6 +10,7 @@ import javax.sql.DataSource;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.core.io.ClassPathResource;
 import org.springframework.http.HttpStatus;
+import org.springframework.http.HttpStatusCode;
 import org.springframework.http.ResponseEntity;
 import org.springframework.jdbc.datasource.init.ResourceDatabasePopulator;
 import org.springframework.web.bind.annotation.CrossOrigin;
@@ -17,12 +20,16 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.backend.terminplanungsassitent.databaseClasses.BenachrichtigungRepository;
+import com.backend.terminplanungsassitent.databaseClasses.Besuchen;
 import com.backend.terminplanungsassitent.databaseClasses.BesuchenRepository;
 import com.backend.terminplanungsassitent.databaseClasses.Lehrperson;
 import com.backend.terminplanungsassitent.databaseClasses.LehrpersonRepository;
+import com.backend.terminplanungsassitent.databaseClasses.Lehrplantermin;
+import com.backend.terminplanungsassitent.databaseClasses.LehrplanterminRepository;
 import com.backend.terminplanungsassitent.databaseClasses.Lehrveranstaltung;
 import com.backend.terminplanungsassitent.databaseClasses.LehrveranstaltungRepository;
 import com.backend.terminplanungsassitent.databaseClasses.Raum;
@@ -30,6 +37,8 @@ import com.backend.terminplanungsassitent.databaseClasses.RaumRepository;
 import com.backend.terminplanungsassitent.databaseClasses.StudentRepository;
 import com.backend.terminplanungsassitent.databaseClasses.Termin;
 import com.backend.terminplanungsassitent.databaseClasses.TerminRepository;
+import com.backend.terminplanungsassitent.databaseClasses.Vertretung;
+import com.backend.terminplanungsassitent.databaseClasses.VertretungRepository;
 
 import com.backend.terminplanungsassitent.exceptions.LehrpersonNotFoundException;
 import com.backend.terminplanungsassitent.exceptions.LehrveranstaltungNotFoundException;
@@ -57,6 +66,9 @@ public class TerminplanController {
     private RaumRepository raumRepository;
 
     @Autowired
+    private LehrplanterminRepository lehrplanterminRepository;
+
+    @Autowired
     private LehrveranstaltungRepository lehrveranstaltungRepository;
 
     @Autowired
@@ -65,25 +77,40 @@ public class TerminplanController {
     @Autowired
     private BenachrichtigungRepository benachrichtigungRepository;
 
+    @Autowired
+    private VertretungRepository vertretungRepository;
+
     // --- REST METHODS ---
 
     /**
      * TEST FUNCTION ONLY - Resets the database to a clean slate. Database must be
      * cleaned or else a Flyway checksum error fails next start of Application.
      */
-    @PostMapping("/reset")
-    @PostConstruct
-    public void executeSqlFiles() {
-        ResourceDatabasePopulator resourceDatabasePopulator = new ResourceDatabasePopulator();
-        resourceDatabasePopulator.addScript(
-                new ClassPathResource(
-                        "db\\V2_Deployment.sql"));
-        resourceDatabasePopulator.addScript(
-                new ClassPathResource(
-                        "db\\migration\\V2__Insert_Data.sql"));
-        resourceDatabasePopulator.execute(dataSource);
-    }
+    /*
+     * @PostMapping("/reset")
+     * 
+     * @PostConstruct
+     * public void executeSqlFiles() {
+     * ResourceDatabasePopulator resourceDatabasePopulator = new
+     * ResourceDatabasePopulator();
+     * resourceDatabasePopulator.addScript(
+     * new ClassPathResource(
+     * "db\\resetDB.sql"));
+     * resourceDatabasePopulator.addScript(
+     * new ClassPathResource(
+     * "db\\migration\\V2__Insert_Data.sql"));
+     * resourceDatabasePopulator.execute(dataSource);
+     * }
+     */
 
+    /**
+     * Runs through several steps to test the basic CRUD (Create, Read, Update,
+     * Delete) functions for the Lehrperson class and LehrpersonRepository
+     * 
+     * @param lehrperson
+     * @return
+     * @throws LehrpersonNotFoundException
+     */
     @PostMapping("/unittest")
     public ResponseEntity<String> lehrpersonUnitTest(@RequestBody Lehrperson lehrperson)
             throws LehrpersonNotFoundException {
@@ -205,10 +232,11 @@ public class TerminplanController {
      * @throws LehrpersonNotFoundException
      * @throws LehrveranstaltungNotFoundException
      */
-    @GetMapping("/createmapping")
-    public ResponseEntity<List<Lehrveranstaltung>> createMapping()
+    @GetMapping("/create")
+    public ResponseEntity<List<Lehrveranstaltung>> createMapping(/* @RequestBody LocalDate startDatum */)
             throws LehrpersonNotFoundException, LehrveranstaltungNotFoundException {
-        List<Lehrveranstaltung> lehrveranstaltungList = null;
+        List<Lehrveranstaltung> lehrveranstaltungList = new ArrayList<>();
+
         try {
             lehrveranstaltungList = lehrveranstaltungRepository.findAll();
             if (lehrveranstaltungList == null || lehrveranstaltungList.isEmpty()) {
@@ -229,6 +257,8 @@ public class TerminplanController {
 
         assignLehrpersonen(lehrveranstaltungList);
         System.out.println("Lehrpersonen assigned");
+
+        populateLehrplanterminTable();
 
         return null;
     }
@@ -364,6 +394,18 @@ public class TerminplanController {
         return true;
     }
 
+    private void populateLehrplanterminTable() {
+        Lehrplantermin lehrplantermin = new Lehrplantermin();
+        Lehrveranstaltung lv = lehrveranstaltungRepository.findById(1L).get();
+        lehrplantermin.setId(1);
+        lehrplantermin.setDatum(LocalDate.now());
+        lehrplantermin.setLehrveranstaltung(lv);
+
+        lehrplanterminRepository.save(lehrplantermin);
+
+        System.out.println("Erstelle die spezifischen Termine basierend auf einem Startdatum und Enddatum");
+    }
+
     // GET LIST OF ALL LEHRPERSONEN
     @GetMapping("/fetchAllLp")
     public ResponseEntity<List<Lehrperson>> fetchAllLehrpersonen() throws LehrpersonNotFoundException {
@@ -393,5 +435,93 @@ public class TerminplanController {
     public ResponseEntity<Lehrperson> putAusfall(@PathVariable Long id) {
         // TODO: Ausfall Logik implementieren
         return null;
+    }
+
+    @GetMapping("/vertretung")
+    public ResponseEntity<Vertretung> Vertretung(/* @RequestParam List<LocalDate> datumList, */
+            @RequestBody Lehrperson kranke_person) {
+
+        List<Besuchen> besuchenList = new ArrayList<>();
+        List<Lehrveranstaltung> lehrveranstaltungList = new ArrayList<>();
+        List<Lehrplantermin> test = lehrplanterminRepository
+                .findLehrplantermineByLehrpersonId(kranke_person.getId());
+
+        for (Lehrplantermin lehrplantermin : test) {
+            System.out.println("Lehrveranstaltung: " + lehrplantermin.getLehrveranstaltung().getTitel());
+            System.out.println("Lehrperson: " + lehrplantermin.getLehrveranstaltung().getLehrperson().getName());
+            System.out.println("Raum: " + lehrplantermin.getLehrveranstaltung().getRaum().getBezeichnung());
+            System.out.println("Wochentag: " + lehrplantermin.getLehrveranstaltung().getTermin().getWochentag());
+            System.out.println("Zeitraum: " + lehrplantermin.getLehrveranstaltung().getTermin().getZeitraumStart()
+                    + " - " + lehrplantermin.getLehrveranstaltung().getTermin().getZeitraumEnd());
+            System.out.println("Datum: " + lehrplantermin.getDatum());
+        }
+
+        /*
+         * List<Lehrveranstaltung> lvVonKranklp =
+         * LehrveranstaltungRepository.findbyLehrpersonId(krank_person.id);
+         * List<Lehrperson> lehrpersonList = LehrpersonRepository.findAll();
+         * List<Vertretung> vertretungList = new ArrayList<>();
+         * 
+         * int lv_idx = 0;
+         * while (!lvVonKranklp.isEmpty()) {
+         * lv_idx++;
+         * 
+         */
+        /*
+         * checks if a vertretung has not been found
+         * if so we put "null" into Lehrperson
+         */
+        /*
+         * boolean vertretung_Found = false;
+         * 
+         * Lehrveranstaltung lv_curr = lvVonKranklp.get(lv_idx);
+         * List<Lehrplantermin> lp_termineList =
+         * LehrplanterminRepository.findLehrplanterminByDate()
+         * 
+         * 
+         * for (Lehrperson lehrperson : lehrpersonList) {
+         * if (lehrperson.getId() != kranke_person.getId() &&
+         * lehrperson.istVerfuegbar()) {
+         * Vertretung vertretung = new Vertretung();
+         * 
+         * vertretung.setLehrperson(lehrperson);
+         * vertretung.setDatum(datum);
+         * vertretungList.add(vertretung);
+         * 
+         * lehrperson.setWochenarbeitsstunden(lehrperson.getWochenarbeitsstunden() + 2);
+         * lehrpersonRepository.save(lehrperson);
+         * 
+         * vertretung_Found = true;
+         * 
+         * // remove the found lehrveranstaltung from the kranke_person
+         * lehrveranstaltung list
+         * Lehrveranstaltung lvToReplace = lvVonKranklp.get(0);
+         * lvVonKranklp.remove(lvToReplace));
+         * 
+         * break;
+         * }
+         * }
+         * 
+         * if (!vertretung_Found) {
+         * Vertretung vertretung = new Vertretung();
+         * vertretung.setLehrperson(null);
+         * vertretung.setDatum(datum);
+         * 
+         * vertretungList.add(vertretung);
+         * 
+         * Lehrveranstaltung lvToReplace = lvVonKranklp.get(0);
+         * lvVonKranklp.remove(lvToReplace));
+         * }
+         * }
+         */
+        for (Lehrveranstaltung lv : lehrveranstaltungList) {
+            besuchenList = besuchenRepository.findAllByLehrveranstaltungId(lv.getId());
+            for (Besuchen besuchen : besuchenList) {
+                System.out.println("Benachrichtige Student " + besuchen.getStudent().getEmail() + " wegen Änderung an "
+                        + besuchen.getLehrveranstaltung().getTitel());
+            }
+        }
+
+        return new ResponseEntity<>(null, HttpStatus.OK); // new ResponseEntity<>(vertretungList, HttpStatus.OK);
     }
 }
