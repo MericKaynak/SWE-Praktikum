@@ -43,9 +43,9 @@ CREATE TABLE Lehrveranstaltung (
 );
 
 CREATE TABLE Besuchen (
+    ID INT PRIMARY KEY,
     Student_ID INT,
     Lehrveranstaltung_ID INT,
-    PRIMARY KEY (Student_ID, Lehrveranstaltung_ID),
     FOREIGN KEY (Student_ID) REFERENCES Student(ID),
     FOREIGN KEY (Lehrveranstaltung_ID) REFERENCES Lehrveranstaltung(ID)
 );
@@ -83,17 +83,4 @@ CREATE TABLE Lehrplantermin (
     FOREIGN KEY (Lehrveranstaltung_ID) REFERENCES Lehrveranstaltung(ID)
 );
 
-CREATE OR REPLACE FUNCTION add_student_to_courses() RETURNS TRIGGER AS $$
-BEGIN
-    INSERT INTO Besuchen (Student_ID, Lehrveranstaltung_ID)
-    SELECT NEW.ID, LV.ID
-    FROM Lehrveranstaltung LV
-    WHERE LV.Fachbereich = (SELECT Studiengang FROM Student WHERE ID = NEW.ID);
-    RETURN NEW;
-END;
-$$ LANGUAGE plpgsql;
 
-CREATE TRIGGER after_student_insert
-AFTER INSERT ON Student
-FOR EACH ROW
-EXECUTE FUNCTION add_student_to_courses();
