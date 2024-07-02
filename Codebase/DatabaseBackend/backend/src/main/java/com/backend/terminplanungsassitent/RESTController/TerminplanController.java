@@ -23,6 +23,7 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.backend.terminplanungsassitent.databaseClasses.BenachrichtigungRepository;
+import com.backend.terminplanungsassitent.databaseClasses.Besuchen;
 import com.backend.terminplanungsassitent.databaseClasses.BesuchenRepository;
 import com.backend.terminplanungsassitent.databaseClasses.Lehrperson;
 import com.backend.terminplanungsassitent.databaseClasses.LehrpersonRepository;
@@ -437,12 +438,15 @@ public class TerminplanController {
     public ResponseEntity<Vertretung> Vertretung(@RequestParam List<LocalDate> datumList,
             @RequestParam Lehrperson kranke_person) {
 
+        List<Besuchen> besuchenList = new ArrayList<>();
+        List<Lehrveranstaltung> lehrveranstaltungList = new ArrayList<>();
         List<Object[]> test = lehrplanterminRepository
                 .findLehrveranstaltungenByLehrpersonName(kranke_person.getName());
 
         for (Object[] row : test) {
-            String lehrveranstaltung = (String) row[0];
-            String lehrperson = (String) row[1];
+            Lehrveranstaltung lehrveranstaltung = (Lehrveranstaltung) row[0];
+            lehrveranstaltungList.add(lehrveranstaltung);
+            Lehrperson lehrperson = (Lehrperson) row[1];
             String raum = (String) row[2];
             String wochentag = (String) row[3];
             LocalTime zeitraumStart = (LocalTime) row[4];
@@ -515,6 +519,13 @@ public class TerminplanController {
          * }
          * }
          */
+        for (Lehrveranstaltung lv : lehrveranstaltungList) {
+            besuchenList = besuchenRepository.findAllByLehrveranstaltungId(lv.getId());
+            for (Besuchen besuchen : besuchenList) {
+                System.out.println("Benachrichtige Student " + besuchen.getStudent().getEmail() + " wegen Änderung an "
+                        + besuchen.getLehrveranstaltung().getTitel());
+            }
+        }
 
         return null; // new ResponseEntity<>(vertretungList, HttpStatus.OK);
     }

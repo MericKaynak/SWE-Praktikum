@@ -14,6 +14,7 @@ import java.io.Serializable;
 @Table(name = "Besuchen")
 @IdClass(BesuchenId.class)
 public class Besuchen implements Serializable {
+
     @Id
     @ManyToOne
     @JoinColumn(name = "Student_ID")
