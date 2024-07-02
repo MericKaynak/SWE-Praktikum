@@ -8,7 +8,7 @@ import jakarta.persistence.GenerationType;
 import jakarta.persistence.Column;
 import jakarta.persistence.ManyToOne;
 import jakarta.persistence.JoinColumn;
-import java.util.Date;
+import java.time.LocalDate;
 import lombok.Data;
 
 @Data
@@ -22,7 +22,7 @@ public class Lehrplantermine {
     private int lehrveranstaltungId;
 
     @Column(name = "Datum")
-    private Date datum;
+    private LocalDate datum;
 
     @ManyToOne
     @JoinColumn(name = "Lehrveranstaltung_ID", referencedColumnName = "ID", insertable = false, updatable = false)

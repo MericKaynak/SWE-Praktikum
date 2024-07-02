@@ -7,9 +7,9 @@ import com.backend.terminplanungsassitent.RESTController.TimeComparison;
 
 import jakarta.persistence.Column;
 import jakarta.persistence.Table;
-import lombok.Data;
 import jakarta.persistence.ManyToOne;
 import jakarta.persistence.JoinColumn;
+import lombok.Data;
 
 @Data
 @Entity
