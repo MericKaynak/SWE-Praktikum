@@ -15,6 +15,10 @@ import lombok.Data;
 public class Vertretung {
 
     @Id
+    @Column(name = "ID")
+    private Integer ID;
+
+    @ManyToOne
     @JoinColumn(name = "Lehrveranstaltung_ID")
     private Lehrveranstaltung lehrveranstaltung;
 
