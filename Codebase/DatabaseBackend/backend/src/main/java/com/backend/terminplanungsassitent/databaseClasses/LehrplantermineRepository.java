@@ -5,14 +5,15 @@ import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
 
 public interface LehrplantermineRepository extends JpaRepository<Lehrplantermine, Integer> {
-    /*
-    * String lehrveranstaltung = (String) row[0]
-    * String lehrperson = (String) row[1]
-    * String raum = (String) row[2]
-    * String wochentag = (String) row[3]
-    * LocalTime zeitraumStart = (LocalTime) row[4]
-    * LocalTime zeitraumEnd = (LocalTime) row[5]
-    * LocalDate datum = (LocalDate) row[6]
+    /**
+    * @returns
+    * String lehrveranstaltung -> row[0]
+    * String lehrperson -> row[1]
+    * String raum ->  row[2]
+    * String wochentag -> row[3]
+    * LocalTime zeitraumStart -> row[4]
+    * LocalTime zeitraumEnd -> row[5]
+    * LocalDate datum -> row[6]
      */
     @Query("SELECT lv.titel AS lehrveranstaltung, " +
             "lp.name AS lehrperson, " +
