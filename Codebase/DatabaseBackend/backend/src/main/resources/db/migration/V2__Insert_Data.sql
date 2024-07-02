@@ -100,7 +100,7 @@ VALUES
 
 INSERT INTO lehrveranstaltung (ID, Titel, Fachbereich, Dauer, Raum_ID, Termin_ID, Lehrperson_ID)
 VALUES 
-    (1, 'Kiffologie', 'FB69', 2, 1, NULL, NULL),
+    (1, 'Biologie', 'FB60', 2, 1, NULL, NULL),
     (2, 'ET2', 'FB03', 2, 1, NULL, NULL),
     (3, 'Mathematik I', 'FB01', 2, 2, NULL, NULL),
     (4, 'Physik II', 'FB02', 2, 2, NULL, NULL),
