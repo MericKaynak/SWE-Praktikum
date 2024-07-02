@@ -74,11 +74,17 @@ CREATE TABLE Vertretung (
     FOREIGN KEY (Vertretung_ID) REFERENCES Lehrveranstaltung(ID)
 );
 
-CREATE TABLE Lehrplantermine (
+CREATE TABLE Lehrplantermin (
+    ID INT,
     Lehrveranstaltung_ID INT,
     Datum DATE,
-    FOREIGN KEY (Lehrveranstaltung_ID) REFERENCES Lehrveranstaltung(ID)
+    FOREIGN KEY (Lehrveranstaltung_ID) REFERENCES Lehrveranstaltung(ID),
 );
+
+CREATE TABLE Semesterstart (
+    ID INT,
+    Startdatum DATE
+)
 
 CREATE OR REPLACE FUNCTION add_student_to_courses() RETURNS TRIGGER AS $$
 BEGIN

@@ -49,7 +49,6 @@ public class TerminplanControllerTest {
 		sampleLehrperson.setRolle("Teacher");
 		sampleLehrperson.setWochenarbeitsstunden(20);
 
-		when(lehrpersonRepository.findById(1L)).thenReturn(java.util.Optional.of(sampleLehrperson));
 	}
 
 	@Test
