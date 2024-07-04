@@ -108,25 +108,25 @@ const Verwalter = () => {
     }
 
     try {
-    const response = await axios.post(
-      "http://localhost:8080/terminplan/login",
-      { email, password }
-    );
+      const response = await axios.post(
+        "http://localhost:8080/terminplan/login",
+        { email, password }
+      );
 
-    // Überprüfung des HTTP-Statuscodes der Antwort
-    if (response.status === 200) {
-      localStorage.setItem("token", response.data.token);
-      localStorage.setItem("loginTimestamp", new Date().getTime());
-      setShowLoginModal(false);
-      fetchAppointments();
-    } else {
-      // Behandlung des Falles, dass der Server nicht mit 200 OK antwortet
-      setLoginError("Login failed: Invalid credentials or other error");
+      // Überprüfung des HTTP-Statuscodes der Antwort
+      if (response.status === 200) {
+        localStorage.setItem("token", response.data.token);
+        localStorage.setItem("loginTimestamp", new Date().getTime());
+        setShowLoginModal(false);
+        fetchAppointments();
+      } else {
+        // Behandlung des Falles, dass der Server nicht mit 200 OK antwortet
+        setLoginError("Login failed: Invalid credentials or other error");
+      }
+    } catch (error) {
+      console.error("Login failed", error);
+      setLoginError("Login failed: Server error or network issue");
     }
-  } catch (error) {
-    console.error("Login failed", error);
-    setLoginError("Login failed: Server error or network issue");
-  }
   };
 
   const commitChanges = ({ added, changed, deleted }) => {
@@ -164,19 +164,17 @@ const Verwalter = () => {
   const fetchAppointments = async (userId) => {
     try {
       const response = await axios.get(
-        `http://localhost:8080/terminplan/fetchLp/${userId}`
+        `http://localhost:8080/terminplan/fetch/${userId}`
       );
       const data = response.data;
       console.log(data);
 
       // Transform the data into the format expected by the Scheduler
-      const appointments = data.map((lecture) => ({
+      const appointments = data.properties?.map((lecture) => ({
         id: lecture.id,
         title: lecture.titel,
-        startDate: new Date(
-          `2023-01-02T${lecture.termin.zeitraumStart}`
-        ), // Replace `2023-01-02` with the appropriate start date
-        endDate: new Date(`2023-01-02T${lecture.termin.zeitraumEnd}`), // Replace `2023-01-02` with the appropriate end date
+        startDate: new Date(`2024-07-01T${lecture.termin.zeitraumStart}`), // Replace `2023-01-02` with the appropriate start date
+        endDate: new Date(`2024-07-01T${lecture.termin.zeitraumEnd}`), // Replace `2023-01-02` with the appropriate end date
         location: lecture.raum.bezeichnung,
         professorId: lecture.lehrperson.id,
         professorName: lecture.lehrperson.name,

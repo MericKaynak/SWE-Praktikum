@@ -260,8 +260,8 @@ public class TerminplanController {
      * @throws LehrpersonNotFoundException
      * @throws LehrveranstaltungNotFoundException
      */
-    @GetMapping("/create")
-    public ResponseEntity<List<Lehrveranstaltung>> createMapping(/* @RequestBody LocalDate startDatum */)
+    @PostMapping("/create")
+    public HttpStatus createMapping(/* @RequestBody LocalDate startDatum */)
             throws LehrpersonNotFoundException, LehrveranstaltungNotFoundException {
         List<Lehrveranstaltung> lehrveranstaltungList = new ArrayList<>();
 
@@ -288,7 +288,7 @@ public class TerminplanController {
 
         populateLehrplanterminTable();
 
-        return null;
+        return HttpStatus.OK;
     }
 
     /**
