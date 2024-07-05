@@ -8,6 +8,36 @@ PostgreSQL DB & Adminer im Docker, start im `Codebase/terminplanungsassistent` V
 BASE ADDRESS
 http://localhost:8080/terminplan
 
+ResponseEntity<String> - /unittest
+@RequestBody Lehrperson
+
+HttpStatus - /login
+@RequestBody String
+
+ResponseEntity<Lehrperson> - /createLehrperson
+@RequestBody Lehrperson
+
+HttpStatus - /create
+ -
+ 
+ResponseEntity<List<Lehrperson>> - /fetchAllLp
+ - 
+
+ResponseEntity<Lehrperson> - /fetchlp/{id}
+@PathVariable Integer
+
+ResponseEntity<List<Lehrveranstaltung>> - /fetch/{id}
+@PathVariable Integer
+
+ResponseEntity<Lehrperson> - /notify
+@PathVariable Long
+
+ResponseEntity<List<Vertretung>> - /vertretung
+@RequestBody Lehrperson
+
+ResponseEntity<List<Vertretung>> - /vertretung
+@RequestBody Lehrperson
+
 LoginModal - POST LOGIN
 http://localhost:8080/terminplan/login
 
