@@ -3,6 +3,8 @@ import { FormControl, InputLabel, Select, MenuItem, Grid, TextField, Button, Pap
 import axios from "axios";
 import { useNavigate } from "react-router-dom";
 import LoginModal from './LoginModal.jsx';
+import {fetchProfessors as fetchProfessorsApi } from './api.jsx';
+
 
 const AddRemoveProfessors = () => {
   const navigate = useNavigate();
@@ -18,18 +20,20 @@ const AddRemoveProfessors = () => {
   });
   const [professors, setProfessors] = useState([]);
   const [showLoginModal, setShowLoginModal] = useState(false);
+  const [selectedUser, setSelectedUser] = useState("");
 
   useEffect(() => {
     const fetchProfessors = async () => {
       try {
-        const response = await axios.get('http://localhost:8080/api/professors');
-        setProfessors(response.data);
+        const data = await fetchProfessorsApi();
+        setProfessors(data);
       } catch (error) {
-        console.error('Error fetching professors:', error);
+        console.error("Error fetching professors:", error);
       }
     };
     fetchProfessors();
   }, []);
+
 
   useEffect(() => {
     const token = localStorage.getItem('token');
@@ -60,7 +64,7 @@ const AddRemoveProfessors = () => {
   };
 
   const handleProfessorChange = (event) => {
-    setSelectedProfessor(event.target.value);
+    setSelectedUser(event.target.value);
   };
 
   const handleActionChange = (event) => {
@@ -91,23 +95,23 @@ const AddRemoveProfessors = () => {
   };
 
   const handleActionSubmit = async () => {
-    if (actionType === 'remove' && selectedProfessor !== '') {
+    if (actionType === 'remove' && selectedUser !== '') {
       try {
-        await axios.post(`http://localhost:8080/terminplan/delete/${selectedProfessor}`);
-        console.log(`Removed Professor: ${selectedProfessor}`);
-        setSelectedProfessor('');
+        await axios.post(`http://localhost:8080/terminplan/delete/${selectedUser}`);
+        console.log(`Removed Professor: ${selectedUser}`);
+        setSelectedUser('');
         setActionType('');
       } catch (error) {
         console.error('Error deleting professor:', error);
       }
-    } else if (actionType === 'krankmelden' && selectedProfessor !== '') {
+    } else if (actionType === 'krankmelden' && selectedUser !== '') {
       try {
-        await axios.post(`http://localhost:8080/terminplan/notify/${selectedProfessor}`, {
+        await axios.post(`http://localhost:8080/terminplan/notify/${selectedUser}`, {
           startDate: formData.startDate,
           endDate: formData.endDate
         });
-        console.log(`Marked Professor ${selectedProfessor} as sick from ${formData.startDate} to ${formData.endDate}`);
-        setSelectedProfessor('');
+        console.log(`Marked Professor ${selectedUser} as sick from ${formData.startDate} to ${formData.endDate}`);
+        setSelectedUser('');
         setActionType('');
         setFormData({ ...formData, startDate: '', endDate: '' });
       } catch (error) {
@@ -209,7 +213,7 @@ const AddRemoveProfessors = () => {
                       <InputLabel id="professor-select-label">Select Professor</InputLabel>
                       <Select
                         labelId="professor-select-label"
-                        value={selectedProfessor}
+                        value={selectedUser}
                         onChange={handleProfessorChange}
                       >
                         <MenuItem value="">Waehle Lehrperson</MenuItem>
@@ -224,7 +228,7 @@ const AddRemoveProfessors = () => {
                       variant="contained"
                       color="secondary"
                       style={{ marginLeft: '10px' }}
-                      disabled={selectedProfessor === ''}
+                      disabled={selectedUser === ''}
                       onClick={handleActionSubmit}
                     >
                       Bestaetigen
@@ -238,7 +242,7 @@ const AddRemoveProfessors = () => {
                       <InputLabel id="professor-select-label">Select Professor</InputLabel>
                       <Select
                         labelId="professor-select-label"
-                        value={selectedProfessor}
+                        value={selectedUser}
                         onChange={handleProfessorChange}
                       >
                         <MenuItem value="">Select Professor</MenuItem>

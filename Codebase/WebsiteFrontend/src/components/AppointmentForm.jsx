@@ -9,7 +9,6 @@ const AppointmentForm = () => {
   const handleSubmit = async (e) => {
     e.preventDefault();
     try {
-      // TODO: Call backend API to create a new appointment
       await axios.post('/api/appointments', { date, time, description }, {
         headers: {
           Authorization: `Bearer ${localStorage.getItem('token')}`
