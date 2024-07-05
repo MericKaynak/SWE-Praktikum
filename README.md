@@ -26,8 +26,8 @@ http://localhost:8080/terminplan/add/{id}
 Lehrpersonen - GET ALL LEHRPERSONEN
 http://localhost:8080/terminplan/fetchAllLp
 
-Ausfall Melden - PUT AUSFALL
-http://localhost:8080/terminplan/notify
+Ausfall Melden - PUT AUSFALL 
+http://localhost:8080/terminplan/notify/{id}
 
 ggf. noch Terminplan Generierung auslösen - POST Erstelle
 http://localhost:8080/terminplan/create
