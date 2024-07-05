@@ -483,25 +483,19 @@ public class TerminplanController {
                 id);
 
         for (Lehrplantermin lehrplantermin : lehrplanterminList) {
+            vertretung=null;
+            for (Lehrperson lp: lehrpersonList){
             vertretung = new Vertretung();
             vertretung.setDatum(lehrplantermin.getDatum());
             vertretung.setLehrveranstaltung(lehrplantermin.getLehrveranstaltung());
-            if (lehrpersonList.get(lehrpersonIndex).istVerfuegbar(dauer)
-                    && conditionChecks(lehrplantermin.getLehrveranstaltung(), lehrpersonList.get(lehrpersonIndex))) {
-                vertretung.setLehrperson(lehrpersonList.get(lehrpersonIndex));
-            } else {
-                lehrpersonIndex = 0;
-                for (Lehrperson lehrperson : lehrpersonList) {
-                    if (lehrperson.istVerfuegbar(dauer) && conditionChecks(
-                            lehrplantermin.getLehrveranstaltung(), lehrpersonList.get(lehrpersonIndex))) {
-                        vertretung.setLehrperson(lehrpersonList.get(lehrpersonIndex));
-                        break;
-                    }
-                    lehrpersonIndex++;
+
+            if (lp.istVerfuegbar(dauer)&& conditionChecks(lehrplantermin.getLehrveranstaltung(), lp)) {
+                vertretung.setLehrperson(lp);
+                vertretungList.add(vertretung);
+                vertretungRepository.save(vertretung);
+                break;
                 }
             }
-            vertretungList.add(vertretung);
-            vertretungRepository.save(vertretung);
         }
 
         // get a list of all affected LPTs
