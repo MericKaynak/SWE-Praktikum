@@ -9,6 +9,7 @@ import java.util.Set;
 
 import javax.sql.DataSource;
 
+import org.json.JSONObject;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.core.io.ClassPathResource;
 import org.springframework.http.HttpStatus;
@@ -215,33 +216,19 @@ public class TerminplanController {
     @SuppressWarnings("null")
     @PostMapping("/login")
     public HttpStatus validateLogin(@RequestBody String requestBody) {
-        /*
-         * JSONObject jsonObject = new JSONObject(requestBody);
-         * String email = jsonObject.getString("email");
-         * String password = jsonObject.getString("password");
-         * List<Verwalter> verwalterList = verwaltungRepository.findAll();
-         * List<Student> studentList = studentRepository.findAll();
-         * if (email.endsWidt(email.endsWith("@stud.hn.de"))) {
-         * for (Student v : StudentList) {
-         * if (v.getEmail() == email || v.getPassword() == password) {
-         * return HttpStatus.OK;
-         * }
-         * }
-         * return HttpStatus.OK;
-         * } else if (email.endsWith("@hs-niederrhein.de")) {
-         * for (Verwalter v : verwalterList) {
-         * if (v.getEmail() == email || v.getPassword() == password) {
-         * return HttpStatus.OK;
-         * }
-         * }
-         * return HttpStatus.OK;
-         * 
-         * } else {
-         * return HttpStatus.BAD_REQUEST; // Or any other appropriate status code
-         * }
-         * return HttpStatus.BAD_REQUEST;
-         */
-        return HttpStatus.OK;
+        JSONObject jsonObject = new JSONObject(requestBody);
+        String email = jsonObject.getString("email");
+        String password = jsonObject.getString("password");
+        List<Student> studentList = studentRepository.findAll();
+        System.out.println(email + " " + password);
+
+        for (Student v : studentList) {
+            if (v.getEmail().equals(email) && v.getPasswort().equals(password)) {
+                System.out.println(v.getEmail() + " " + v.getPasswort());
+                return HttpStatus.OK;
+            }
+        }
+        return HttpStatus.BAD_REQUEST;
     }
 
     /**
@@ -473,10 +460,6 @@ public class TerminplanController {
     @GetMapping("/fetch/{id}")
     public ResponseEntity<List<Lehrveranstaltung>> find(@PathVariable Integer id)
             throws LehrveranstaltungNotFoundException {
-
-        // GET ALL LEHRPLANTERMINE
-        // OVERWRITE LEHRPLANTERMIN WITH VERTRETUNG WHERE LEHRVERANSTALTUNG = LEHRPERSON
-
         List<Lehrveranstaltung> lehrveranstaltungsList = lehrveranstaltungRepository.findByLehrpersonId(id);
 
         return new ResponseEntity<>(lehrveranstaltungsList, HttpStatus.OK);

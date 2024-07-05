@@ -22,5 +22,9 @@ public class Student {
     @Column(name = "Studiengang")
     private String studiengang;
 
+    @Column(name = "Passwort")
+    private String passwort;
+
     // Getters and Setters
+
 }
