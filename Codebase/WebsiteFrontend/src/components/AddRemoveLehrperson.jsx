@@ -5,6 +5,8 @@ import { useNavigate } from "react-router-dom";
 import LoginModal from './LoginModal.jsx';
 import { fetchProfessors as fetchProfessorsApi } from './api.jsx';
 import loginData from './loginData.json'; // Import der JSON-Datei
+import {createSchedule} from "./api.jsx";
+
 
 const AddRemoveProfessors = () => {
   const navigate = useNavigate();
@@ -136,6 +138,9 @@ const AddRemoveProfessors = () => {
             </Typography>
             <Button color="inherit" onClick={() => navigate('/home')}>
               Home
+            </Button>
+            <Button color="inherit" onClick={createSchedule}>
+              Erstelle Plan
             </Button>
           </Toolbar>
         </AppBar>

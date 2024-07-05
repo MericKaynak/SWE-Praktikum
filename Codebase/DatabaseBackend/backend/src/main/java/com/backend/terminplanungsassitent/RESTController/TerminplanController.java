@@ -214,19 +214,21 @@ public class TerminplanController {
     @SuppressWarnings("null")
     @PostMapping("/login")
     public HttpStatus validateLogin(@RequestBody String requestBody) {
-         JSONObject jsonObject = new JSONObject(requestBody);
-         String email = jsonObject.getString("email");
-         String password = jsonObject.getString("password");
-          List<Student> studentList = studentRepository.findAll();
+        JSONObject jsonObject = new JSONObject(requestBody);
+        String email = jsonObject.getString("email");
+        String password = jsonObject.getString("password");
+        List<Student> studentList = studentRepository.findAll();
+        System.out.println(email + " " + password);
 
-          for (Student v : studentList) {
-              if (v.getEmail() == email || password =="passwort") {
-                  return HttpStatus.OK;
-              }
-          }
-
-        return HttpStatus.OK;
+        for (Student v : studentList) {
+            if (v.getEmail().equals(email) && v.getPasswort().equals(password)) {
+                System.out.println(v.getEmail() + " " + v.getPasswort());
+                return HttpStatus.OK;
+            }
+        }
+        return HttpStatus.BAD_REQUEST;
     }
+
 
     /**
      * Creates a Lehrperson in the database.

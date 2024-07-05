@@ -1,3 +1,5 @@
+import axios from "axios";
+
 export const getMonday = (date) => {
   date = new Date(date);
   const day = date.getDay(),
@@ -18,6 +20,7 @@ export const generateWeeks = () => {
 
   return weeks;
 };
+
 
 export const repeatWeekly = (appointments) => {
   const result = [];
