@@ -3,7 +3,9 @@ package com.backend.terminplanungsassitent.RESTController;
 import java.time.LocalDate;
 import java.time.LocalTime;
 import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 
 import javax.sql.DataSource;
 
@@ -53,7 +55,7 @@ public class TerminplanController {
 
     private static int dauer = 2;
 
-    private static int weeks = 1;
+    private static int days = 7;
 
     @Autowired
     private DataSource dataSource;
@@ -429,18 +431,23 @@ public class TerminplanController {
     private void populateLehrplanterminTable() {
         Lehrplantermin lehrplantermin = new Lehrplantermin();
         List<Lehrveranstaltung> lvList = lehrveranstaltungRepository.findAll();
+        LocalDate today = LocalDate.now();
         int j = 0;
 
         lehrplanterminRepository.deleteAll();
 
         System.out.println("Erstelle die spezifischen Termine basierend auf einem Startdatum und Enddatum");
 
-        for (int i = -weeks; i < weeks; i++) {
+        for (int i = -days; i < days * 2; i++) {
             for (Lehrveranstaltung lehrveranstaltung : lvList) {
-                lehrplantermin.setId(j++);
-                lehrplantermin.setDatum(LocalDate.now().plusDays(i));
-                lehrplantermin.setLehrveranstaltung(lehrveranstaltung);
-                lehrplanterminRepository.save(lehrplantermin);
+                System.out.println(lehrveranstaltung.getDayOfWeek());
+                System.out.println(today.plusDays(i).getDayOfWeek());
+                if (today.plusDays(i).getDayOfWeek() == lehrveranstaltung.getDayOfWeek()) {
+                    lehrplantermin.setId(j++);
+                    lehrplantermin.setDatum(LocalDate.now().plusDays(i));
+                    lehrplantermin.setLehrveranstaltung(lehrveranstaltung);
+                    lehrplanterminRepository.save(lehrplantermin);
+                }
             }
         }
 
@@ -484,14 +491,41 @@ public class TerminplanController {
 
     @GetMapping("/vertretung/{id}")
     public ResponseEntity<List<Vertretung>> Vertretung(@PathVariable Integer id,
-            @RequestBody List<LocalDate> datumList) {
+            @RequestBody List<LocalDate> datumList) throws LehrpersonNotFoundException {
 
         // create variables
         List<Lehrplantermin> lehrplanterminList = new ArrayList<>();
         LocalDate startOfPeriod = datumList.get(0);
         LocalDate endOfPeriod = datumList.get(1);
+        Vertretung vertretung = null;
+        List<Vertretung> vertretungList = new ArrayList<>();
+        List<Lehrperson> lehrpersonList = lehrpersonRepository.findAll();
+        int lehrpersonIndex = 0;
 
-        lehrplanterminList = lehrplanterminRepository.findAllByDatumBetween(startOfPeriod, endOfPeriod);
+        lehrplanterminList = lehrplanterminRepository.findAllByDatumBetweenAndLehrpersonId(startOfPeriod, endOfPeriod,
+                id);
+
+        for (Lehrplantermin lehrplantermin : lehrplanterminList) {
+            vertretung = new Vertretung();
+            vertretung.setDatum(lehrplantermin.getDatum());
+            vertretung.setLehrveranstaltung(lehrplantermin.getLehrveranstaltung());
+            if (lehrpersonList.get(lehrpersonIndex).istVerfuegbar(dauer)
+                    && conditionChecks(lehrplantermin.getLehrveranstaltung(), lehrpersonList.get(lehrpersonIndex))) {
+                vertretung.setLehrperson(lehrpersonList.get(lehrpersonIndex));
+            } else {
+                lehrpersonIndex = 0;
+                for (Lehrperson lehrperson : lehrpersonList) {
+                    if (lehrperson.istVerfuegbar(dauer) && conditionChecks(
+                            lehrplantermin.getLehrveranstaltung(), lehrpersonList.get(lehrpersonIndex))) {
+                        vertretung.setLehrperson(lehrpersonList.get(lehrpersonIndex));
+                        break;
+                    }
+                    lehrpersonIndex++;
+                }
+            }
+            vertretungList.add(vertretung);
+            vertretungRepository.save(vertretung);
+        }
 
         // get a list of all affected LPTs
         // for MON TUE WED, etc. get LVs
@@ -506,6 +540,6 @@ public class TerminplanController {
 
         // return Vertretung
 
-        return new ResponseEntity<>(new ArrayList<>(), HttpStatus.OK);
+        return new ResponseEntity<>(vertretungList, HttpStatus.OK);
     }
 }

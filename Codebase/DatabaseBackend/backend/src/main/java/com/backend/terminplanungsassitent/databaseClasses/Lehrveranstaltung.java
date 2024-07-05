@@ -3,10 +3,13 @@ package com.backend.terminplanungsassitent.databaseClasses;
 import jakarta.persistence.Entity;
 import jakarta.persistence.Id;
 
+import java.time.DayOfWeek;
+
 import com.backend.terminplanungsassitent.RESTController.TimeComparison;
 
 import jakarta.persistence.Column;
 import jakarta.persistence.Table;
+import jakarta.persistence.Transient;
 import jakarta.persistence.ManyToOne;
 import jakarta.persistence.JoinColumn;
 import lombok.Data;
@@ -47,6 +50,7 @@ public class Lehrveranstaltung {
          * @param lehrveranstaltung
          * @return
          */
+        @Transient
         public boolean checkTravelTimeConflict(Lehrveranstaltung lehrveranstaltung) {
                 return ((this.getRaum().getStandort() != lehrveranstaltung.getRaum().getStandort()) &&
                                 this.getTermin().getWochentag() == lehrveranstaltung.getTermin().getWochentag() &&
@@ -69,8 +73,38 @@ public class Lehrveranstaltung {
          * @param lehrperson
          * @return true if same Lehrperson
          */
+        @Transient
         public boolean checkSameLehrperson(Lehrveranstaltung lehrveranstaltung, Lehrperson lehrperson) {
                 return lehrperson == lehrveranstaltung.getLehrperson();
+        }
+
+        @Transient
+        public DayOfWeek getDayOfWeek() {
+                switch (this.getTermin().getWochentag()) {
+                        case "Monday":
+
+                                return DayOfWeek.MONDAY;
+
+                        case "Tuesday":
+
+                                return DayOfWeek.TUESDAY;
+
+                        case "Wednesday":
+
+                                return DayOfWeek.WEDNESDAY;
+
+                        case "Thursday":
+
+                                return DayOfWeek.THURSDAY;
+
+                        case "Friday":
+
+                                return DayOfWeek.FRIDAY;
+
+                        default:
+                                break;
+                }
+                return null;
         }
 
         // Getters and Setters
