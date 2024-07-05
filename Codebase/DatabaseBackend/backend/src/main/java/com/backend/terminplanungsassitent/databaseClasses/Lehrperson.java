@@ -34,8 +34,8 @@ public class Lehrperson {
      * @return true if yes
      */
     @Transient
-    public boolean istVerfuegbar() {
-        return this.getWochenarbeitsstunden() < 18;
+    public boolean istVerfuegbar(int dauer) {
+        return (this.getWochenarbeitsstunden() + dauer) <= 18;
     }
 
     // Getters and Setters

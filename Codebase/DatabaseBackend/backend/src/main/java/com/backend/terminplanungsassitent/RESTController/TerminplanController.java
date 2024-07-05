@@ -51,6 +51,10 @@ import com.backend.terminplanungsassitent.exceptions.LehrveranstaltungNotFoundEx
 @RequestMapping("/terminplan")
 public class TerminplanController {
 
+    private static int dauer = 2;
+
+    private static int weeks = 1;
+
     @Autowired
     private DataSource dataSource;
 
@@ -358,7 +362,7 @@ public class TerminplanController {
                     Lehrperson lehrperson = lehrpersonList.get(lehrpersonIndex);
 
                     // check if Lehrperson can be assigned & get next if not
-                    while (!lehrperson.istVerfuegbar()) {
+                    while (!lehrperson.istVerfuegbar(dauer)) {
                         if (++lehrpersonIndex >= lehrpersonList.size()) {
                             throw new LehrpersonNotFoundException(lehrpersonIndex);
                         }
@@ -371,7 +375,7 @@ public class TerminplanController {
                         lehrveranstaltung.setLehrperson(lehrperson);
                         lehrveranstaltungRepository.save(lehrveranstaltung);
                         elementsToRemove.add(lehrveranstaltung);
-                        lehrperson.setWochenarbeitsstunden(lehrperson.getWochenarbeitsstunden() + 2);
+                        lehrperson.setWochenarbeitsstunden(lehrperson.getWochenarbeitsstunden() + dauer);
                     }
                 }
                 // remove elements which were successfully processed
@@ -424,14 +428,23 @@ public class TerminplanController {
 
     private void populateLehrplanterminTable() {
         Lehrplantermin lehrplantermin = new Lehrplantermin();
-        Lehrveranstaltung lv = lehrveranstaltungRepository.findById(1L).get();
-        lehrplantermin.setId(1);
-        lehrplantermin.setDatum(LocalDate.now());
-        lehrplantermin.setLehrveranstaltung(lv);
+        List<Lehrveranstaltung> lvList = lehrveranstaltungRepository.findAll();
+        int j = 0;
 
-        lehrplanterminRepository.save(lehrplantermin);
+        lehrplanterminRepository.deleteAll();
 
         System.out.println("Erstelle die spezifischen Termine basierend auf einem Startdatum und Enddatum");
+
+        for (int i = -weeks; i < weeks; i++) {
+            for (Lehrveranstaltung lehrveranstaltung : lvList) {
+                lehrplantermin.setId(j++);
+                lehrplantermin.setDatum(LocalDate.now().plusDays(i));
+                lehrplantermin.setLehrveranstaltung(lehrveranstaltung);
+                lehrplanterminRepository.save(lehrplantermin);
+            }
+        }
+
+        System.out.println("Erstellen erfolgreich");
     }
 
     // GET LIST OF ALL LEHRPERSONEN
@@ -511,10 +524,10 @@ public class TerminplanController {
             for (Lehrperson lehrperson : lehrpersonList) {
                 System.out.println("Ich bin nicht drin!");
                 System.out.println(lehrperson.getId() != kranke_person.getId());
-                System.out.println(lehrperson.istVerfuegbar());
+                System.out.println(lehrperson.istVerfuegbar(dauer));
                 System.out.println(conditionChecks(lv, lehrperson));
                 if (lehrperson.getId() != kranke_person.getId() &&
-                        lehrperson.istVerfuegbar() &&
+                        lehrperson.istVerfuegbar(dauer) &&
                         conditionChecks(lv, lehrperson)) {
 
                     System.out.println("Ich bin hier: " + lv.getTitel() + " - " + lehrperson.getName());
