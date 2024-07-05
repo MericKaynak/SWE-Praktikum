@@ -231,6 +231,7 @@ public class TerminplanController {
         return HttpStatus.BAD_REQUEST;
     }
 
+
     /**
      * Creates a Lehrperson in the database.
      * 

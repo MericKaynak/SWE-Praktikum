@@ -40,7 +40,7 @@ const Student = () => {
   const [appointmentChanges, setAppointmentChanges] = useState({});
   const [editingAppointment, setEditingAppointment] = useState(undefined);
   const [weeks, setWeeks] = useState(generateWeeks());
-  const [showLoginModal, setShowLoginModal] = useState(false);
+  const [showLoginModal, setShowLoginModal] = useState(true);
   const [loginError, setLoginError] = useState("");
   const navigate = useNavigate();
 
@@ -52,7 +52,6 @@ const Student = () => {
   }, []);
 
   const handleLoginClose = () => {
-    setShowLoginModal(false);
   };
 
   const handleLoginOpen = () => {
@@ -67,29 +66,26 @@ const Student = () => {
     try {
        const response = await axios.post(
       "http://localhost:8080/terminplan/login",
-      { email, password }
-    );
-
-    // Überprüfung des HTTP-Statuscodes der Antwort
-    if (response.status === 200) {
+      { email, password });
+       console.log(`Der Status lautet ${response.status}`)
+       if (response.status === 200) {
       localStorage.setItem("token", response.data.token);
       localStorage.setItem("loginTimestamp", new Date().getTime());
       setShowLoginModal(false);
-      fetchAppointments();
-    } else {
-      // Behandlung des Falles, dass der Server nicht mit 200 OK antwortet
-      setLoginError("Login failed: Invalid credentials or other error");
-    }
-  } catch (error) {
+      await createAppointments(response.data);
+      } else {
+        setLoginError("Login failed: Invalid credentials or other error");
+        return;
+      }
+    } catch (error) {
     console.error("Login failed", error);
     setLoginError("Login failed: Server error or network issue");
-  }
+    }
   };
 
-  const fetchAppointments = async () => {
+  const createAppointments = async (data) => {
     try {
-      const response = await axios.get("http://localhost:8080/terminplan/appointments");
-      setAppointments(response.data);
+      //setAppointments(data);
     } catch (error) {
       console.error("Error fetching appointments:", error);
     }

@@ -8,8 +8,7 @@ const AppointmentForm = () => {
 
   const handleSubmit = async (e) => {
     e.preventDefault();
-    try {
-      await axios.post('/api/appointments', { date, time, description }, {
+    try {      await axios.post('/api/appointments', { date, time, description }, {
         headers: {
           Authorization: `Bearer ${localStorage.getItem('token')}`
         }

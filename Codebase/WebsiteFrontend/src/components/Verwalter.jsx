@@ -30,6 +30,7 @@ import {
   generateWeeks,
   repeatWeekly,
 } from "./AppointmentsFuncs.jsx";
+import {createSchedule} from "./api.jsx";
 
 const Verwalter = () => {
   const [appointments, setAppointments] = useState([]);
@@ -46,32 +47,7 @@ const Verwalter = () => {
   const [showLoginModal, setShowLoginModal] = useState(false);
   const navigate = useNavigate();
 
-  const createSchedule = async () => {
-    try {
-      const currentDate = new Date();
-      const startDatum = new Date();
-      const endDatum = new Date();
-      console.log("Plan wurde erstellt");
-      startDatum.setDate(currentDate.getDate() - 12 * 7); // 12 weeks ago
-      endDatum.setDate(currentDate.getDate() + 12 * 7); // 12 weeks ahead
 
-      const formattedStartDatum = startDatum.toISOString().split("T")[0];
-      const formattedEndDatum = endDatum.toISOString().split("T")[0];
-
-      const data = {
-        startDatum: formattedStartDatum,
-        endDatum: formattedEndDatum,
-      };
-
-      const response = await axios.post(
-        "http://localhost:8080/terminplan/create",
-        data
-      );
-      console.log("Schedule created successfully", response);
-    } catch (error) {
-      console.error("Error creating schedule", error);
-    }
-  };
 
   useEffect(() => {
     const token = localStorage.getItem("token");
@@ -158,7 +134,6 @@ const Verwalter = () => {
   const handleUserChange = (event) => {
     setSelectedUser(event.target.value);
     // Fetch appointments based on selected user
-    fetchAppointments(event.target.value);
   };
 
   const fetchAppointments = async (userId) => {
@@ -180,7 +155,7 @@ const Verwalter = () => {
         professorName: lecture.lehrperson.name,
       }));
 
-      setAppointments(appointments);
+      setAppointments(repeatWeekly(appointments));
     } catch (error) {
       console.error("Error fetching appointments:", error);
     }

@@ -23,8 +23,12 @@ import {
   Button,
 } from "@mui/material";
 import { useNavigate } from "react-router-dom";
-import { getMonday, generateWeeks } from "./AppointmentsFuncs.jsx";
-import { fetchAppointments as fetchAppointmentsApi, fetchProfessors as fetchProfessorsApi } from './api.jsx';
+import {getMonday, generateWeeks, repeatWeekly} from "./AppointmentsFuncs.jsx";
+import {
+  fetchAppointments,
+  fetchAppointments as fetchAppointmentsApi,
+  fetchProfessors as fetchProfessorsApi
+} from './api.jsx';
 
 const Lehrpersonen = () => {
   const [appointments, setAppointments] = useState([]);
