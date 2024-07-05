@@ -5,7 +5,6 @@ import Verwalter from "./components/Verwalter.jsx";
 import Home from "./components/Home.jsx";
 import Student from "./components/Student.jsx";
 import Lehrpersonen from "./components/Lerpersonen.jsx";
-import VerwaltungHome from "./components/VerwaltungHome.jsx";
 import AddRemoveLehrperson from "./components/AddRemoveLehrperson.jsx";
 function App() {
   const navigate = useNavigate();
@@ -18,7 +17,6 @@ function App() {
         <Route path="/student" element={<Student />} />
         <Route path="/verwalter" element={<Verwalter />} />
         <Route path="/lehrpersonen" element={<Lehrpersonen />} />
-        <Route path="/verwaltunghome" element={<VerwaltungHome />} />
         <Route path="/addRemoveLehrperson" element={<AddRemoveLehrperson />} />
       </Routes>
     </div>

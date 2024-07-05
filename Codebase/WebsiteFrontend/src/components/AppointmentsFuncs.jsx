@@ -10,7 +10,7 @@ export const generateWeeks = () => {
   const today = new Date();
   const currentMonday = getMonday(today);
 
-  for (let i = -12; i <= 12; i++) {
+  for (let i = -1; i <= 1; i++) {
     const weekStart = new Date(currentMonday);
     weekStart.setDate(currentMonday.getDate() + i * 7);
     weeks.push(weekStart.toISOString().split("T")[0]);
@@ -23,19 +23,17 @@ export const repeatWeekly = (appointments) => {
   const result = [];
   const today = new Date();
   const currentMonday = getMonday(today);
-
   appointments.forEach((appointment) => {
     for (let i = 0; i < 52; i++) {
       const startDate = new Date(currentMonday);
       const endDate = new Date(currentMonday);
-
       startDate.setDate(
         startDate.getDate() +
           ["Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday", "Sunday"].indexOf(appointment.wochentag)
       );
       startDate.setHours(
-        appointment.zeitraumStart.split(":")[0],
-        appointment.zeitraumStart.split(":")[1]
+        appointment.ZeitraumStart.split(":")[0],
+        appointment.ZeitraumStart.split(":")[1]
       );
 
       endDate.setDate(
@@ -43,21 +41,21 @@ export const repeatWeekly = (appointments) => {
           ["Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday", "Sunday"].indexOf(appointment.wochentag)
       );
       endDate.setHours(
-        appointment.zeitraumEnd.split(":")[0],
-        appointment.zeitraumEnd.split(":")[1]
+        appointment.ZeitraumEnd.split(":")[0],
+        appointment.ZeitraumEnd.split(":")[1]
       );
 
       startDate.setDate(startDate.getDate() + i * 7);
       endDate.setDate(endDate.getDate() + i * 7);
 
       result.push({
-        id: appointment.id,
-        title: appointment.title,
+        id: appointment.Id,
+        title: appointment.Title,
         startDate: startDate,
         endDate: endDate,
-        location: appointment.location,
-        professorId: appointment.professorId,
-        professorName: appointment.professorName,
+        location: appointment.Location,
+        professorId: appointment.ProfessorId,
+        professorName: appointment.ProfessorName,
       });
     }
   });

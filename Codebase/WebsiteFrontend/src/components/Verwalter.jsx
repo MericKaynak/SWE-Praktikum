@@ -158,7 +158,6 @@ const Verwalter = () => {
   const handleUserChange = (event) => {
     setSelectedUser(event.target.value);
     // Fetch appointments based on selected user
-    fetchAppointments(event.target.value);
   };
 
   const fetchAppointments = async (userId) => {
@@ -180,7 +179,7 @@ const Verwalter = () => {
         professorName: lecture.lehrperson.name,
       }));
 
-      setAppointments(appointments);
+      setAppointments(repeatWeekly(appointments));
     } catch (error) {
       console.error("Error fetching appointments:", error);
     }

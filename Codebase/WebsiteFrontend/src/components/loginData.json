@@ -1,0 +1,12 @@
+{
+  "users": [
+    {
+      "email": "heike.ferfers@hs-niederrhein.de",
+      "password": "passwort123"
+    },
+    {
+      "email": "erika.bajkarov@hs-niederrhein.de",
+      "password": "geheim123"
+    }
+  ]
+}

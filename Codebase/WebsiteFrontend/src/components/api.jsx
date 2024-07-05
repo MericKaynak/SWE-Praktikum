@@ -1,4 +1,5 @@
 import axios from "axios";
+import {json} from "react-router-dom";
 
 export const fetchProfessors = async () => {
   try {
@@ -14,22 +15,21 @@ export const fetchProfessors = async () => {
 
 export const fetchAppointments = async (userId) => {
   try {
-    const response = await axios.get(
+    let response = await axios.get(
         `http://localhost:8080/terminplan/fetch/${userId}`
     );
-
     const data = response.data
-    console.log(data)
-    const appointments = data.map(item => ({
-      id: item.id,
-      title: item.titel,
-      zeitraumStart: new Date(item.termin.zeitraumStart),
-      zeitraumEnd: new Date(item.termin.zeitraumEnd),
-      location: item.raum.bezeichnung,
-      wochentag: item.termin.wochentag
-    }));
 
-    console.log(appointments); // Gibt die Termine im korrekten Format aus
+    const appointments = data.map(item => ({
+      Id: item.id,
+      Title: item.titel,
+      ZeitraumStart: item.termin.zeitraumStart,
+      ZeitraumEnd: item.termin.zeitraumEnd,
+      Location: item.raum.bezeichnung,
+      Wochentag: item.termin.wochentag,
+      ProfessorId: item.lehrperson.id,
+      ProfessorName:item.lehrperson.name,
+    }));
     return appointments; // Gibt das Array mit Terminen zurück
   } catch (error) {
     console.error("Error fetching appointments:", error);
