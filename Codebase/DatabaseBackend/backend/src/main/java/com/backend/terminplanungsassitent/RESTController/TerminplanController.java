@@ -482,14 +482,7 @@ public class TerminplanController {
         return new ResponseEntity<>(lehrveranstaltungsList, HttpStatus.OK);
     }
 
-    // PUT AUSFALL MELDEN
-    @PutMapping("/notify")
-    public ResponseEntity<Lehrperson> putAusfall(@PathVariable Long id) {
-        // TODO: Ausfall Logik implementieren
-        return null;
-    }
-
-    @GetMapping("/vertretung/{id}")
+    @PutMapping("/notify/{id}")
     public ResponseEntity<List<Vertretung>> Vertretung(@PathVariable Integer id,
             @RequestBody List<LocalDate> datumList) throws LehrpersonNotFoundException {
 
