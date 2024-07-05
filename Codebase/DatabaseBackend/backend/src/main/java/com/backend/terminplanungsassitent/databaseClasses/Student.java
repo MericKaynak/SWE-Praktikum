@@ -26,5 +26,4 @@ public class Student {
     private String passwort;
 
     // Getters and Setters
-
 }
