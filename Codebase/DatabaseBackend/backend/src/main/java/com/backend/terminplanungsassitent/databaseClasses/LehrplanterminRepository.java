@@ -1,5 +1,6 @@
 package com.backend.terminplanungsassitent.databaseClasses;
 
+import java.time.LocalDate;
 import java.util.List;
 
 import org.springframework.data.jpa.repository.JpaRepository;
@@ -43,5 +44,9 @@ public interface LehrplanterminRepository extends JpaRepository<Lehrplantermin, 
     // Using @Query annotation
     @Query("SELECT lpt FROM Lehrplantermin lpt WHERE lpt.lehrveranstaltung.lehrperson.id = :lehrpersonId")
     List<Lehrplantermin> findLehrplantermineByLehrpersonId(@Param("lehrpersonId") Integer lehrpersonId);
+
+    @Query("SELECT l FROM Lehrplantermin l WHERE l.datum BETWEEN :startDate AND :endDate")
+    List<Lehrplantermin> findAllByDatumBetween(@Param("startDate") LocalDate startDate,
+            @Param("endDate") LocalDate endDate);
 
 }

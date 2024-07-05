@@ -466,6 +466,10 @@ public class TerminplanController {
     @GetMapping("/fetch/{id}")
     public ResponseEntity<List<Lehrveranstaltung>> find(@PathVariable Integer id)
             throws LehrveranstaltungNotFoundException {
+
+        // GET ALL LEHRPLANTERMINE
+        // OVERWRITE LEHRPLANTERMIN WITH VERTRETUNG WHERE LEHRVERANSTALTUNG = LEHRPERSON
+
         List<Lehrveranstaltung> lehrveranstaltungsList = lehrveranstaltungRepository.findByLehrpersonId(id);
 
         return new ResponseEntity<>(lehrveranstaltungsList, HttpStatus.OK);
@@ -478,97 +482,30 @@ public class TerminplanController {
         return null;
     }
 
-    @GetMapping("/vertretung")
-    public ResponseEntity<List<Vertretung>> Vertretung(/* @RequestParam List<LocalDate> datumList, */
-            @RequestBody Lehrperson kranke_person) {
+    @GetMapping("/vertretung/{id}")
+    public ResponseEntity<List<Vertretung>> Vertretung(@PathVariable Integer id,
+            @RequestBody List<LocalDate> datumList) {
 
-        List<Besuchen> besuchenList = new ArrayList<>();
-        List<Lehrveranstaltung> lehrveranstaltungList = new ArrayList<>();
-        // alle Lehrplantermine für Lehrperson kranke_person
-        List<Lehrplantermin> lptKrankePerson = lehrplanterminRepository
-                .findLehrplantermineByLehrpersonId(kranke_person.getId());
+        // create variables
+        List<Lehrplantermin> lehrplanterminList = new ArrayList<>();
+        LocalDate startOfPeriod = datumList.get(0);
+        LocalDate endOfPeriod = datumList.get(1);
 
-        /*
-         * for (Lehrplantermin lehrplantermin : lvKrankePerson) {
-         * System.out.println("Lehrveranstaltung: " +
-         * lehrplantermin.getLehrveranstaltung().getTitel());
-         * //System.out.println("Lehrperson: " +
-         * lehrplantermin.getLehrveranstaltung().getLehrperson().getName());
-         * //System.out.println("Raum: " +
-         * lehrplantermin.getLehrveranstaltung().getRaum().getBezeichnung());
-         * System.out.println("Wochentag: " +
-         * lehrplantermin.getLehrveranstaltung().getTermin().getWochentag());
-         * System.out.println("Zeitraum: " +
-         * lehrplantermin.getLehrveranstaltung().getTermin().getZeitraumStart()
-         * + " - " +
-         * lehrplantermin.getLehrveranstaltung().getTermin().getZeitraumEnd());
-         * System.out.println("Datum: " + lehrplantermin.getDatum());
-         * }
-         */
+        lehrplanterminList = lehrplanterminRepository.findAllByDatumBetween(startOfPeriod, endOfPeriod);
 
-        List<Lehrperson> lehrpersonList = lehrpersonRepository.findAll();
-        List<Vertretung> vertretungList = new ArrayList<>();
+        // get a list of all affected LPTs
+        // for MON TUE WED, etc. get LVs
 
-        while (!lptKrankePerson.isEmpty()) {
-            Lehrveranstaltung lv = lptKrankePerson.get(0).getLehrveranstaltung();
-            String wochentag = lptKrankePerson.get(0).getLehrveranstaltung().getTermin().getWochentag();
-            LocalTime zeitraumStart = lptKrankePerson.get(0).getLehrveranstaltung().getTermin().getZeitraumStart();
-            LocalTime zeitraumEnde = lptKrankePerson.get(0).getLehrveranstaltung().getTermin().getZeitraumEnd();
-            LocalDate datum = lptKrankePerson.get(0).getDatum();
+        // create Vertretung object with above LVs
 
-            // checks if a vertretung has not been found
-            // if so we put "null" into Lehrperson
-            boolean vertretung_Found = false;
+        // find verfuegbare Lehrperson and assign them to Vertretung
 
-            Vertretung vertretung = new Vertretung();
-            for (Lehrperson lehrperson : lehrpersonList) {
-                System.out.println("Ich bin nicht drin!");
-                System.out.println(lehrperson.getId() != kranke_person.getId());
-                System.out.println(lehrperson.istVerfuegbar(dauer));
-                System.out.println(conditionChecks(lv, lehrperson));
-                if (lehrperson.getId() != kranke_person.getId() &&
-                        lehrperson.istVerfuegbar(dauer) &&
-                        conditionChecks(lv, lehrperson)) {
+        // save Vertretungs objects
 
-                    System.out.println("Ich bin hier: " + lv.getTitel() + " - " + lehrperson.getName());
+        // notify affected students -> Call method
 
-                    vertretung.setLehrperson(lehrperson);
-                    vertretung.setDatum(datum);
-                    vertretungList.add(vertretung);
+        // return Vertretung
 
-                    lehrperson.setWochenarbeitsstunden(lehrperson.getWochenarbeitsstunden() + 2);
-                    lehrpersonRepository.save(lehrperson);
-
-                    vertretung_Found = true;
-
-                    // remove the found lehrveranstaltung from the kranke_person
-                    lptKrankePerson.remove(lv);
-
-                    break;
-                }
-            }
-
-            if (!vertretung_Found) {
-                vertretung.setLehrperson(null);
-                vertretung.setDatum(datum);
-
-                vertretungList.add(vertretung);
-
-                Lehrplantermin lptToReplace = lptKrankePerson.get(0);
-                lptKrankePerson.remove(lptToReplace);
-            }
-        }
-
-        for (Vertretung vertretung : vertretungList) {
-            System.out.println(vertretung.toString());
-
-            // besuchenList =
-            // besuchenRepository.findAllByLehrveranstaltungId(vertretung.getLehrveranstaltung().getId());
-            for (Besuchen besuchen : besuchenList) {
-                System.out.println("Benachrichtige Student " + besuchen.getStudent().getEmail() + " wegen Änderung an "
-                        + besuchen.getLehrveranstaltung().getTitel());
-            }
-        }
-        return new ResponseEntity<>(vertretungList, HttpStatus.OK);
+        return new ResponseEntity<>(new ArrayList<>(), HttpStatus.OK);
     }
 }
