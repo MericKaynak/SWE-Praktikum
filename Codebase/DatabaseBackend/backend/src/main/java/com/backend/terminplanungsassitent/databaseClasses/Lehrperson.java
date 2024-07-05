@@ -2,6 +2,9 @@ package com.backend.terminplanungsassitent.databaseClasses;
 
 import jakarta.persistence.Entity;
 import jakarta.persistence.Id;
+
+import java.beans.Transient;
+
 import jakarta.persistence.Column;
 import jakarta.persistence.Table;
 import lombok.Data;
@@ -30,6 +33,7 @@ public class Lehrperson {
      * 
      * @return true if yes
      */
+    @Transient
     public boolean istVerfuegbar() {
         return this.getWochenarbeitsstunden() < 18;
     }
