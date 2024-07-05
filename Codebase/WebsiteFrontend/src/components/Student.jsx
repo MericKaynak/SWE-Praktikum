@@ -164,7 +164,7 @@ const Student = () => {
               onEditingAppointmentChange={setEditingAppointment}
             />
             <IntegratedEditing />
-            <WeekView startDayHour={8} endDayHour={20} />
+            <WeekView startDayHour={8} endDayHour={20}  excludedDays={[0,6]}/>
             <AllDayPanel />
             <EditRecurrenceMenu />
             <ConfirmationDialog />

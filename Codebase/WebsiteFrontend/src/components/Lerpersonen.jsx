@@ -162,7 +162,12 @@ const Lehrpersonen = () => {
               editingAppointment={editingAppointment}
               onEditingAppointmentChange={setEditingAppointment}
             />
-            <WeekView startDayHour={8} endDayHour={20} />
+            <WeekView
+              startDayHour={8}
+              endDayHour={20}
+              firstDayOfWeek={6}
+              excludedDays={[0,6]}
+            />
             <AllDayPanel />
             <EditRecurrenceMenu />
             <ConfirmationDialog />

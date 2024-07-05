@@ -31,15 +31,7 @@ export const repeatWeekly = (appointments) => {
 
       startDate.setDate(
         startDate.getDate() +
-          [
-            "Monday",
-            "Tuesday",
-            "Wednesday",
-            "Thursday",
-            "Friday",
-            "Saturday",
-            "Sunday",
-          ].indexOf(appointment.wochentag)
+          ["Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday", "Sunday"].indexOf(appointment.wochentag)
       );
       startDate.setHours(
         appointment.zeitraumStart.split(":")[0],
@@ -48,15 +40,7 @@ export const repeatWeekly = (appointments) => {
 
       endDate.setDate(
         endDate.getDate() +
-          [
-            "Monday",
-            "Tuesday",
-            "Wednesday",
-            "Thursday",
-            "Friday",
-            "Saturday",
-            "Sunday",
-          ].indexOf(appointment.wochentag)
+          ["Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday", "Sunday"].indexOf(appointment.wochentag)
       );
       endDate.setHours(
         appointment.zeitraumEnd.split(":")[0],
