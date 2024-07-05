@@ -29,7 +29,7 @@ import { fetchAppointments as fetchAppointmentsApi, fetchProfessors as fetchProf
 const Lehrpersonen = () => {
   const [appointments, setAppointments] = useState([]);
   const [currentDate, setCurrentDate] = useState(
-    getMonday(new Date()).toISOString().split("T")[0]
+      getMonday(new Date()).toISOString().split("T")[0]
   );
   const [addedAppointment, setAddedAppointment] = useState({});
   const [appointmentChanges, setAppointmentChanges] = useState({});
@@ -78,14 +78,14 @@ const Lehrpersonen = () => {
       let data = prevAppointments;
       if (added) {
         const startingAddedId =
-          data.length > 0 ? data[data.length - 1].id + 1 : 0;
+            data.length > 0 ? data[data.length - 1].id + 1 : 0;
         data = [...data, { id: startingAddedId, ...added }];
       }
       if (changed) {
         data = data.map((appointment) =>
-          changed[appointment.id]
-            ? { ...appointment, ...changed[appointment.id] }
-            : appointment
+            changed[appointment.id]
+                ? { ...appointment, ...changed[appointment.id] }
+                : appointment
         );
       }
       if (deleted !== undefined) {
@@ -96,83 +96,88 @@ const Lehrpersonen = () => {
   };
 
   return (
-    <div style={{ height: "100vh", display: "flex", flexDirection: "column" }}>
-      <AppBar position="static">
-        <Toolbar>
-          <Typography variant="h6" style={{ flexGrow: 1 }}>
-            Lehrpersonen Scheduler
-          </Typography>
-          <Button color="inherit" onClick={() => navigate("/home")}>
-            Home
-          </Button>
-        </Toolbar>
-      </AppBar>
-      <div style={{ flexGrow: 1 }}>
-        <Paper style={{ height: "100%" }}>
-          <Grid
-            container
-            spacing={2}
-            alignItems="center"
-            style={{ padding: "16px" }}
-          >
-            <Grid item xs={4}>
-              <FormControl fullWidth>
-                <InputLabel id="week-select-label">Woche</InputLabel>
-                <Select
-                  labelId="week-select-label"
-                  value={currentDate}
-                  onChange={handleWeekChange}
-                >
-                  {weeks.map((week) => (
-                    <MenuItem key={week} value={week}>
-                      {week}
-                    </MenuItem>
-                  ))}
-                </Select>
-              </FormControl>
+      <div style={{ height: "100vh", display: "flex", flexDirection: "column" }}>
+        <AppBar position="static">
+          <Toolbar>
+            <Typography variant="h6" style={{ flexGrow: 1 }}>
+              Lehrpersonen Scheduler
+            </Typography>
+            <Button color="inherit" onClick={() => navigate("/home")}>
+              Home
+            </Button>
+          </Toolbar>
+        </AppBar>
+        <div style={{ flexGrow: 1 }}>
+          <Paper style={{ height: "100%" }}>
+            <Grid
+                container
+                spacing={2}
+                alignItems="center"
+                style={{ padding: "16px" }}
+            >
+              <Grid item xs={4}>
+                <FormControl fullWidth>
+                  <InputLabel id="week-select-label">Woche</InputLabel>
+                  <Select
+                      labelId="week-select-label"
+                      value={currentDate}
+                      onChange={handleWeekChange}
+                  >
+                    {weeks.map((week) => (
+                        <MenuItem key={week} value={week}>
+                          {week}
+                        </MenuItem>
+                    ))}
+                  </Select>
+                </FormControl>
+              </Grid>
+              <Grid item xs={8}>
+                <FormControl fullWidth>
+                  <InputLabel id="user-select-label">Lehrperson</InputLabel>
+                  <Select
+                      labelId="user-select-label"
+                      value={selectedUser}
+                      onChange={handleUserChange}
+                  >
+                    {professors.map((professor) => (
+                        <MenuItem key={professor.id} value={professor.id}>
+                          {professor.name}
+                        </MenuItem>
+                    ))}
+                  </Select>
+                </FormControl>
+              </Grid>
             </Grid>
-            <Grid item xs={8}>
-              <FormControl fullWidth>
-                <InputLabel id="user-select-label">Lehrperson</InputLabel>
-                <Select
-                  labelId="user-select-label"
-                  value={selectedUser}
-                  onChange={handleUserChange}
-                >
-                  {professors.map((professor) => (
-                    <MenuItem key={professor.id} value={professor.id}>
-                      {professor.name}
-                    </MenuItem>
-                  ))}
-                </Select>
-              </FormControl>
-            </Grid>
-          </Grid>
-          <DxScheduler data={appointments} height="calc(100vh - 112px)">
-            <ViewState
-              currentDate={currentDate}
-              onCurrentDateChange={setCurrentDate}
-            />
-            <EditingState
-              onCommitChanges={commitChanges}
-              addedAppointment={addedAppointment}
-              onAddedAppointmentChange={setAddedAppointment}
-              appointmentChanges={appointmentChanges}
-              onAppointmentChangesChange={setAppointmentChanges}
-              editingAppointment={editingAppointment}
-              onEditingAppointmentChange={setEditingAppointment}
-            />
-            <WeekView startDayHour={8} endDayHour={20} />
-            <AllDayPanel />
-            <EditRecurrenceMenu />
-            <ConfirmationDialog />
-            <Appointments />
-            <AppointmentTooltip />
-            <DxAppointmentForm />
-          </DxScheduler>
-        </Paper>
+            <DxScheduler data={appointments} height="calc(100vh - 112px)">
+              <ViewState
+                  currentDate={currentDate}
+                  onCurrentDateChange={setCurrentDate}
+              />
+              <EditingState
+                  onCommitChanges={commitChanges}
+                  addedAppointment={addedAppointment}
+                  onAddedAppointmentChange={setAddedAppointment}
+                  appointmentChanges={appointmentChanges}
+                  onAppointmentChangesChange={setAppointmentChanges}
+                  editingAppointment={editingAppointment}
+                  onEditingAppointmentChange={setEditingAppointment}
+              />
+              <WeekView
+                  startDayHour={8}
+                  endDayHour={20}
+                  firstDayOfWeek={6}
+                  excludedDays={[0,6]}
+              />
+              <AllDayPanel />
+              <EditRecurrenceMenu />
+              <ConfirmationDialog />
+              <Appointments />
+              <AppointmentTooltip />
+              <DxAppointmentForm />
+            </DxScheduler>
+          </Paper>
+        </div>
       </div>
-    </div>
   );
 };
 

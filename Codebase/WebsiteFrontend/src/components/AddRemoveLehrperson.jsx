@@ -3,6 +3,8 @@ import { FormControl, InputLabel, Select, MenuItem, Grid, TextField, Button, Pap
 import axios from "axios";
 import { useNavigate } from "react-router-dom";
 import LoginModal from './LoginModal.jsx';
+import {fetchProfessors as fetchProfessorsApi } from './api.jsx';
+
 
 const AddRemoveProfessors = () => {
   const navigate = useNavigate();
@@ -12,16 +14,26 @@ const AddRemoveProfessors = () => {
     name: '',
     email: '',
     rolle: '',
-    wochenarbeitsstunden: ''
+    wochenarbeitsstunden: '',
+    startDate: '',
+    endDate: ''
   });
+  const [professors, setProfessors] = useState([]);
   const [showLoginModal, setShowLoginModal] = useState(false);
+  const [selectedUser, setSelectedUser] = useState("");
 
-  const professors = [
-    { id: 1, name: 'Professor A' },
-    { id: 2, name: 'Professor B' },
-    { id: 3, name: 'Professor C' }
-    // Hier können Sie weitere Lehrpersonen hinzufügen
-  ];
+  useEffect(() => {
+    const fetchProfessors = async () => {
+      try {
+        const data = await fetchProfessorsApi();
+        setProfessors(data);
+      } catch (error) {
+        console.error("Error fetching professors:", error);
+      }
+    };
+    fetchProfessors();
+  }, []);
+
 
   useEffect(() => {
     const token = localStorage.getItem('token');
@@ -35,6 +47,7 @@ const AddRemoveProfessors = () => {
   const handleLoginOpen = () => setShowLoginModal(true);
 
   const sendLogin = async (email, password) => {
+    setShowLoginModal(false);
     if (!email.endsWith('@hs-niederrhein.de')) {
       console.error('Email must end with @hs-niederrhein.de');
       return;
@@ -51,7 +64,7 @@ const AddRemoveProfessors = () => {
   };
 
   const handleProfessorChange = (event) => {
-    setSelectedProfessor(event.target.value);
+    setSelectedUser(event.target.value);
   };
 
   const handleActionChange = (event) => {
@@ -66,13 +79,14 @@ const AddRemoveProfessors = () => {
   const handleFormSubmit = async (event) => {
     event.preventDefault();
     try {
-      console.log(formData);
-      await axios.post('/api/professors/add', formData);
+      await axios.post('http://localhost:8080/api/professors/add', formData);
       setFormData({
         name: '',
         email: '',
         rolle: '',
-        wochenarbeitsstunden: ''
+        wochenarbeitsstunden: '',
+        startDate: '',
+        endDate: ''
       });
       console.log('Successfully added professor');
     } catch (error) {
@@ -81,14 +95,27 @@ const AddRemoveProfessors = () => {
   };
 
   const handleActionSubmit = async () => {
-    if (actionType === 'remove' && selectedProfessor !== '') {
+    if (actionType === 'remove' && selectedUser !== '') {
       try {
-        await axios.post(`http://localhost:8080/terminplan/delete/${selectedProfessor}`, formData);
-        console.log(`Removed Professor: ${selectedProfessor}`);
-        setSelectedProfessor('');
+        await axios.post(`http://localhost:8080/terminplan/delete/${selectedUser}`);
+        console.log(`Removed Professor: ${selectedUser}`);
+        setSelectedUser('');
         setActionType('');
       } catch (error) {
         console.error('Error deleting professor:', error);
+      }
+    } else if (actionType === 'krankmelden' && selectedUser !== '') {
+      try {
+        await axios.post(`http://localhost:8080/terminplan/notify/${selectedUser}`, {
+          startDate: formData.startDate,
+          endDate: formData.endDate
+        });
+        console.log(`Marked Professor ${selectedUser} as sick from ${formData.startDate} to ${formData.endDate}`);
+        setSelectedUser('');
+        setActionType('');
+        setFormData({ ...formData, startDate: '', endDate: '' });
+      } catch (error) {
+        console.error('Error marking professor as sick:', error);
       }
     }
   };
@@ -111,20 +138,21 @@ const AddRemoveProfessors = () => {
           <Grid item xs={12}>
             <Paper style={{ padding: '16px' }}>
               <FormControl fullWidth>
-                <InputLabel id="action-type-label">Action Type</InputLabel>
+                <InputLabel id="action-type-label">Option</InputLabel>
                 <Select
                   labelId="action-type-label"
                   value={actionType}
                   onChange={handleActionChange}
                 >
-                  <MenuItem value="">Select Action</MenuItem>
-                  <MenuItem value="add">Add Professor</MenuItem>
-                  <MenuItem value="remove">Remove Professor</MenuItem>
+                  <MenuItem value="">Option Waehlen</MenuItem>
+                  <MenuItem value="add">Lehrperson hinzufuegen</MenuItem>
+                  <MenuItem value="remove">Lehrperson entfernen</MenuItem>
+                  <MenuItem value="krankmelden">Lehrperson Krankmelden</MenuItem>
                 </Select>
               </FormControl>
             </Paper>
           </Grid>
-          {(actionType === 'add' || actionType === 'remove') && (
+          {(actionType === 'add' || actionType === 'remove' || actionType === 'krankmelden') && (
             <Grid item xs={12}>
               <Paper style={{ padding: '16px' }}>
                 {actionType === 'add' && (
@@ -185,10 +213,10 @@ const AddRemoveProfessors = () => {
                       <InputLabel id="professor-select-label">Select Professor</InputLabel>
                       <Select
                         labelId="professor-select-label"
-                        value={selectedProfessor}
+                        value={selectedUser}
                         onChange={handleProfessorChange}
                       >
-                        <MenuItem value="">Select Professor</MenuItem>
+                        <MenuItem value="">Waehle Lehrperson</MenuItem>
                         {professors.map((professor) => (
                           <MenuItem key={professor.id} value={professor.id}>
                             {professor.name}
@@ -200,10 +228,63 @@ const AddRemoveProfessors = () => {
                       variant="contained"
                       color="secondary"
                       style={{ marginLeft: '10px' }}
+                      disabled={selectedUser === ''}
+                      onClick={handleActionSubmit}
+                    >
+                      Bestaetigen
+                    </Button>
+                  </>
+                )}
+                {actionType === 'krankmelden' && (
+                  <>
+                    <Typography variant="h6">Krankmelden</Typography>
+                    <FormControl fullWidth>
+                      <InputLabel id="professor-select-label">Select Professor</InputLabel>
+                      <Select
+                        labelId="professor-select-label"
+                        value={selectedUser}
+                        onChange={handleProfessorChange}
+                      >
+                        <MenuItem value="">Select Professor</MenuItem>
+                        {professors.map((professor) => (
+                          <MenuItem key={professor.id} value={professor.id}>
+                            {professor.name}
+                          </MenuItem>
+                        ))}
+                      </Select>
+                    </FormControl>
+                    <Grid container spacing={2} style={{ marginTop: '10px' }}>
+                      <Grid item xs={6}>
+                        <TextField
+                          fullWidth
+                          name="startDate"
+                          label="VON"
+                          type="date"
+                          InputLabelProps={{ shrink: true }}
+                          value={formData.startDate}
+                          onChange={handleFormChange}
+                        />
+                      </Grid>
+                      <Grid item xs={6}>
+                        <TextField
+                          fullWidth
+                          name="endDate"
+                          label="BIS"
+                          type="date"
+                          InputLabelProps={{ shrink: true }}
+                          value={formData.endDate}
+                          onChange={handleFormChange}
+                        />
+                      </Grid>
+                    </Grid>
+                    <Button
+                      variant="contained"
+                      color="primary"
+                      style={{ marginTop: '10px' }}
                       disabled={selectedProfessor === ''}
                       onClick={handleActionSubmit}
                     >
-                      Confirm Remove
+                      Bestaetigen
                     </Button>
                   </>
                 )}

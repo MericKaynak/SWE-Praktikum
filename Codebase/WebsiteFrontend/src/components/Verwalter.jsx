@@ -173,8 +173,8 @@ const Verwalter = () => {
       const appointments = data.properties?.map((lecture) => ({
         id: lecture.id,
         title: lecture.titel,
-        startDate: new Date(`2024-07-01T${lecture.termin.zeitraumStart}`), // Replace `2023-01-02` with the appropriate start date
-        endDate: new Date(`2024-07-01T${lecture.termin.zeitraumEnd}`), // Replace `2023-01-02` with the appropriate end date
+        startDate: new Date(`${currentDate}T${item.termin.zeitraumStart}`),
+        endDate: new Date(`${currentDate}T${item.termin.zeitraumEnd}`),
         location: lecture.raum.bezeichnung,
         professorId: lecture.lehrperson.id,
         professorName: lecture.lehrperson.name,
@@ -265,7 +265,7 @@ const Verwalter = () => {
               editingAppointment={editingAppointment}
               onEditingAppointmentChange={setEditingAppointment}
             />
-            <WeekView startDayHour={8} endDayHour={20} firstDayOfWeek={1} />
+            <WeekView startDayHour={8} endDayHour={20} firstDayOfWeek={1}  excludedDays={[0,6]}/>
             <AllDayPanel />
             <EditRecurrenceMenu />
             <ConfirmationDialog />
