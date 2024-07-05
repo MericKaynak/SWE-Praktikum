@@ -102,7 +102,7 @@ const AddRemoveProfessors = () => {
       }
     } else if (actionType === 'krankmelden' && selectedProfessor !== '') {
       try {
-        await axios.post(`http://localhost:8080/terminplan/sick/${selectedProfessor}`, {
+        await axios.post(`http://localhost:8080/terminplan/notify/${selectedProfessor}`, {
           startDate: formData.startDate,
           endDate: formData.endDate
         });
