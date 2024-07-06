@@ -25,5 +25,9 @@ public class Lehrplantermin {
     @JoinColumn(name = "Lehrveranstaltung_ID")
     private Lehrveranstaltung lehrveranstaltung;
 
+    @ManyToOne
+    @JoinColumn(name = "Vertretung_ID")
+    private Vertretung vertretung;
+
     // Getters and Setters
 }

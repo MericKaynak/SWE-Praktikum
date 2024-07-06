@@ -12,6 +12,9 @@ public interface LehrveranstaltungRepository extends JpaRepository<Lehrveranstal
     @Query("SELECT lv FROM Lehrveranstaltung lv WHERE lv.lehrperson.id = :lehrpersonId")
     List<Lehrveranstaltung> findByLehrpersonId(@Param("lehrpersonId") Integer integer);
 
+    @Query("SELECT lv FROM Lehrveranstaltung lv WHERE lv.lehrperson.id = :lehrpersonId")
+    List<Lehrveranstaltung> findByLehrveranstaltungIDOnlyLehrperson(@Param("lehrpersonId") Integer integer);
+
     @Query("SELECT lv FROM Lehrveranstaltung lv WHERE lv.lehrperson = NULL")
     List<Lehrveranstaltung> findLehrveranstaltungWithoutLehrperson();
 
@@ -21,5 +24,8 @@ public interface LehrveranstaltungRepository extends JpaRepository<Lehrveranstal
     @Query("SELECT lv FROM Lehrveranstaltung lv WHERE lv.termin.id = NULL")
     List<Lehrveranstaltung> findLehrveranstaltungWithoutTermin();
 
+
     List<Lehrveranstaltung> findByTerminWochentagAndTerminZeitraumStart(String wochentag, LocalTime zeitraumStart);
+
+
 }

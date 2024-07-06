@@ -14,7 +14,7 @@ public class Vertretung {
     @Id
     @SequenceGenerator(name = "vertretung_seq", sequenceName = "vertretung_seq", allocationSize = 1)
     @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "vertretung_seq")
-    private Long id;
+    private Integer id;
 
     @ManyToOne
     @JoinColumn(name = "Lehrveranstaltung_ID", nullable = false)
