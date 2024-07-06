@@ -1,7 +1,8 @@
--- FÜR TESTZWECKE, NICHT ALS FLYWAY ANWEISUNG
-
 DROP TABLE Student, Lehrperson,Raum,Termin,Lehrveranstaltung, Besuchen,Benachrichtigung,Verwalter,Lehrplantermin,Vertretung,flyway_schema_history CASCADE;
 DROP SEQUENCE vertretung_seq;
+
+
+-- FÜR TESTZWECKE, NICHT ALS FLYWAY ANWEISUNG
 
 CREATE TABLE Student (
     ID INT PRIMARY KEY,
