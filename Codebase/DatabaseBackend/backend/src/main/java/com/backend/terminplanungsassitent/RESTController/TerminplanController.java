@@ -467,7 +467,7 @@ public class TerminplanController {
     }
 
     @PutMapping("/notify/{id}")
-    public ResponseEntity<List<Vertretung>> Vertretung(@PathVariable Integer id,
+    public HttpStatus Vertretung(@PathVariable Integer id,
             @RequestBody List<LocalDate> datumList) throws LehrpersonNotFoundException {
 
         // create variables
@@ -475,9 +475,7 @@ public class TerminplanController {
         LocalDate startOfPeriod = datumList.get(0);
         LocalDate endOfPeriod = datumList.get(1);
         Vertretung vertretung = null;
-        List<Vertretung> vertretungList = new ArrayList<>();
         List<Lehrperson> lehrpersonList = lehrpersonRepository.findAll();
-        int lehrpersonIndex = 0;
 
         lehrplanterminList = lehrplanterminRepository.findAllByDatumBetweenAndLehrpersonId(startOfPeriod, endOfPeriod,
                 id);
@@ -491,7 +489,6 @@ public class TerminplanController {
 
             if (lp.istVerfuegbar(dauer)&& conditionChecks(lehrplantermin.getLehrveranstaltung(), lp)) {
                 vertretung.setLehrperson(lp);
-                vertretungList.add(vertretung);
                 vertretungRepository.save(vertretung);
                 break;
                 }
@@ -511,6 +508,6 @@ public class TerminplanController {
 
         // return Vertretung
 
-        return new ResponseEntity<>(vertretungList, HttpStatus.OK);
+        return HttpStatus.OK;
     }
 }
