@@ -474,12 +474,16 @@ public class TerminplanController {
         List<Lehrplantermin> lehrplanterminList = new ArrayList<>();
         LocalDate startOfPeriod = datumList.get(0);
         LocalDate endOfPeriod = datumList.get(1);
+
+        // create Vertretung object with above LVs
         Vertretung vertretung = null;
         List<Lehrperson> lehrpersonList = lehrpersonRepository.findAll();
 
+        // get a list of all affected LPTs
         lehrplanterminList = lehrplanterminRepository.findAllByDatumBetweenAndLehrpersonId(startOfPeriod, endOfPeriod,
                 id);
 
+        // find verfuegbare Lehrperson and assign them to Vertretung
         for (Lehrplantermin lehrplantermin : lehrplanterminList) {
             vertretung=null;
             for (Lehrperson lp: lehrpersonList){
@@ -488,6 +492,7 @@ public class TerminplanController {
             vertretung.setLehrveranstaltung(lehrplantermin.getLehrveranstaltung());
 
             if (lp.istVerfuegbar(dauer)&& conditionChecks(lehrplantermin.getLehrveranstaltung(), lp)) {
+                // save Vertretungs objects
                 vertretung.setLehrperson(lp);
                 vertretungRepository.save(vertretung);
                 break;
@@ -495,18 +500,11 @@ public class TerminplanController {
             }
         }
 
-        // get a list of all affected LPTs
         // for MON TUE WED, etc. get LVs
 
-        // create Vertretung object with above LVs
-
-        // find verfuegbare Lehrperson and assign them to Vertretung
-
-        // save Vertretungs objects
 
         // notify affected students -> Call method
 
-        // return Vertretung
 
         return HttpStatus.OK;
     }
