@@ -2,10 +2,7 @@ package com.backend.terminplanungsassitent.RESTController;
 
 import java.time.LocalDate;
 import java.time.LocalTime;
-import java.util.ArrayList;
-import java.util.HashSet;
-import java.util.List;
-import java.util.Set;
+import java.util.*;
 
 import javax.sql.DataSource;
 
@@ -451,9 +448,14 @@ public class TerminplanController {
 
     // GET LEHRPERSON BY ID
     @GetMapping("/fetchlp/{id}")
-    public ResponseEntity<Lehrperson> findLP(@PathVariable Integer id) throws LehrpersonNotFoundException {
-        return new ResponseEntity<>(lehrpersonRepository.findById(id)
-                .orElseThrow(() -> new LehrpersonNotFoundException(id)), HttpStatus.OK);
+    public ResponseEntity<List<Lehrplantermin>> findLP(@PathVariable Integer id) throws LehrpersonNotFoundException {
+
+        List<Lehrplantermin> lehrplanterminlist = lehrplanterminRepository.findByLehrpersonID(id);
+        List<Lehrplantermin> lehrplanterminlistvertretet = lehrplanterminRepository.findVertretendeLehrplantermineByLehrpersonID(id);
+
+        lehrplanterminlist.addAll(lehrplanterminlistvertretet);
+
+        return new ResponseEntity<>(lehrplanterminlist, HttpStatus.OK);
     }
 
     // GET CALENDAR DATA FOR LEHRPERSON
@@ -502,6 +504,8 @@ public class TerminplanController {
                     // lp.setWochenarbeitsstunden(lp.getWochenarbeitsstunden() + dauer);
                     // lehrpersonRepository.save(lp);
                     vertretungRepository.save(vertretung);
+                    lehrplantermin.setVertretung(vertretung);
+                    lehrplanterminRepository.save(lehrplantermin);
                     newVertretungen.add(vertretung);
                     System.out.println("vertretung saved");
                     break;

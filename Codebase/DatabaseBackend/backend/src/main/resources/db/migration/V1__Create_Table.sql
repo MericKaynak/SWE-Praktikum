@@ -83,6 +83,7 @@ CREATE TABLE Lehrplantermin (
     ID INT PRIMARY KEY,
     Lehrveranstaltung_ID INT,
     Datum DATE,
+    Vertretung_ID REFERENCES Vertretung(ID) DEFAULT NULL,
     FOREIGN KEY (Lehrveranstaltung_ID) REFERENCES Lehrveranstaltung(ID)
 );
 
