@@ -61,11 +61,10 @@ public interface LehrplanterminRepository extends JpaRepository<Lehrplantermin, 
                         "JOIN Lehrveranstaltung lv ON b.lehrveranstaltung.id = lv.id " +
                         "JOIN Vertretung v ON lv.id = v.lehrveranstaltung.id " +
                         "JOIN Lehrperson lp ON v.lehrperson.id = lp.id")
-
         List<String> findStudentEmailsByVertretungId(@Param("vertretungId") Integer vertretungId);
 
         @Query("SELECT lp " +
-                "FROM Lehrplantermin lp " +
-                "WHERE lp.vertretung.lehrperson.id = :lehrpersonId ")
+                        "FROM Lehrplantermin lp " +
+                        "WHERE lp.vertretung.lehrperson.id = :lehrpersonId ")
         List<Lehrplantermin> findVertretendeLehrplantermineByLehrpersonID(@Param("lehrpersonId") Integer lehrpersonId);
 }

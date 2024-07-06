@@ -450,8 +450,9 @@ public class TerminplanController {
     @GetMapping("/fetchlp/{id}")
     public ResponseEntity<List<Lehrplantermin>> findLP(@PathVariable Integer id) throws LehrpersonNotFoundException {
 
-        List<Lehrplantermin> lehrplanterminlist = lehrplanterminRepository.findByLehrpersonID(id);
-        List<Lehrplantermin> lehrplanterminlistvertretet = lehrplanterminRepository.findVertretendeLehrplantermineByLehrpersonID(id);
+        List<Lehrplantermin> lehrplanterminlist = lehrplanterminRepository.findLehrplantermineByLehrpersonId(id);
+        List<Lehrplantermin> lehrplanterminlistvertretet = lehrplanterminRepository
+                .findVertretendeLehrplantermineByLehrpersonID(id);
 
         lehrplanterminlist.addAll(lehrplanterminlistvertretet);
 
