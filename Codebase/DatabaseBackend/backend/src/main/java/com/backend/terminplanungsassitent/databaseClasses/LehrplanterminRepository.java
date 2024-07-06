@@ -49,4 +49,10 @@ public interface LehrplanterminRepository extends JpaRepository<Lehrplantermin, 
     List<Lehrplantermin> findAllByDatumBetweenAndLehrpersonId(@Param("startDate") LocalDate startDate,
             @Param("endDate") LocalDate endDate,
             @Param("lehrpersonId") Integer lehrpersonId);
+
+    @Query("SELECT lt FROM Lehrplantermin lt INNER JOIN Lehrveranstaltung lv ON lt.lehrveranstaltung.id = lv.id " +
+            "INNER JOIN Vertretung v ON lv.id = v.lehrveranstaltung.id " +
+            "WHERE lv.lehrperson.id = :lehrpersonId " +
+            "ORDER BY lt.datum, lt.id")
+    List<Lehrplantermin> findByLehrpersonID(@Param("lehrpersonId") Integer lehrpersonId);
 }
