@@ -450,7 +450,7 @@ public class TerminplanController {
     @GetMapping("/fetchlp/{id}")
     public ResponseEntity<List<Lehrplantermin>> findLP(@PathVariable Integer id) throws LehrpersonNotFoundException {
 
-        List<Lehrplantermin> lehrplanterminlist = lehrplanterminRepository.findByLehrpersonID(id);
+        List<Lehrplantermin> lehrplanterminlist = lehrplanterminRepository.findLehrplantermineByLehrpersonId(id);
         List<Lehrplantermin> lehrplanterminlistvertretet = lehrplanterminRepository.findVertretendeLehrplantermineByLehrpersonID(id);
 
         lehrplanterminlist.addAll(lehrplanterminlistvertretet);
@@ -498,6 +498,7 @@ public class TerminplanController {
             for (Lehrperson lp : lehrpersonList) {
                 System.out.println("searching for Lehrperson");
                 if (lp.istVerfuegbar(dauer) && conditionChecks(lehrplantermin.getLehrveranstaltung(), lp)) {
+
                     System.out.println("Lehrperson found");
                     // save Vertretungs objects
                     vertretung.setLehrperson(lp);
@@ -508,6 +509,7 @@ public class TerminplanController {
                     lehrplanterminRepository.save(lehrplantermin);
                     newVertretungen.add(vertretung);
                     System.out.println("vertretung saved");
+                    newVertretungen.add(vertretung);
                     break;
                 }
             }

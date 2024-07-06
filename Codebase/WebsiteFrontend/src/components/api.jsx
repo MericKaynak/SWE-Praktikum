@@ -6,7 +6,18 @@ export const fetchProfessors = async () => {
     const response = await axios.get(
         "http://localhost:8080/terminplan/fetchAllLp"
     );
-    return response.data;
+
+    const sortedProfessors = response.data.sort((a, b) => {
+      if (a.name < b.name) {
+        return -1;
+      }
+      if (a.name > b.name) {
+        return 1;
+      }
+      return 0;
+    });
+
+    return sortedProfessors;
   } catch (error) {
     console.error("Failed to fetch professors", error);
     throw error;
@@ -18,19 +29,20 @@ export const fetchAppointments = async (userId) => {
     let response = await axios.get(
         `http://localhost:8080/terminplan/fetchlp/${userId}`
     );
-    const data = response.data
-
+    const data = response.data;
     const appointments = data.map(item => ({
       Id: item.id,
-      Title: item.titel,
-      ZeitraumStart: item.termin.zeitraumStart,
-      ZeitraumEnd: item.termin.zeitraumEnd,
-      Location: item.raum.bezeichnung,
-      Wochentag: item.termin.wochentag,
-      ProfessorId: item.lehrperson.id,
-      ProfessorName:item.lehrperson.name,
+      Title: item.lehrveranstaltung.titel,
+      Datum: item.datum,
+      ZeitraumStart: item.lehrveranstaltung.termin.zeitraumStart,
+      ZeitraumEnd: item.lehrveranstaltung.termin.zeitraumEnd,
+      Wochentag: item.lehrveranstaltung.termin.wochentag,
+      Location: item.lehrveranstaltung.raum.bezeichnung + " " + item.lehrveranstaltung.raum.standort,
+      OrigProf:item.lehrveranstaltung.lehrperson.name,
+      ProfessorId: item.vertretung?.lehrperson?.id ?? item.lehrveranstaltung.lehrperson.id,
+      ProfessorName: item.vertretung?.lehrperson?.name ?? item.lehrveranstaltung.lehrperson.name,
     }));
-    return appointments; // Gibt das Array mit Terminen zurück
+    return appointments; // Returns the array with appointments
   } catch (error) {
     console.error("Error fetching appointments:", error);
     throw error;
