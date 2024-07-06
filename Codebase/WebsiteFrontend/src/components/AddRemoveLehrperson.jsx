@@ -43,7 +43,7 @@ const AddRemoveProfessors = () => {
     }
   }, []);
 
-  const handleLoginClose = () => setShowLoginModal(false);
+  const handleLoginClose = () =>console.log();
 
   const handleLoginOpen = () => setShowLoginModal(true);
 
@@ -116,7 +116,7 @@ const AddRemoveProfessors = () => {
     } else if (actionType === 'krankmelden' && selectedUser !== '') {
       try {
         const datumList = [formData.startDate, formData.endDate];
-        await axios.post(`http://localhost:8080/terminplan/notify/${selectedUser}`, datumList);
+        await axios.put(`http://localhost:8080/terminplan/notify/${selectedUser}`, datumList);
         console.log(`Marked Professor ${selectedUser} as sick from ${formData.startDate} to ${formData.endDate}`);
         setSelectedUser('');
         setActionType('');
@@ -220,7 +220,7 @@ const AddRemoveProfessors = () => {
                         <>
                           <Typography variant="h6">Remove Professor</Typography>
                           <FormControl fullWidth>
-                            <InputLabel id="professor-select-label">Select Professor</InputLabel>
+                            <InputLabel id="professor-select-label">Waehle Professor</InputLabel>
                             <Select
                                 labelId="professor-select-label"
                                 value={selectedUser}

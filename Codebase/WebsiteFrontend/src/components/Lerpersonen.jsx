@@ -76,29 +76,6 @@ const Lehrpersonen = () => {
   const handleUserChange = (event) => {
     setSelectedUser(event.target.value);
   };
-
-  const commitChanges = ({ added, changed, deleted }) => {
-    setAppointments((prevAppointments) => {
-      let data = prevAppointments;
-      if (added) {
-        const startingAddedId =
-            data.length > 0 ? data[data.length - 1].id + 1 : 0;
-        data = [...data, { id: startingAddedId, ...added }];
-      }
-      if (changed) {
-        data = data.map((appointment) =>
-            changed[appointment.id]
-                ? { ...appointment, ...changed[appointment.id] }
-                : appointment
-        );
-      }
-      if (deleted !== undefined) {
-        data = data.filter((appointment) => appointment.id !== deleted);
-      }
-      return data;
-    });
-  };
-
   return (
       <div style={{ height: "100vh", display: "flex", flexDirection: "column" }}>
         <AppBar position="static">
@@ -158,13 +135,6 @@ const Lehrpersonen = () => {
                   onCurrentDateChange={setCurrentDate}
               />
               <EditingState
-                  onCommitChanges={commitChanges}
-                  addedAppointment={addedAppointment}
-                  onAddedAppointmentChange={setAddedAppointment}
-                  appointmentChanges={appointmentChanges}
-                  onAppointmentChangesChange={setAppointmentChanges}
-                  editingAppointment={editingAppointment}
-                  onEditingAppointmentChange={setEditingAppointment}
               />
               <WeekView
                   startDayHour={8}

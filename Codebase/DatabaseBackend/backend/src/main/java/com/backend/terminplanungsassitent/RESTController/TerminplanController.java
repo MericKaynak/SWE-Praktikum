@@ -485,12 +485,10 @@ public class TerminplanController {
 
         // find verfuegbare Lehrperson and assign them to Vertretung
         for (Lehrplantermin lehrplantermin : lehrplanterminList) {
-            vertretung=null;
-            for (Lehrperson lp: lehrpersonList){
             vertretung = new Vertretung();
             vertretung.setDatum(lehrplantermin.getDatum());
             vertretung.setLehrveranstaltung(lehrplantermin.getLehrveranstaltung());
-
+            for (Lehrperson lp: lehrpersonList){
             if (lp.istVerfuegbar(dauer)&& conditionChecks(lehrplantermin.getLehrveranstaltung(), lp)) {
                 // save Vertretungs objects
                 vertretung.setLehrperson(lp);

@@ -150,15 +150,7 @@ const Student = () => {
               currentDate={currentDate}
               onCurrentDateChange={setCurrentDate}
             />
-            <EditingState
-              onCommitChanges={commitChanges}
-              addedAppointment={addedAppointment}
-              onAddedAppointmentChange={setAddedAppointment}
-              appointmentChanges={appointmentChanges}
-              onAppointmentChangesChange={setAppointmentChanges}
-              editingAppointment={editingAppointment}
-              onEditingAppointmentChange={setEditingAppointment}
-            />
+            <EditingState/>
             <IntegratedEditing />
             <WeekView startDayHour={8} endDayHour={20}  excludedDays={[0,6]}/>
             <AllDayPanel />
