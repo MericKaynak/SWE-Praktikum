@@ -16,7 +16,7 @@ export const fetchProfessors = async () => {
 export const fetchAppointments = async (userId) => {
   try {
     let response = await axios.get(
-        `http://localhost:8080/terminplan/fetch/${userId}`
+        `http://localhost:8080/terminplan/fetchlp/${userId}`
     );
     const data = response.data
 
