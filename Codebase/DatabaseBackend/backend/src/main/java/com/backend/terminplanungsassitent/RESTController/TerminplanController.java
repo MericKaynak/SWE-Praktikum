@@ -479,8 +479,11 @@ public class TerminplanController {
         List<Lehrperson> lehrpersonList = lehrpersonRepository.findAll();
 
         // get a list of all affected LPTs
-        lehrplanterminList = lehrplanterminRepository.findAllByDatumBetweenAndLehrpersonId(startOfPeriod, endOfPeriod,
-                id);
+        lehrplanterminList = lehrplanterminRepository
+                .findAllByDatumBetweenAndLehrpersonId(startOfPeriod, endOfPeriod,
+                        id);
+
+        List<Vertretung> newVertretungen = new ArrayList<>();
 
         System.out.println(lehrplanterminList.toString());
 
@@ -499,12 +502,22 @@ public class TerminplanController {
                     // lp.setWochenarbeitsstunden(lp.getWochenarbeitsstunden() + dauer);
                     // lehrpersonRepository.save(lp);
                     vertretungRepository.save(vertretung);
+                    newVertretungen.add(vertretung);
                     System.out.println("vertretung saved");
                     break;
                 }
             }
             lehrpersonList.add(lehrpersonList.get(0));
             lehrpersonList.remove(0);
+        }
+
+        // notify affected students -> Call method
+        for (Vertretung vertreter : newVertretungen) {
+            List<String> mailListe = lehrplanterminRepository
+                    .findStudentEmailsByVertretungId(vertreter.getId());
+            for (String email : mailListe) {
+                System.out.println("Email wurde an " + email + " gesendet!");
+            }
         }
 
         return HttpStatus.OK;
