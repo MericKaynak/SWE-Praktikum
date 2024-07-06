@@ -67,14 +67,17 @@ CREATE TABLE Verwalter (
     Passwort VARCHAR(20)
 );
 
+CREATE SEQUENCE vertretung_seq START WITH 1 INCREMENT BY 1;
+
 CREATE TABLE Vertretung (
-    ID INT PRIMARY KEY,
+    ID INT PRIMARY KEY DEFAULT NEXTVAL('vertretung_seq'),
     Lehrveranstaltung_ID INT,
     Datum DATE,
     Lehrperson_ID INT,
     FOREIGN KEY (Lehrveranstaltung_ID) REFERENCES Lehrveranstaltung(ID),
     FOREIGN KEY (Lehrperson_ID) REFERENCES Lehrperson(ID)
 );
+
 
 CREATE TABLE Lehrplantermin (
     ID INT PRIMARY KEY,

@@ -231,7 +231,6 @@ public class TerminplanController {
         return HttpStatus.BAD_REQUEST;
     }
 
-
     /**
      * Creates a Lehrperson in the database.
      * 
@@ -483,26 +482,30 @@ public class TerminplanController {
         lehrplanterminList = lehrplanterminRepository.findAllByDatumBetweenAndLehrpersonId(startOfPeriod, endOfPeriod,
                 id);
 
+        System.out.println(lehrplanterminList.toString());
+
+        System.out.println("ok before for");
         // find verfuegbare Lehrperson and assign them to Vertretung
         for (Lehrplantermin lehrplantermin : lehrplanterminList) {
             vertretung = new Vertretung();
             vertretung.setDatum(lehrplantermin.getDatum());
             vertretung.setLehrveranstaltung(lehrplantermin.getLehrveranstaltung());
-            for (Lehrperson lp: lehrpersonList){
-            if (lp.istVerfuegbar(dauer)&& conditionChecks(lehrplantermin.getLehrveranstaltung(), lp)) {
-                // save Vertretungs objects
-                vertretung.setLehrperson(lp);
-                vertretungRepository.save(vertretung);
-                break;
+            for (Lehrperson lp : lehrpersonList) {
+                System.out.println("searching for Lehrperson");
+                if (lp.istVerfuegbar(dauer) && conditionChecks(lehrplantermin.getLehrveranstaltung(), lp)) {
+                    System.out.println("Lehrperson found");
+                    // save Vertretungs objects
+                    vertretung.setLehrperson(lp);
+                    // lp.setWochenarbeitsstunden(lp.getWochenarbeitsstunden() + dauer);
+                    // lehrpersonRepository.save(lp);
+                    vertretungRepository.save(vertretung);
+                    System.out.println("vertretung saved");
+                    break;
                 }
             }
+            lehrpersonList.add(lehrpersonList.get(0));
+            lehrpersonList.remove(0);
         }
-
-        // for MON TUE WED, etc. get LVs
-
-
-        // notify affected students -> Call method
-
 
         return HttpStatus.OK;
     }

@@ -1,14 +1,10 @@
 package com.backend.terminplanungsassitent.databaseClasses;
 
-import jakarta.persistence.Entity;
-import jakarta.persistence.Table;
-import jakarta.persistence.Id;
-import jakarta.persistence.Column;
-import jakarta.persistence.ManyToOne;
-import jakarta.persistence.JoinColumn;
+import lombok.Data;
+
+import jakarta.persistence.*;
 
 import java.time.LocalDate;
-import lombok.Data;
 
 @Data
 @Entity
@@ -16,18 +12,20 @@ import lombok.Data;
 public class Vertretung {
 
     @Id
-    @Column(name = "ID")
-    private Integer ID;
+    @SequenceGenerator(name = "vertretung_seq", sequenceName = "vertretung_seq", allocationSize = 1)
+    @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "vertretung_seq")
+    private Long id;
 
     @ManyToOne
-    @JoinColumn(name = "Lehrveranstaltung_ID")
+    @JoinColumn(name = "Lehrveranstaltung_ID", nullable = false)
     private Lehrveranstaltung lehrveranstaltung;
 
-    @Column(name = "Datum")
+    @Temporal(TemporalType.DATE)
+    @Column(name = "Datum", nullable = false)
     private LocalDate datum;
 
     @ManyToOne
-    @JoinColumn(name = "Lehrperson_ID")
+    @JoinColumn(name = "Lehrperson_ID", nullable = false)
     private Lehrperson lehrperson;
 
     // Getters and Setters
