@@ -436,6 +436,23 @@ public class TerminplanController {
         System.out.println("Erstellen erfolgreich");
     }
 
+    private void fillBesuchen() {
+        List<Lehrveranstaltung> lehrveranstaltungList = lehrveranstaltungRepository.findAll();
+        List<Student> studentList = studentRepository.findAll();
+        // List<Besuchen> besuchenList = besuchenRepository.findAll();
+
+        for (Student student : studentList) {
+            for (Lehrveranstaltung lehrveranstaltung : lehrveranstaltungList) {
+                if (student.getStudiengang() == lehrveranstaltung.getFachbereich()) {
+                    Besuchen besuchen = new Besuchen();
+                    besuchen.setLehrveranstaltung(lehrveranstaltung);
+                    besuchen.setStudent(student);
+                    besuchenRepository.save(besuchen);
+                }
+            }
+        }
+    }
+
     // GET LIST OF ALL LEHRPERSONEN
     @GetMapping("/fetchAllLp")
     public ResponseEntity<List<Lehrperson>> fetchAllLehrpersonen() throws LehrpersonNotFoundException {
