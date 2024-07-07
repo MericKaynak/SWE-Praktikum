@@ -1,12 +1,11 @@
 import React, { useState, useEffect } from 'react';
-import { FormControl, InputLabel, Select, MenuItem, Grid, TextField, Button, Paper, Typography, AppBar, Toolbar } from '@mui/material';
+import { FormControl, InputLabel, Select, MenuItem, Grid, TextField, Button, Paper, Typography, AppBar, Toolbar, Snackbar } from '@mui/material';
 import axios from "axios";
 import { useNavigate } from "react-router-dom";
 import LoginModal from './LoginModal.jsx';
 import { fetchProfessors as fetchProfessorsApi } from './api.jsx';
 import loginData from './loginData.json'; // Import der JSON-Datei
-import {createSchedule} from "./api.jsx";
-
+import { createSchedule as createScheduleApi } from "./api.jsx";
 
 const AddRemoveProfessors = () => {
   const navigate = useNavigate();
@@ -21,8 +20,10 @@ const AddRemoveProfessors = () => {
     endDate: ''
   });
   const [professors, setProfessors] = useState([]);
-  const [showLoginModal, setShowLoginModal] = useState(false);
+  const [showLoginModal, setShowLoginModal] = useState(true);
   const [selectedUser, setSelectedUser] = useState("");
+  const [creatingSchedule, setCreatingSchedule] = useState(false);
+  const [scheduleCreated, setScheduleCreated] = useState(false);
 
   useEffect(() => {
     const fetchProfessors = async () => {
@@ -43,7 +44,7 @@ const AddRemoveProfessors = () => {
     }
   }, []);
 
-  const handleLoginClose = () =>console.log();
+  const handleLoginClose = () => console.log();
 
   const handleLoginOpen = () => setShowLoginModal(true);
 
@@ -53,10 +54,6 @@ const AddRemoveProfessors = () => {
       return;
     }
     try {
-      const response = await axios.post(
-          "http://localhost:8080/terminplan/login",
-          { email, password }
-      );
       const user = loginData.users.find(user => user.email === email && user.password === password);
       if (user) {
         localStorage.setItem('token', 'fake-jwt-token');
@@ -67,9 +64,9 @@ const AddRemoveProfessors = () => {
         console.error('Login failed: Incorrect email or password');
       }
     } catch (error) {
-        console.error("Login failed", error);
-        setLoginError("Login failed: Server error or network issue");
-      }
+      console.error("Login failed", error);
+      setLoginError("Login failed: Server error or network issue");
+    }
   };
 
   const handleProfessorChange = (event) => {
@@ -127,6 +124,19 @@ const AddRemoveProfessors = () => {
     }
   };
 
+  const handleCreateSchedule = async () => {
+    setCreatingSchedule(true);
+    try {
+      await createScheduleApi();
+      setScheduleCreated(true);
+      console.log("Schedule created successfully");
+    } catch (error) {
+      console.error("Error creating schedule", error);
+    } finally {
+      setCreatingSchedule(false);
+    }
+  };
+
   return (
       <div style={{ height: '100vh', display: 'flex', flexDirection: 'column' }}>
         <AppBar position="static">
@@ -137,8 +147,12 @@ const AddRemoveProfessors = () => {
             <Button color="inherit" onClick={() => navigate('/home')}>
               Home
             </Button>
-            <Button color="inherit" onClick={createSchedule}>
-              Erstelle Plan
+            <Button
+                color="inherit"
+                onClick={handleCreateSchedule}
+                disabled={creatingSchedule}
+            >
+              {creatingSchedule ? "Erstellen..." : "Erstelle Plan"}
             </Button>
           </Toolbar>
         </AppBar>
@@ -291,7 +305,7 @@ const AddRemoveProfessors = () => {
                               variant="contained"
                               color="primary"
                               style={{ marginTop: '10px' }}
-                              disabled={selectedUser === '' ||formData.endDate==='' || formData.startDate === ''}
+                              disabled={selectedUser === '' || formData.endDate === '' || formData.startDate === ''}
                               onClick={handleActionSubmit}
                           >
                             Bestaetigen
@@ -302,6 +316,12 @@ const AddRemoveProfessors = () => {
                 </Grid>
             )}
           </Grid>
+          <Snackbar
+              open={scheduleCreated}
+              autoHideDuration={6000}
+              onClose={() => setScheduleCreated(false)}
+              message="Plan wurde erfolgreich erstellt"
+          />
         </div>
       </div>
   );
