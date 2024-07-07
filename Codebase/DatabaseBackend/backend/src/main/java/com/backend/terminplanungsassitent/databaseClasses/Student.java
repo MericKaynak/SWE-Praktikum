@@ -19,8 +19,8 @@ public class Student {
     @Column(name = "Email")
     private String email;
 
-    @Column(name = "Studiengang")
-    private String studiengang;
+    @Column(name = "Fachbereich")
+    private String fachbereich;
 
     @Column(name = "passwort")
     private String passwort;

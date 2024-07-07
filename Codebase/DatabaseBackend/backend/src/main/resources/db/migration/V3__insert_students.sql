@@ -1,4 +1,4 @@
-INSERT INTO Student (ID, Name, Email, Studiengang, Passwort) VALUES
+INSERT INTO Student (ID, Name, Email, Fachbereich, Passwort) VALUES
 (1, 'David Klein', 'david.klein@stud.hn.de', 'FB06', 'passwort'),
 (2, 'Finn Zimmermann', 'finn.zimmermann@stud.hn.de', 'FB17', 'passwort'),
 (3, 'Erik Meyer', 'erik.meyer@stud.hn.de', 'FB10', 'passwort'),
