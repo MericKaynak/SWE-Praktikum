@@ -278,6 +278,8 @@ public class TerminplanController {
 
         populateLehrplanterminTable();
 
+        fillBesuchen();
+
         return HttpStatus.OK;
     }
 
@@ -441,6 +443,8 @@ public class TerminplanController {
         List<Student> studentList = studentRepository.findAll();
         // List<Besuchen> besuchenList = besuchenRepository.findAll();
 
+        System.out.println("Studenten werden Vorlesungen zugeteilt");
+
         for (Student student : studentList) {
             for (Lehrveranstaltung lehrveranstaltung : lehrveranstaltungList) {
                 if (student.getStudiengang() == lehrveranstaltung.getFachbereich()) {
@@ -451,6 +455,8 @@ public class TerminplanController {
                 }
             }
         }
+
+        System.out.println("Studenten erfolgreich zugeteilt");
     }
 
     // GET LIST OF ALL LEHRPERSONEN
