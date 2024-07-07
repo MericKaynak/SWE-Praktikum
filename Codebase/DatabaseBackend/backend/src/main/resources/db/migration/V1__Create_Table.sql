@@ -42,8 +42,10 @@ CREATE TABLE Lehrveranstaltung (
     FOREIGN KEY (Lehrperson_ID) REFERENCES Lehrperson(ID)
 );
 
+CREATE SEQUENCE besuchen_seq START WITH 1 INCREMENT BY 1;
+
 CREATE TABLE Besuchen (
-    ID INT PRIMARY KEY,
+    ID INT PRIMARY KEY DEFAULT NEXTVAL('besuchen_seq'),
     Student_ID INT,
     Lehrveranstaltung_ID INT,
     FOREIGN KEY (Student_ID) REFERENCES Student(ID),

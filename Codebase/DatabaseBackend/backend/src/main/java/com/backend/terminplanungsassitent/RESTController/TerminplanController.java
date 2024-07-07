@@ -457,13 +457,19 @@ public class TerminplanController {
         return new ResponseEntity<>(lehrplanterminlist, HttpStatus.OK);
     }
 
-    // GET CALENDAR DATA FOR LEHRPERSON
-    @GetMapping("/fetch/{id}")
-    public ResponseEntity<List<Lehrveranstaltung>> find(@PathVariable Integer id)
+    // GET CALENDAR DATA FOR STUDENTS
+    @GetMapping("/fetchstudent/{id}")
+    public ResponseEntity<List<Lehrplantermin>> find(@PathVariable Integer id)
             throws LehrveranstaltungNotFoundException {
-        List<Lehrveranstaltung> lehrveranstaltungsList = lehrveranstaltungRepository.findByLehrpersonId(id);
+        List<Besuchen> besuchenList = besuchenRepository.findAllByStudentId(id);
+        List<Lehrplantermin> lehrplanterminList = new ArrayList<>();
 
-        return new ResponseEntity<>(lehrveranstaltungsList, HttpStatus.OK);
+        for (Besuchen besuchen : besuchenList) {
+            lehrplanterminList.addAll(lehrplanterminRepository
+                    .findLehrplantermineByLehrveranstaltungId(besuchen.getLehrveranstaltung().getId()));
+        }
+
+        return new ResponseEntity<>(lehrplanterminList, HttpStatus.OK);
     }
 
     @PutMapping("/notify/{id}")

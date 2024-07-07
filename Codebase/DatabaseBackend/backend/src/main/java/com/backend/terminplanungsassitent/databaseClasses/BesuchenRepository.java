@@ -11,4 +11,7 @@ public interface BesuchenRepository extends JpaRepository<Besuchen, Integer> {
     @Query("SELECT b FROM Besuchen b WHERE b.lehrveranstaltung.id = :lehrveranstaltungId")
     List<Besuchen> findAllByLehrveranstaltungId(@Param("lehrveranstaltungId") Integer lehrveranstaltungId);
 
+    @Query("SELECT b FROM Besuchen b WHERE b.student.id = :studentId")
+    List<Besuchen> findAllByStudentId(@Param("studentId") Integer studentId);
+
 }
