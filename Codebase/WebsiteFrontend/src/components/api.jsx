@@ -48,6 +48,31 @@ export const fetchAppointments = async (userId) => {
     throw error;
   }
 };
+export const fetchStudentAppointments = async (studid) => {
+  try {
+    const url = `http://localhost:8080/terminplan/fetchstudent/${studid}`;
+    const response = await axios.get(url);
+    const data = response.data;
+
+    const appointments = data.map(item => ({
+      Id: item.id,
+      Title: item.lehrveranstaltung.titel,
+      Datum: item.datum,
+      ZeitraumStart: item.lehrveranstaltung.termin.zeitraumStart,
+      ZeitraumEnd: item.lehrveranstaltung.termin.zeitraumEnd,
+      Wochentag: item.lehrveranstaltung.termin.wochentag,
+      Location: item.lehrveranstaltung.raum.bezeichnung + " " + item.lehrveranstaltung.raum.standort,
+      OrigProf: item.lehrveranstaltung.lehrperson.name,
+      ProfessorId: item.vertretung?.lehrperson?.id ?? item.lehrveranstaltung.lehrperson.id,
+      ProfessorName: item.vertretung?.lehrperson?.name ?? item.lehrveranstaltung.lehrperson.name,
+    }));
+
+    return appointments; // Returns the array with appointments
+  } catch (error) {
+    console.error("Error fetching appointments:", error);
+    throw error;
+  }
+};
 
 export const createSchedule = async () => {
   try {

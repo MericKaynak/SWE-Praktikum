@@ -163,7 +163,6 @@ const Lehrpersonen = () => {
               <WeekView
                   startDayHour={8}
                   endDayHour={20}
-                  firstDayOfWeek={1}
                   excludedDays={[0, 6]}
               />
               <AllDayPanel />
