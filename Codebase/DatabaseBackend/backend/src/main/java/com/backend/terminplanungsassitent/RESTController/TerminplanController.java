@@ -424,8 +424,6 @@ public class TerminplanController {
 
         for (int i = -days; i < days * 2; i++) {
             for (Lehrveranstaltung lehrveranstaltung : lvList) {
-                System.out.println(lehrveranstaltung.getDayOfWeek());
-                System.out.println(today.plusDays(i).getDayOfWeek());
                 if (today.plusDays(i).getDayOfWeek() == lehrveranstaltung.getDayOfWeek()) {
                     lehrplantermin.setId(j++);
                     lehrplantermin.setDatum(LocalDate.now().plusDays(i));
@@ -451,7 +449,8 @@ public class TerminplanController {
     public ResponseEntity<List<Lehrplantermin>> findLP(@PathVariable Integer id) throws LehrpersonNotFoundException {
 
         List<Lehrplantermin> lehrplanterminlist = lehrplanterminRepository.findLehrplantermineByLehrpersonId(id);
-        List<Lehrplantermin> lehrplanterminlistvertretet = lehrplanterminRepository.findVertretendeLehrplantermineByLehrpersonID(id);
+        List<Lehrplantermin> lehrplanterminlistvertretet = lehrplanterminRepository
+                .findVertretendeLehrplantermineByLehrpersonID(id);
 
         lehrplanterminlist.addAll(lehrplanterminlistvertretet);
 
