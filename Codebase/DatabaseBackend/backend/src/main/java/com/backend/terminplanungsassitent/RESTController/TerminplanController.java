@@ -424,8 +424,6 @@ public class TerminplanController {
 
         for (int i = -days; i < days * 2; i++) {
             for (Lehrveranstaltung lehrveranstaltung : lvList) {
-                System.out.println(lehrveranstaltung.getDayOfWeek());
-                System.out.println(today.plusDays(i).getDayOfWeek());
                 if (today.plusDays(i).getDayOfWeek() == lehrveranstaltung.getDayOfWeek()) {
                     lehrplantermin.setId(j++);
                     lehrplantermin.setDatum(LocalDate.now().plusDays(i));
@@ -435,7 +433,7 @@ public class TerminplanController {
             }
         }
 
-        System.out.println("Erstellen erfolgreich");
+        System.out.println("Erstellen der Termine erfolgreich");
     }
 
     // GET LIST OF ALL LEHRPERSONEN
