@@ -999,20 +999,3 @@ INSERT INTO Student (ID, Name, Email, Studiengang, Passwort) VALUES
 (998, 'Felix Konig', 'felix.konig@stud.hn.de', 'FB01', 'passwort'),
 (999, 'Marcel Becker', 'marcel.becker@stud.hn.de', 'FB12', 'passwort'),
 (1000, 'Patrick Mustermann', 'patrick.mustermann@stud.hn.de', 'FB16', 'passwort');
-
-INSERT INTO besuchen (ID, Student_ID, Lehrveranstaltung_ID) 
-VALUES
-    (1, 1, 1),
-    (2, 12, 2),
-    (3, 13, 3),
-    (4, 14, 4),
-    (5, 15, 5),
-    (6, 16, 6),
-    (7, 17, 7),
-    (8, 18, 8),
-    (9, 19, 9),
-    (10, 10, 10),
-    (11, 21, 1),
-    (12, 31, 2),
-    (13, 41, 3),
-    (14, 2, 4);

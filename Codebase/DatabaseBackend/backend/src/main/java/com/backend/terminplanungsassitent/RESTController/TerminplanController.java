@@ -447,7 +447,7 @@ public class TerminplanController {
 
         for (Student student : studentList) {
             for (Lehrveranstaltung lehrveranstaltung : lehrveranstaltungList) {
-                if (student.getStudiengang() == lehrveranstaltung.getFachbereich()) {
+                if (student.getStudiengang().equals(lehrveranstaltung.getFachbereich())) {
                     Besuchen besuchen = new Besuchen();
                     besuchen.setLehrveranstaltung(lehrveranstaltung);
                     besuchen.setStudent(student);
