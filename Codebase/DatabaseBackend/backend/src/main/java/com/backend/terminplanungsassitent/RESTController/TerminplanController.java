@@ -458,6 +458,23 @@ public class TerminplanController {
         return new ResponseEntity<>(lehrplanterminlist, HttpStatus.OK);
     }
 
+    private void fillBesuchen(){
+        List<Lehrveranstaltung> lehrveranstaltungList = lehrveranstaltungRepository.findAll();
+        List<Student> studentList = studentRepository.findAll();
+        //List<Besuchen> besuchenList = besuchenRepository.findAll();
+
+        for(Student student : studentList){
+            for(Lehrveranstaltung lehrveranstaltung : lehrveranstaltungList){
+                if(student.getStudiengang() == lehrveranstaltung.getFachbereich()){
+                    Besuchen besuchen = new Besuchen();
+                    besuchen.setLehrveranstaltung(lehrveranstaltung);
+                    besuchen.setStudent(student);
+                    besuchenRepository.save(besuchen);
+                }
+            }
+        }
+    }
+
     // GET CALENDAR DATA FOR LEHRPERSON
     @GetMapping("/fetch/{id}")
     public ResponseEntity<List<Lehrveranstaltung>> find(@PathVariable Integer id)
