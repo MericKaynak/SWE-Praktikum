@@ -212,7 +212,7 @@ public class TerminplanController {
     // POST LOGIN
     @SuppressWarnings("null")
     @PostMapping("/login")
-    public HttpStatus validateLogin(@RequestBody String requestBody) {
+    public ResponseEntity<Integer> validateLogin(@RequestBody String requestBody) {
         JSONObject jsonObject = new JSONObject(requestBody);
         String email = jsonObject.getString("email");
         String password = jsonObject.getString("password");
@@ -222,10 +222,11 @@ public class TerminplanController {
         for (Student v : studentList) {
             if (v.getEmail().equals(email) && v.getPasswort().equals(password)) {
                 System.out.println(v.getEmail() + " " + v.getPasswort());
-                return HttpStatus.OK;
+                Integer id = studentRepository.findStudentIdByEmail(email).get();
+                return new ResponseEntity<>(id, HttpStatus.OK);
             }
         }
-        return HttpStatus.BAD_REQUEST;
+        return new ResponseEntity<>(null, HttpStatus.BAD_REQUEST);
     }
 
     /**
