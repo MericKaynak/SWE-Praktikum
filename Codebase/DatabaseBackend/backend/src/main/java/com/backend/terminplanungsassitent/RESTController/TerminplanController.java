@@ -441,20 +441,23 @@ public class TerminplanController {
     private void fillBesuchen() {
         List<Lehrveranstaltung> lehrveranstaltungList = lehrveranstaltungRepository.findAll();
         List<Student> studentList = studentRepository.findAll();
-        // List<Besuchen> besuchenList = besuchenRepository.findAll();
+        List<Besuchen> besuchenList = new ArrayList<>();
+        Besuchen besuchen = null;
 
         System.out.println("Studenten werden Vorlesungen zugeteilt");
 
         for (Student student : studentList) {
             for (Lehrveranstaltung lehrveranstaltung : lehrveranstaltungList) {
                 if (student.getFachbereich().equals(lehrveranstaltung.getFachbereich())) {
-                    Besuchen besuchen = new Besuchen();
+                    besuchen = new Besuchen();
                     besuchen.setLehrveranstaltung(lehrveranstaltung);
                     besuchen.setStudent(student);
-                    besuchenRepository.save(besuchen);
+                    besuchenList.add(besuchen);
                 }
             }
         }
+
+        besuchenRepository.saveAll(besuchenList);
 
         System.out.println("Studenten erfolgreich zugeteilt");
     }
