@@ -14,29 +14,29 @@ ResponseEntity<String> - /unittest
 HttpStatus - /login
 @RequestBody String
 
+
 ResponseEntity<Lehrperson> - /createLehrperson
 @RequestBody Lehrperson
 
+// Populate the Database with necessary data for a Semester
 HttpStatus - /create
  -
- 
-ResponseEntity<List<Lehrperson>> - /fetchAllLp
- - 
 
+// Fetch all existing Lehrpersonen
+ResponseEntity<List<Lehrperson>> - /fetchAllLp
+ -
+
+// Fetch all Lehrplantermine for given Lehrperson
 ResponseEntity<Lehrperson> - /fetchlp/{id}
 @PathVariable Integer
 
-ResponseEntity<List<Lehrveranstaltung>> - /fetch/{id}
+// Fetch all Lehrplantermine for given Student
+ResponseEntity<List<Lehrplantermin>> - /fetchstudent/{id}
 @PathVariable Integer
 
+// Krankmeldung for Lehrperson
 ResponseEntity<Lehrperson> - /notify
-@PathVariable Long
-
-ResponseEntity<List<Vertretung>> - /vertretung
-@RequestBody Lehrperson
-
-ResponseEntity<List<Vertretung>> - /vertretung
-@RequestBody Lehrperson
+@PathVariable Integer
 
 LoginModal - POST LOGIN
 http://localhost:8080/terminplan/login
@@ -56,7 +56,7 @@ http://localhost:8080/terminplan/add/{id}
 Lehrpersonen - GET ALL LEHRPERSONEN
 http://localhost:8080/terminplan/fetchAllLp
 
-Ausfall Melden - PUT AUSFALL 
+Ausfall Melden - PUT AUSFALL
 http://localhost:8080/terminplan/notify/{id}
 
 ggf. noch Terminplan Generierung auslösen - POST Erstelle

@@ -37,13 +37,14 @@ public interface LehrplanterminRepository extends JpaRepository<Lehrplantermin, 
          * lehrpersonName);
          */
 
-        // Or, using @Query annotation
-        @Query("SELECT lv FROM Lehrveranstaltung lv WHERE lv.lehrperson.id = :lehrpersonId")
-        List<Lehrveranstaltung> findLehrveranstaltungenByLehrpersonId(@Param("lehrpersonId") Integer lehrpersonId);
-
         // Using @Query annotation
         @Query("SELECT lpt FROM Lehrplantermin lpt WHERE lpt.lehrveranstaltung.lehrperson.id = :lehrpersonId")
         List<Lehrplantermin> findLehrplantermineByLehrpersonId(@Param("lehrpersonId") Integer lehrpersonId);
+
+        // Using @Query annotation
+        @Query("SELECT lpt FROM Lehrplantermin lpt WHERE lpt.lehrveranstaltung.id = :lehrveranstaltungId")
+        List<Lehrplantermin> findLehrplantermineByLehrveranstaltungId(
+                        @Param("lehrveranstaltungId") Integer lehrveranstaltungId);
 
         @Query("SELECT l FROM Lehrplantermin l WHERE l.datum BETWEEN :startDate AND :endDate AND l.lehrveranstaltung.lehrperson.id = :lehrpersonId")
         List<Lehrplantermin> findAllByDatumBetweenAndLehrpersonId(@Param("startDate") LocalDate startDate,

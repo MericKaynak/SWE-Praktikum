@@ -8,7 +8,7 @@ CREATE TABLE Student (
     ID INT PRIMARY KEY,
     Name VARCHAR(100),
     Email VARCHAR(100),
-    Studiengang VARCHAR(100)
+    Fachbereich VARCHAR(100)
 );
 
 CREATE TABLE Lehrperson (

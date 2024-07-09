@@ -212,7 +212,7 @@ public class TerminplanController {
     // POST LOGIN
     @SuppressWarnings("null")
     @PostMapping("/login")
-    public HttpStatus validateLogin(@RequestBody String requestBody) {
+    public ResponseEntity<Integer> validateLogin(@RequestBody String requestBody) {
         JSONObject jsonObject = new JSONObject(requestBody);
         String email = jsonObject.getString("email");
         String password = jsonObject.getString("password");
@@ -222,10 +222,11 @@ public class TerminplanController {
         for (Student v : studentList) {
             if (v.getEmail().equals(email) && v.getPasswort().equals(password)) {
                 System.out.println(v.getEmail() + " " + v.getPasswort());
-                return HttpStatus.OK;
+                Integer id = studentRepository.findStudentIdByEmail(email).get();
+                return new ResponseEntity<>(id, HttpStatus.OK);
             }
         }
-        return HttpStatus.BAD_REQUEST;
+        return new ResponseEntity<>(null, HttpStatus.BAD_REQUEST);
     }
 
     /**
@@ -277,6 +278,8 @@ public class TerminplanController {
         System.out.println("Lehrpersonen assigned");
 
         populateLehrplanterminTable();
+
+        fillBesuchen();
 
         return HttpStatus.OK;
     }
@@ -436,6 +439,30 @@ public class TerminplanController {
         System.out.println("Erstellen der Termine erfolgreich");
     }
 
+    private void fillBesuchen() {
+        List<Lehrveranstaltung> lehrveranstaltungList = lehrveranstaltungRepository.findAll();
+        List<Student> studentList = studentRepository.findAll();
+        List<Besuchen> besuchenList = new ArrayList<>();
+        Besuchen besuchen = null;
+
+        System.out.println("Studenten werden Vorlesungen zugeteilt");
+
+        for (Student student : studentList) {
+            for (Lehrveranstaltung lehrveranstaltung : lehrveranstaltungList) {
+                if (student.getFachbereich().equals(lehrveranstaltung.getFachbereich())) {
+                    besuchen = new Besuchen();
+                    besuchen.setLehrveranstaltung(lehrveranstaltung);
+                    besuchen.setStudent(student);
+                    besuchenList.add(besuchen);
+                }
+            }
+        }
+
+        besuchenRepository.saveAll(besuchenList);
+
+        System.out.println("Studenten erfolgreich zugeteilt");
+    }
+
     // GET LIST OF ALL LEHRPERSONEN
     @GetMapping("/fetchAllLp")
     public ResponseEntity<List<Lehrperson>> fetchAllLehrpersonen() throws LehrpersonNotFoundException {
@@ -457,13 +484,19 @@ public class TerminplanController {
         return new ResponseEntity<>(lehrplanterminlist, HttpStatus.OK);
     }
 
-    // GET CALENDAR DATA FOR LEHRPERSON
-    @GetMapping("/fetch/{id}")
-    public ResponseEntity<List<Lehrveranstaltung>> find(@PathVariable Integer id)
+    // GET CALENDAR DATA FOR STUDENTS
+    @GetMapping("/fetchstudent/{id}")
+    public ResponseEntity<List<Lehrplantermin>> find(@PathVariable Integer id)
             throws LehrveranstaltungNotFoundException {
-        List<Lehrveranstaltung> lehrveranstaltungsList = lehrveranstaltungRepository.findByLehrpersonId(id);
+        List<Besuchen> besuchenList = besuchenRepository.findAllByStudentId(id);
+        List<Lehrplantermin> lehrplanterminList = new ArrayList<>();
 
-        return new ResponseEntity<>(lehrveranstaltungsList, HttpStatus.OK);
+        for (Besuchen besuchen : besuchenList) {
+            lehrplanterminList.addAll(lehrplanterminRepository
+                    .findLehrplantermineByLehrveranstaltungId(besuchen.getLehrveranstaltung().getId()));
+        }
+
+        return new ResponseEntity<>(lehrplanterminList, HttpStatus.OK);
     }
 
     @PutMapping("/notify/{id}")
@@ -497,6 +530,7 @@ public class TerminplanController {
             for (Lehrperson lp : lehrpersonList) {
                 System.out.println("searching for Lehrperson");
                 if (lp.istVerfuegbar(dauer) && conditionChecks(lehrplantermin.getLehrveranstaltung(), lp)) {
+
                     System.out.println("Lehrperson found");
                     // save Vertretungs objects
                     vertretung.setLehrperson(lp);
@@ -507,6 +541,7 @@ public class TerminplanController {
                     lehrplanterminRepository.save(lehrplantermin);
                     newVertretungen.add(vertretung);
                     System.out.println("vertretung saved");
+                    newVertretungen.add(vertretung);
                     break;
                 }
             }

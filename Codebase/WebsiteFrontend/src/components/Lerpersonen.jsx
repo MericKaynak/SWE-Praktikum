@@ -23,12 +23,11 @@ import {
   Button,
 } from "@mui/material";
 import { useNavigate } from "react-router-dom";
-import {getMonday, generateWeeks, repeatWeekly} from "./AppointmentsFuncs.jsx";
+import { getMonday, generateWeeks } from "./AppointmentsFuncs.jsx";
 import {
-  fetchAppointments,
   fetchAppointments as fetchAppointmentsApi,
-  fetchProfessors as fetchProfessorsApi
-} from './api.jsx';
+  fetchProfessors as fetchProfessorsApi,
+} from "./api.jsx";
 
 const Lehrpersonen = () => {
   const [appointments, setAppointments] = useState([]);
@@ -59,7 +58,17 @@ const Lehrpersonen = () => {
     const fetchAppointments = async (userId) => {
       try {
         const data = await fetchAppointmentsApi(userId);
-        setAppointments(data);
+        const formattedAppointments = data.map((appointment) => ({
+          id: appointment.Id,
+          title: appointment.Title,
+          startDate: new Date(appointment.Datum + " " + appointment.ZeitraumStart),
+          endDate: new Date(appointment.Datum + " " + appointment.ZeitraumEnd),
+          location: appointment.Location,
+          professorId: appointment.ProfessorId,
+          origProf:appointment.OrigProf,
+          professorName: appointment.ProfessorName,
+        }));
+        setAppointments(formattedAppointments);
       } catch (error) {
         console.error("Error fetching appointments:", error);
       }
@@ -76,6 +85,22 @@ const Lehrpersonen = () => {
   const handleUserChange = (event) => {
     setSelectedUser(event.target.value);
   };
+
+  const CustomAppointmentTooltipContent = ({ appointmentData, ...restProps }) => {
+    return (
+        <AppointmentTooltip.Content {...restProps} appointmentData={appointmentData}>
+          <div style={{ padding: "8px" }}>
+            <div><strong>Titel:</strong> {appointmentData.title}</div>
+            <div><strong>Lehrperson:</strong> {appointmentData.origProf}</div>
+            <div><strong>Standort:</strong> {appointmentData.location}</div>
+            {appointmentData.professorName !== appointmentData.origProf && (
+                <div><strong>Vertretung:</strong> {appointmentData.professorName}</div>
+            )}
+          </div>
+        </AppointmentTooltip.Content>
+    );
+  };
+
   return (
       <div style={{ height: "100vh", display: "flex", flexDirection: "column" }}>
         <AppBar position="static">
@@ -134,19 +159,20 @@ const Lehrpersonen = () => {
                   currentDate={currentDate}
                   onCurrentDateChange={setCurrentDate}
               />
-              <EditingState
-              />
+              <EditingState />
               <WeekView
                   startDayHour={8}
                   endDayHour={20}
-                  firstDayOfWeek={6}
-                  excludedDays={[0,6]}
+                  firstDayOfWeek={1}
+                  excludedDays={[0, 6]}
               />
               <AllDayPanel />
               <EditRecurrenceMenu />
               <ConfirmationDialog />
               <Appointments />
-              <AppointmentTooltip />
+              <AppointmentTooltip
+                  contentComponent={CustomAppointmentTooltipContent}
+              />
               <DxAppointmentForm />
             </DxScheduler>
           </Paper>
